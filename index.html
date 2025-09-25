@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eurojackpot • Cyber Tool</title>
+<title>Eurojackpot • Cyber Tool ++</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -12,29 +12,19 @@
   /* ======== CYBER THEME ======== */
   :root{
     --bg:#070b14;
-    --grid:#0b1222;
-    --panel:#0c1220;
-    --panel2:#0a1020;
-    --text:#eaf5ff;
-    --muted:#8aa2c7;
-    --brand:#39ffd7;
-    --accent:#7c5cff;
-    --warn:#ff6b6b;
-    --ok:#39ff90;
-
-    --chip:#121a2f;
-    --chip2:#1a2540;
+    --panel:#0c1220; --panel2:#0a1020;
+    --text:#eaf5ff; --muted:#8aa2c7;
+    --brand:#39ffd7; --accent:#7c5cff; --ok:#39ff90; --warn:#ff6b6b;
+    --chip:#121a2f; --chip2:#1a2540;
 
     --g1:linear-gradient(90deg,#6ea8ff 0%, #3057ff 100%);
     --g2:linear-gradient(90deg,#58ffb6 0%, #09a66f 100%);
     --g3:linear-gradient(90deg,#c88bff 0%, #6b35ff 100%);
     --g4:linear-gradient(90deg,#ffcc66 0%, #c57300 100%);
     --g5:linear-gradient(90deg,#ff7b7b 0%, #c11d1d 100%);
-
     --e1:linear-gradient(90deg,#ffe066 0%, #9c7a00 100%);
     --e2:linear-gradient(90deg,#5bffe1 0%, #0aa3a3 100%);
   }
-
   html,body{
     background:
       radial-gradient(60rem 60rem at 20% -10%, rgba(124,92,255,.18), transparent 60%),
@@ -43,125 +33,79 @@
     color:var(--text);
     min-height:100%;
   }
-  /* subtle animated grid */
-  .cyber-grid:before{
-    content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
-    background:
-      linear-gradient(transparent 98%, rgba(124,92,255,.08) 98%),
-      linear-gradient(90deg, transparent 98%, rgba(57,255,215,.08) 98%);
-    background-size: 24px 24px, 24px 24px;
-    animation:gridMove 18s linear infinite;
-    opacity:.35;
-  }
-  @keyframes gridMove{
-    from{transform:translate3d(0,0,0)}
-    to{transform:translate3d(-24px,-24px,0)}
-  }
-
   .cardx{
     background:linear-gradient(180deg,rgba(12,18,32,.8),rgba(10,16,32,.7));
     border:1px solid rgba(140,170,255,.12);
-    border-radius:18px;
-    padding:14px;
+    border-radius:16px; padding:12px;
     box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
     backdrop-filter: blur(8px);
   }
   .section-title{font-weight:900; letter-spacing:.3px;}
-
   .muted{color:var(--muted);}
 
-  /* Bands + Chips */
-  .band{border:1px solid rgba(140,170,255,.12); border-radius:16px; padding:10px 12px; margin-bottom:10px; background:rgba(9,14,27,.4);}
-  .band-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
-  .grad{height:8px; border-radius:999px; margin:6px 0 10px 0; box-shadow: inset 0 0 6px rgba(0,0,0,.5);}
-  .status-pill{font-size:.7rem; padding:.15rem .55rem; border-radius:999px; border:1px solid rgba(140,170,255,.2); color:var(--muted); background:rgba(255,255,255,.03);}
-
+  /* Kompaktere Map */
+  .band{border:1px solid rgba(140,170,255,.12); border-radius:14px; padding:6px 8px; margin-bottom:8px; background:rgba(9,14,27,.4);}
+  .band-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
+  .grad{height:6px; border-radius:999px; margin:4px 0 8px 0; box-shadow: inset 0 0 6px rgba(0,0,0,.5);}
+  .status-pill{font-size:.68rem; padding:.1rem .45rem; border-radius:999px; border:1px solid rgba(140,170,255,.2); color:var(--muted); background:rgba(255,255,255,.03);}
   .chip{
     display:inline-flex; align-items:center; justify-content:center;
-    min-width:32px; height:32px; border-radius:10px;
+    min-width:26px; height:26px; border-radius:8px;
     background:linear-gradient(180deg,var(--chip),var(--chip2));
-    margin:4px; font-weight:800; color:#d7e6ff;
+    margin:2px; font-weight:800; color:#d7e6ff;
     border:1px solid rgba(140,170,255,.18);
     transition:transform .08s ease, box-shadow .12s ease, background .2s ease;
-    user-select:none; font-size:.9rem;
+    user-select:none; font-size:.8rem;
   }
   .chip:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(124,92,255,.2); }
-  .chip.dim{opacity:.28; filter:saturate(.7) brightness(.9);}
-  .chip.typing{ box-shadow:0 0 0 2px var(--ok), 0 0 14px var(--ok); animation:pulse .8s ease-in-out infinite; }
-  .chip.done{ box-shadow:0 0 0 2px var(--brand), 0 0 14px var(--brand); }
+  .chip.dim{opacity:.3;}
+  .chip.typing{ box-shadow:0 0 0 2px var(--ok), 0 0 12px var(--ok); animation:pulse .8s ease-in-out infinite; }
+  .chip.done{ box-shadow:0 0 0 2px var(--brand), 0 0 12px var(--brand); }
   @keyframes pulse{ 0%{filter:brightness(1)} 50%{filter:brightness(1.4)} 100%{filter:brightness(1)} }
 
-  /* Sticky bottom bar */
   .sticky-bottom-bar{
     position:fixed; left:0; right:0; bottom:0; z-index:1000;
     background:linear-gradient(180deg,rgba(10,16,30,.75),rgba(8,12,24,.92));
     border-top:1px solid rgba(140,170,255,.16);
     backdrop-filter: blur(8px);
   }
-  .sticky-bottom-bar .btn{
-    height:56px; font-weight:900; letter-spacing:.3px; border-width:2px;
-    box-shadow: 0 8px 28px rgba(0,0,0,.35);
-  }
+  .sticky-bottom-bar .btn{height:54px; font-weight:900; letter-spacing:.2px; border-width:2px;}
 
-  /* Neon progress */
-  .neon-progress{
-    height:10px; border-radius:999px; background:rgba(140,170,255,.15);
-    overflow:hidden; box-shadow: inset 0 0 6px rgba(0,0,0,.5);
-  }
-  .neon-progress > div{
-    height:100%; width:0%;
-    background: linear-gradient(90deg, var(--brand), var(--accent));
-    box-shadow:0 0 18px var(--brand);
-    transition: width .25s ease;
-  }
+  .neon-progress{height:8px; border-radius:999px; background:rgba(140,170,255,.15); overflow:hidden; box-shadow: inset 0 0 6px rgba(0,0,0,.5);}
+  .neon-progress > div{height:100%; width:0%; background: linear-gradient(90deg, var(--brand), var(--accent)); box-shadow:0 0 14px var(--brand); transition: width .25s ease;}
 
-  /* Live log */
-  .live-box{
-    font-family:ui-monospace, Menlo, Consolas, monospace;
-    background:linear-gradient(180deg,#0a0f19,#0a0f19);
-    border:1px solid rgba(140,170,255,.16);
-    color:#b8ffcc; border-radius:12px; padding:10px; height:160px; overflow:auto;
-  }
+  .live-box{font-family:ui-monospace, Menlo, Consolas, monospace; background:#0a0f19; border:1px solid rgba(140,170,255,.16); color:#b8ffcc; border-radius:10px; padding:8px; height:140px; overflow:auto;}
 
-  /* Result cards */
-  .result-card{
-    background:linear-gradient(180deg,rgba(10,16,30,.55),rgba(10,16,30,.4));
-    border:1px solid rgba(140,170,255,.14);
-    border-radius:14px; padding:10px; margin-bottom:8px;
-    box-shadow:0 8px 26px rgba(0,0,0,.28);
-  }
-  .result-card .nums .chip{height:28px; min-width:28px; border-radius:8px; font-size:.85rem;}
-  .btn-ghost{
-    --c:rgba(140,170,255,.35);
-    color:#d9e7ff; border:1px solid var(--c); background:rgba(255,255,255,.03);
-  }
-  .btn-ghost:hover{border-color:#7c5cff; box-shadow:0 0 14px rgba(124,92,255,.5) inset;}
+  .result-card{background:linear-gradient(180deg,rgba(10,16,30,.55),rgba(10,16,30,.4)); border:1px solid rgba(140,170,255,.14); border-radius:12px; padding:8px; margin-bottom:8px;}
+  .result-card .nums .chip{height:24px; min-width:24px; border-radius:7px; font-size:.78rem;}
+  .btn-ghost{--c:rgba(140,170,255,.35); color:#d9e7ff; border:1px solid var(--c); background:rgba(255,255,255,.03);}
+  .btn-ghost:hover{border-color:#7c5cff; box-shadow:0 0 12px rgba(124,92,255,.5) inset;}
 
-  /* Controls */
-  .range-row{display:grid; grid-template-columns: 130px 1fr 64px; gap:10px; align-items:center; margin-bottom:10px;}
-  .counter-pill{padding:.2rem .55rem; border-radius:999px; font-weight:900; font-size:.8rem;}
+  .range-row{display:grid; grid-template-columns: 120px 1fr 60px; gap:8px; align-items:center; margin-bottom:8px;}
+  .counter-pill{padding:.15rem .5rem; border-radius:999px; font-weight:900; font-size:.75rem;}
   .counter-ok{background:rgba(57,255,144,.14); color:#5dffa9; border:1px solid rgba(57,255,144,.35);}
   .counter-bad{background:rgba(255,107,107,.12); color:#ff9f9f; border:1px solid rgba(255,107,107,.35);}
 
-  /* Toasts */
-  .toast-wrap{position:fixed; right:16px; bottom:80px; display:flex; flex-direction:column; gap:8px; z-index:1200;}
-  .toastx{background:linear-gradient(180deg,#0f1526,#0c1222); border:1px solid rgba(140,170,255,.2); color:#eaf5ff;
-          border-radius:10px; padding:10px 12px; font-size:.9rem; box-shadow:0 8px 24px rgba(0,0,0,.35);}
+  /* Analyse */
+  .heat-grid{display:grid; grid-template-columns: repeat(10, 1fr); gap:4px;}
+  .heat-cell{height:18px; border-radius:4px; text-align:center; font-size:.7rem; line-height:18px; color:#eaf5ff; background:#182341;}
+  .bar{height:6px; border-radius:999px; background:rgba(140,170,255,.16); overflow:hidden;}
+  .bar > i{display:block; height:100%; width:0%; background:linear-gradient(90deg,#39ffd7,#7c5cff);}
 </style>
 </head>
-<body class="cyber-grid">
+<body>
 <div class="container py-3 pb-5">
 
-  <!-- Map oben, ohne Scroll -->
+  <!-- Map oben, kompakter -->
   <div class="cardx mb-3" id="mapSection">
     <div class="d-flex align-items-center justify-content-between">
-      <div class="section-title mb-1">3) Map (1–50) & Euro (1–12)</div>
+      <div class="section-title mb-1">3) Map (1–50) & Euro (1–12) – kompakt</div>
       <div class="small muted" id="progressLabel">Bereit</div>
     </div>
     <div class="neon-progress mb-2"><div id="progressBar"></div></div>
 
-    <div id="bandsMain" class="mb-2"></div>
-    <div class="section-title mt-2 mb-1">Eurozahlen</div>
+    <div id="bandsMain" class="mb-1"></div>
+    <div class="section-title mt-1 mb-1">Eurozahlen</div>
     <div id="bandsEuro"></div>
   </div>
 
@@ -174,7 +118,7 @@
           <input class="form-control form-control-sm" type="file" id="zipInput" accept=".zip,.txt,.csv">
         </div>
         <hr class="text-secondary">
-        <div class="row text-center g-3">
+        <div class="row text-center g-2">
           <div class="col-6 col-md-3"><div class="muted small">Ziehungen</div><div id="kpiCount" class="fw-bold">–</div></div>
           <div class="col-6 col-md-3"><div class="muted small">Von</div><div id="kpiFrom" class="fw-bold">–</div></div>
           <div class="col-6 col-md-3"><div class="muted small">Bis</div><div id="kpiTo" class="fw-bold">–</div></div>
@@ -188,13 +132,24 @@
           <label class="form-label muted">Anzahl Kombinationen</label>
           <select id="kombis" class="form-select form-select-sm"></select>
         </div>
+        <div class="mb-2">
+          <label class="form-label muted">Modus</label>
+          <select id="modus" class="form-select form-select-sm">
+            <option value="never">Nie gezogene</option>
+            <option value="last100">Letzte 100 – Frequenzmuster</option>
+            <option value="hot">Hot Paare & Triples</option>
+            <option value="groups">5er-Gruppen + Wünsche</option>
+          </select>
+        </div>
 
         <!-- Gruppen nicht streng: 0..5, Rest wird aufgefüllt -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <div class="muted small">Gruppen: Summe ≤ 5 (Rest wird automatisch aufgefüllt)</div>
-          <div id="mainCounter" class="counter-pill counter-ok">0/≤5</div>
+        <div id="groupSection">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="muted small">Gruppen: Summe ≤ 5 (Rest wird automatisch aufgefüllt)</div>
+            <div id="mainCounter" class="counter-pill counter-ok">0/≤5</div>
+          </div>
+          <div id="groupControls"></div>
         </div>
-        <div id="groupControls"></div>
 
         <hr class="text-secondary">
         <div class="form-check form-switch">
@@ -211,26 +166,8 @@
       </div>
 
       <div class="cardx mt-3">
-        <div class="section-title mb-2">5) Batch-Analyse (Top‑N ↔ Archiv)</div>
-        <div class="row g-2">
-          <div class="col-4">
-            <label class="form-label muted small">Top‑N</label>
-            <input id="topN" type="number" min="1" max="50" value="5" class="form-control form-control-sm">
-          </div>
-          <div class="col-4">
-            <label class="form-label muted small">Schwelle A (≥)</label>
-            <input id="thrA" type="number" min="1" max="7" value="4" class="form-control form-control-sm">
-          </div>
-          <div class="col-4">
-            <label class="form-label muted small">Schwelle B (≥)</label>
-            <input id="thrB" type="number" min="1" max="7" value="5" class="form-control form-control-sm">
-          </div>
-        </div>
-        <div class="mt-2 d-flex gap-2 flex-wrap">
-          <button id="batchBtn" class="btn btn-success btn-sm">Batch analysieren</button>
-          <button id="csvBtn" class="btn btn-ghost btn-sm">CSV Export</button>
-        </div>
-        <div id="batchTable" class="mt-2 small"></div>
+        <div class="section-title mb-2">5) Analyse</div>
+        <div id="analysisBox" class="small"></div>
       </div>
     </div>
 
@@ -251,18 +188,11 @@
 <div class="sticky-bottom-bar py-2">
   <div class="container">
     <div class="row g-2">
-      <div class="col-6">
-        <button id="generateBtn" class="btn btn-dark w-100 border border-2">⚡ Generieren</button>
-      </div>
-      <div class="col-6">
-        <button id="analyseBtn" class="btn btn-outline-dark w-100 border border-2">📈 Analysieren</button>
-      </div>
+      <div class="col-6"><button id="generateBtn" class="btn btn-dark w-100 border border-2">⚡ Generieren</button></div>
+      <div class="col-6"><button id="analyseBtn" class="btn btn-outline-dark w-100 border border-2">📈 Analysieren</button></div>
     </div>
   </div>
 </div>
-
-<!-- Toasts -->
-<div class="toast-wrap" id="toasts"></div>
 
 <script>
 /* ------------ Helpers ------------- */
@@ -271,7 +201,6 @@ const $$ = sel => Array.from(document.querySelectorAll(sel));
 const sleep = ms => new Promise(r=>setTimeout(r,ms));
 function iso(y,m,d){ const dt=new Date(+y, +m-1, +d); return isNaN(dt)? null : dt.toISOString().slice(0,10); }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
-function toast(msg){ const d=document.createElement('div'); d.className='toastx'; d.textContent=msg; $('#toasts').appendChild(d); setTimeout(()=>d.remove(), 2800); }
 
 /* ------------ State ------------- */
 let draws=[]; let freqMain=Array(51).fill(0); let freqEuro=Array(13).fill(0);
@@ -285,10 +214,7 @@ const GROUPS=[
   {label:'31–40', from:31, to:40, grad:'var(--g4)'},
   {label:'41–50', from:41, to:50, grad:'var(--g5)'},
 ];
-const EGROUPS=[
-  {label:'1–6', from:1, to:6, grad:'var(--e1)'},
-  {label:'7–12', from:7, to:12, grad:'var(--e2)'},
-];
+const EGROUPS=[{label:'1–6', from:1, to:6, grad:'var(--e1)'},{label:'7–12', from:7, to:12, grad:'var(--e2)'}];
 
 function buildBands(container, groups){
   container.innerHTML='';
@@ -299,10 +225,7 @@ function buildBands(container, groups){
     head.innerHTML=`<div class="fw-bold">${g.label}</div>`; head.appendChild(status);
     const grad=document.createElement('div'); grad.className='grad'; grad.style.background=g.grad;
     const row=document.createElement('div');
-    for(let n=g.from;n<=g.to;n++){
-      const chip=document.createElement('div'); chip.className='chip'; chip.textContent=n; chip.dataset.num=n;
-      row.appendChild(chip);
-    }
+    for(let n=g.from;n<=g.to;n++){ const chip=document.createElement('div'); chip.className='chip'; chip.textContent=n; chip.dataset.num=n; row.appendChild(chip); }
     band.appendChild(head); band.appendChild(grad); band.appendChild(row);
     container.appendChild(band);
   });
@@ -311,7 +234,6 @@ buildBands($('#bandsMain'), GROUPS);
 buildBands($('#bandsEuro'), EGROUPS);
 
 /* ------------ Controls ------------- */
-// Kombis 1..25
 for(let i=1;i<=25;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i; $('#kombis').appendChild(o); }
 
 function buildGroupControls(){
@@ -344,6 +266,7 @@ $('#toggleEuro').addEventListener('change', e=>{
   $('#euroSection').style.display = e.target.checked ? '' : 'none';
   updateCounters(); updateBandStatus();
 });
+$('#modus').addEventListener('change', ()=>{ updateCounters(); });
 
 function updateCounters(){
   let sum=0;
@@ -371,11 +294,7 @@ function updateBandStatus(){
       pill.textContent = ecounts[i]===0 ? 'GESCHLOSSEN' : 'OFFEN ('+ecounts[i]+')';
     });
   }else{
-    EGROUPS.forEach((g,i)=>{
-      const band = Array.from($('#bandsEuro').children)[i];
-      const pill = band.querySelector('.status-pill');
-      pill.textContent='GESCHLOSSEN';
-    });
+    EGROUPS.forEach((g,i)=>{ const band = Array.from($('#bandsEuro').children)[i]; band.querySelector('.status-pill').textContent='GESCHLOSSEN'; });
   }
 }
 updateCounters(); updateBandStatus();
@@ -390,14 +309,12 @@ async function handleFile(evt){
     if(file.name.toLowerCase().endsWith('.zip')){
       const zip = await JSZip.loadAsync(file);
       const entries = Object.values(zip.files);
-      let entry = entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) ||
-                  entries.find(f=>/\.(txt|csv)$/i.test(f.name));
+      let entry = entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
       if(!entry) throw new Error('ZIP ohne TXT/CSV.');
       text = await entry.async('string');
     }else{ text = await file.text(); }
     parseArchiveText(text);
-    toast('Archiv geladen ✔');
-  }catch(e){ $('#statusText').textContent='Fehler: '+e.message; toast('Fehler beim Laden'); }
+  }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
 }
 function parseArchiveText(txt){
   txt = txt.replace(/^\uFEFF/, '');
@@ -427,43 +344,115 @@ function parseArchiveText(txt){
   const last=new Date(draws[draws.length-1].date); const deltaDays=Math.round((Date.now()-last.getTime())/86400000);
   $('#kpiFresh').textContent=(deltaDays<=14)?'aktuell':'veraltet';
   $('#statusText').textContent='Archiv geladen ✔';
+  renderAnalysis();
 }
 
-/* ------------ Generator (Gruppen nicht streng) ------------- */
+/* ------------ Analyse ------------- */
+function renderAnalysis(){
+  if(!draws.length){ $('#analysisBox').innerHTML='<div class="muted">Bitte Archiv laden.</div>'; return; }
+  // Frequenzen -> Heatbar
+  const fm=[...freqMain]; const fe=[...freqEuro];
+  const maxM=Math.max(...fm.slice(1)), maxE=Math.max(...fe.slice(1));
+  let html='<div class="mb-1"><strong>Hauptzahlen (1–50) – Häufigkeit</strong></div><div class="heat-grid">';
+  for(let n=1;n<=50;n++){ const p=Math.round((fm[n]/(maxM||1))*100); html+=`<div class="heat-cell">${n}<div class="bar"><i style="width:${p}%"></i></div></div>`; }
+  html+='</div><div class="mt-2 mb-1"><strong>Eurozahlen (1–12) – Häufigkeit</strong></div><div class="heat-grid" style="grid-template-columns: repeat(12,1fr);">';
+  for(let n=1;n<=12;n++){ const p=Math.round((fe[n]/(maxE||1))*100); html+=`<div class="heat-cell">${n}<div class="bar"><i style="width:${p}%"></i></div></div>`; }
+  html+='</div>';
+
+  // Top 10 Zahlen + Top Paare/Triples (letzte 200 Ziehungen)
+  const recent = draws.slice(-200);
+  // Paare/Triples zählen
+  const pairMap=new Map(); const tripleMap=new Map();
+  function inc(map,key){ map.set(key,(map.get(key)||0)+1); }
+  for(const d of recent){
+    const m=[...d.main].sort((a,b)=>a-b);
+    // Paare
+    for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++){ inc(pairMap, `${m[i]}-${m[j]}`); }
+    // Triples
+    for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++) for(let k=j+1;k<m.length;k++){ inc(tripleMap, `${m[i]}-${m[j]}-${m[k]}`); }
+  }
+  const topPairs=[...pairMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const topTrip=[...tripleMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const topNums=[...Array(51).keys()].slice(1).map(n=>[n,freqMain[n]]).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  function list(entries){ return entries.map(([k,v])=>`<span class="badge text-bg-dark me-1 mb-1">${k} <small class="text-muted">(${v})</small></span>`).join(''); }
+
+  html+=`<div class="mt-3"><strong>Top 10 Zahlen</strong><div class="mt-1">${list(topNums)}</div></div>`;
+  html+=`<div class="mt-2"><strong>Top 10 Paare (letzte 200)</strong><div class="mt-1">${list(topPairs)}</div></div>`;
+  html+=`<div class="mt-2"><strong>Top 10 Triples (letzte 200)</strong><div class="mt-1">${list(topTrip)}</div></div>`;
+  $('#analysisBox').innerHTML = html;
+}
+
+/* ------------ Generator mit Modi ------------- */
 function pickFromRange(from,to,avoid,count,weightFn){
   const bag=[]; for(let n=from;n<=to;n++){ if(!avoid.includes(n)){ const w=Math.max(1, weightFn?weightFn(n):1); for(let k=0;k<w;k++) bag.push(n);} }
   shuffle(bag);
   const res=[]; for(const v of bag){ if(!res.includes(v)){ res.push(v); if(res.length===count) break; } }
   return res;
 }
-function generateOne(){
-  const wish = $$('#groupControls select').map(s=>+s.value||0);
-  let sum = wish.reduce((a,b)=>a+b,0);
-  if(sum>5) throw new Error('Gruppen-Summe darf max. 5 sein.');
 
-  // Historische leichte Gewichtung (letzte 100)
-  let weightMain=null;
-  if(draws.length){
-    const r = draws.slice(-100);
-    const fm = Array(51).fill(1);
-    r.forEach(d=>d.main.forEach(n=>fm[n]++));
-    const maxM=Math.max(...fm.slice(1)); weightMain=n=>Math.ceil(3*fm[n]/maxM);
-  }
+function generateOne(){
+  const mode = $('#modus').value;
   let main=[];
-  GROUPS.forEach((g,i)=>{ const need=wish[i]; if(need>0){ main.push(...pickFromRange(g.from,g.to,main,need,weightMain)); } });
-  if(main.length<5){
-    const openRanges = GROUPS.filter((g,i)=>wish[i]>0);
-    if(openRanges.length){
-      while(main.length<5){
-        const g = openRanges[Math.floor(Math.random()*openRanges.length)];
-        const add = pickFromRange(g.from,g.to,main,1,weightMain);
-        if(add.length) main.push(add[0]); else break;
-      }
-    }else{
-      main = pickFromRange(1,50,[],5,weightMain);
+
+  if(mode==='groups'){
+    // Wünsche (nicht streng), Summe ≤5
+    const wish = $$('#groupControls select').map(s=>+s.value||0);
+    let sum = wish.reduce((a,b)=>a+b,0);
+    if(sum>5) throw new Error('Gruppen-Summe darf max. 5 sein.');
+    // leichte Gewichtung nach Häufigkeit (letzte 100)
+    let weightMain=null;
+    if(draws.length){
+      const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
+      const maxM=Math.max(...fm.slice(1)); weightMain=n=>Math.ceil(3*fm[n]/maxM);
     }
+    GROUPS.forEach((g,i)=>{ const need=wish[i]; if(need>0){ main.push(...pickFromRange(g.from,g.to,main,need,weightMain)); } });
+    if(main.length<5){
+      const openRanges = GROUPS.filter((g,i)=>wish[i]>0);
+      if(openRanges.length){
+        while(main.length<5){
+          const g = openRanges[Math.floor(Math.random()*openRanges.length)];
+          const add = pickFromRange(g.from,g.to,main,1,weightMain);
+          if(add.length) main.push(add[0]); else break;
+        }
+      }else{
+        main = pickFromRange(1,50,[],5,weightMain);
+      }
+    }
+  }else if(mode==='last100' && draws.length){
+    // Gewicht nach letzter 100 Frequenz
+    const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
+    const maxM=Math.max(...fm.slice(1)); const w=n=>Math.ceil(3*fm[n]/maxM);
+    main = pickFromRange(1,50,[],5,w).sort((a,b)=>a-b);
+  }else if(mode==='never' && draws.length){
+    // Bevorzugt nie (oder selten) gezogene
+    const fm=freqMain.slice(); const w=n=> fm[n]===0?5:(fm[n]<=5?3:1);
+    main = pickFromRange(1,50,[],5,w).sort((a,b)=>a-b);
+  }else if(mode==='hot' && draws.length){
+    // Versuche ein heißes Paar/Triple einzubauen (aus letzten 200)
+    const recent = draws.slice(-200);
+    const pairMap=new Map(); const tripleMap=new Map();
+    function inc(map,key){ map.set(key,(map.get(key)||0)+1); }
+    for(const d of recent){
+      const m=[...d.main].sort((a,b)=>a-b);
+      for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++){ inc(pairMap, `${m[i]}-${m[j]}`); }
+      for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++) for(let k=j+1;k<m.length;k++){ inc(tripleMap, `${m[i]}-${m[j]}-${m[k]}`); }
+    }
+    const topPairs=[...pairMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,30).map(e=>e[0].split('-').map(Number));
+    const topTrip=[...tripleMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,20).map(e=>e[0].split('-').map(Number));
+
+    if(Math.random()<0.5 && topTrip.length){ main = [...topTrip[Math.floor(Math.random()*topTrip.length)]]; }
+    else if(topPairs.length){ main = [...topPairs[Math.floor(Math.random()*topPairs.length)]]; }
+
+    // Rest auffüllen mit leichter Frequenzgewichtung
+    const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
+    const maxM=Math.max(...fm.slice(1)); const w=n=>Math.ceil(2*fm[n]/maxM);
+    while(main.length<5){ const add = pickFromRange(1,50,main,1,w); if(add.length) main.push(add[0]); else break; }
+    main.sort((a,b)=>a-b);
+  }else{
+    // Fallback neutral
+    main = pickFromRange(1,50,[],5,null).sort((a,b)=>a-b);
   }
-  main = Array.from(new Set(main)).slice(0,5).sort((a,b)=>a-b);
 
   // Euro
   let euro=[];
@@ -479,27 +468,28 @@ function generateOne(){
   return {main, euro};
 }
 
+/* ------------ Live Map ------------- */
 function clearMapMarks(){
   $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.classList.remove('dim','typing','done'));
   $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.classList.add('dim'));
 }
-
 async function liveType(tip, index, total){
   clearMapMarks();
   const pb = $('#progressBar'); const pl = $('#progressLabel');
   for(const n of tip.main){
     const el = document.querySelector(`#bandsMain .chip[data-num="${n}"]`);
-    if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(110); el.classList.remove('typing'); el.classList.add('done'); }
+    if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(100); el.classList.remove('typing'); el.classList.add('done'); }
   }
   for(const n of tip.euro){
     const el = document.querySelector(`#bandsEuro .chip[data-num="${n}"]`);
-    if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(110); el.classList.remove('typing'); el.classList.add('done'); }
+    if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(100); el.classList.remove('typing'); el.classList.add('done'); }
   }
   $('#progressText').textContent = `Variante #${index} / ${total}`;
   pb.style.width = Math.round(index/total*100)+'%';
   pl.textContent = `#${index}/${total}`;
 }
 
+/* ------------ Ergebnisse ------------- */
 function createResultCard(idx, tip){
   const card=document.createElement('div'); card.className='result-card d-flex align-items-center justify-content-between';
   const left=document.createElement('div'); left.innerHTML=`<div class="muted small">#${idx}</div>`;
@@ -527,59 +517,16 @@ document.getElementById('generateBtn').addEventListener('click', async ()=>{
       await liveType(tip, i, total);
       cards.appendChild(createResultCard(i, tip));
       out.scrollTop = out.scrollHeight;
-    }catch(e){ out.textContent += 'FEHLER: '+e.message+'\\n'; toast(e.message); break; }
+    }catch(e){ out.textContent += 'FEHLER: '+e.message+'\\n'; break; }
   }
 });
-
 document.getElementById('analyseBtn').addEventListener('click', ()=>{
-  document.getElementById('resultsSection').scrollIntoView({behavior:'smooth', block:'start'});
-});
-
-/* ------------ Batch-Analyse (einfach) ------------- */
-document.getElementById('batchBtn').addEventListener('click', ()=>{
-  if(!draws.length || !generated.length){ $('#batchTable').innerHTML='<div class="muted">Erst Archiv laden und Ergebnisse generieren.</div>'; return; }
-  const topN = Math.max(1, Math.min(+$('#topN').value||5, generated.length));
-  const thrA = +$('#thrA').value||4;
-  const thrB = +$('#thrB').value||5;
-
-  const rows = [];
-  for(let i=0;i<topN;i++){
-    const tip = generated[i];
-    let maxOverlap=0, overA=0, overB=0, hits=0;
-    for(const d of draws){
-      const overlap = tip.main.filter(x=>d.main.includes(x)).length + tip.euro.filter(x=>d.euro.includes(x)).length;
-      if(overlap>maxOverlap) maxOverlap=overlap;
-      if(overlap>=thrA) overA++;
-      if(overlap>=thrB) overB++;
-      if(overlap===7) hits++;
-    }
-    rows.push({idx:i+1, tip, maxOverlap, overA, overB, hits});
-  }
-
-  let html = `<div class="table-responsive"><table class="table table-dark table-sm align-middle">
-    <thead><tr><th>#</th><th>Kombi</th><th>Max Überl.</th><th>Überl. ≥${thrA}</th><th>Überl. ≥${thrB}</th><th>Volltreffer</th></tr></thead><tbody>`;
-  rows.forEach(r=>{
-    const tipStr = r.tip.main.join('-') + (r.tip.euro.length? ' | E:'+r.tip.euro.join('-'):'');
-    html += `<tr><td>${r.idx}</td><td>${tipStr}</td><td>${r.maxOverlap}</td><td>${r.overA}</td><td>${r.overB}</td><td>${r.hits}</td></tr>`;
-  });
-  html += '</tbody></table></div>';
-  $('#batchTable').innerHTML = html;
-});
-
-document.getElementById('csvBtn').addEventListener('click', ()=>{
-  if(!generated.length){ toast('Erst generieren'); return; }
-  const lines = generated.map((t,i)=> `${i+1};${t.main.join('-')};${t.euro.join('-')}`);
-  const blob = new Blob(['#;Main;Euro\n', ...lines].join('\n'), {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='ergebnisse.csv'; a.click();
-  URL.revokeObjectURL(url);
-  toast('CSV exportiert');
+  document.getElementById('analysisBox').scrollIntoView({behavior:'smooth', block:'start'});
 });
 
 /* ------------ Init ------------- */
 function init(){
   updateBandStatus();
-  // initial dim
   $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.classList.add('dim'));
 }
 init();
