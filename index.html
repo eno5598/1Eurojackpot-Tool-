@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eurojackpot • Ultra Cyber Tool</title>
+<title>Eurojackpot • Ultra Cyber Tool v2</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <style>
   :root{
-    --bg:#050812; --panel:#0b1020; --panel2:#0a0f1e;
+    --bg:#040815; --panel:#0b1020; --panel2:#0a0f1e;
     --text:#eef6ff; --muted:#8fb0d6;
     --brand:#39ffd7; --accent:#7c5cff; --ok:#39ff90; --warn:#ff6b6b; --info:#5ad1ff;
-    --chip:#121a2f; --chip2:#182347;
-
+    --chip:#111a33; --chip2:#182242;
+    --chipE:#1b243d; --chipE2:#122235;
     --g1:linear-gradient(90deg,#6ea8ff 0%, #3057ff 100%);
     --g2:linear-gradient(90deg,#58ffb6 0%, #09a66f 100%);
     --g3:linear-gradient(90deg,#c88bff 0%, #6b35ff 100%);
@@ -23,7 +23,6 @@
     --e1:linear-gradient(90deg,#ffe066 0%, #9c7a00 100%);
     --e2:linear-gradient(90deg,#5bffe1 0%, #0aa3a3 100%);
   }
-
   html,body{
     background:
       radial-gradient(70rem 70rem at -10% -10%, rgba(124,92,255,.18), transparent 60%),
@@ -33,87 +32,68 @@
     color:var(--text);
     min-height:100%;
   }
-
-  /* animated scanlines + flare */
   body:before{
     content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
-    background:
-      repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0, rgba(255,255,255,.02) 1px, transparent 1px, transparent 3px);
-    mix-blend-mode:overlay; opacity:.5;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0, rgba(255,255,255,.02) 1px, transparent 1px, transparent 3px);
+    mix-blend-mode:overlay; opacity:.45;
   }
-  body:after{
-    content:""; position:fixed; top:-10%; left:-10%; width:50%; height:50%; pointer-events:none; z-index:0;
-    background: radial-gradient(circle at 30% 30%, rgba(124,92,255,.25), transparent 60%);
-    filter: blur(40px); animation:flare 10s ease-in-out infinite alternate;
-  }
-  @keyframes flare{ from{transform:translate(0,0)} to{transform:translate(10%,10%)} }
-
-  .cardx{
-    position:relative;
-    background:linear-gradient(180deg,rgba(11,16,32,.85),rgba(10,16,30,.75));
-    border:1px solid rgba(140,170,255,.14);
-    border-radius:18px; padding:12px;
+  .cardx{ position:relative; background:linear-gradient(180deg,rgba(11,16,32,.85),rgba(10,16,30,.75));
+    border:1px solid rgba(140,170,255,.16); border-radius:18px; padding:12px;
     box-shadow:0 18px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
-    backdrop-filter: blur(10px);
-    overflow:hidden;
-  }
-  .cardx:before{
-    content:""; position:absolute; inset:-1px;
+    backdrop-filter: blur(10px); overflow:hidden;}
+  .cardx:before{ content:""; position:absolute; inset:-1px;
     background:conic-gradient(from 0deg at 50% 50%, rgba(124,92,255,.14), transparent 30%, rgba(57,255,215,.12), transparent 70%);
-    filter: blur(30px); z-index:0; pointer-events:none; opacity:.4;
-  }
+    filter: blur(30px); z-index:0; pointer-events:none; opacity:.4; }
   .cardx > *{ position:relative; z-index:1; }
-
   .section-title{font-weight:1000; letter-spacing:.35px;}
   .muted{color:var(--muted);}
 
-  /* Compact Map */
+  /* Map kompakter */
   .band{border:1px solid rgba(140,170,255,.16); border-radius:14px; padding:6px 8px; margin-bottom:8px; background:rgba(9,14,27,.45);}
   .band-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
-  .grad{height:6px; border-radius:999px; margin:4px 0 6px 0; box-shadow: inset 0 0 6px rgba(0,0,0,.5);}
+  .grad{height:5px; border-radius:999px; margin:4px 0 6px 0; box-shadow: inset 0 0 6px rgba(0,0,0,.5);}
   .status-pill{font-size:.68rem; padding:.1rem .45rem; border-radius:999px; border:1px solid rgba(140,170,255,.25); color:var(--muted); background:rgba(255,255,255,.03);}
-
-  .chip{
-    display:inline-flex; align-items:center; justify-content:center;
-    min-width:24px; height:24px; border-radius:7px;
-    background:linear-gradient(180deg,var(--chip),var(--chip2));
-    margin:2px; font-weight:900; color:#d7e6ff;
-    border:1px solid rgba(140,170,255,.18);
-    transition:transform .06s ease, box-shadow .12s ease, background .2s ease;
-    user-select:none; font-size:.74rem;
-  }
+  .chip{ display:inline-flex; align-items:center; justify-content:center; min-width:20px; height:20px; border-radius:6px;
+    background:linear-gradient(180deg,var(--chip),var(--chip2)); margin:2px; font-weight:900; color:#d7e6ff;
+    border:1px solid rgba(140,170,255,.18); transition:transform .06s ease, box-shadow .12s ease, background .2s ease;
+    user-select:none; font-size:.68rem;}
+  .chip.euro{background:linear-gradient(180deg,var(--chipE),var(--chipE2));}
   .chip:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(124,92,255,.25); }
-  .chip.dim{opacity:.32;}
-  .chip.typing{ box-shadow:0 0 0 2px var(--ok), 0 0 12px var(--ok); animation:pulse .75s ease-in-out infinite; }
+  .chip.dim{opacity:.32;} .chip.typing{ box-shadow:0 0 0 2px var(--ok), 0 0 12px var(--ok); animation:pulse .75s ease-in-out infinite; }
   .chip.done{ box-shadow:0 0 0 2px var(--brand), 0 0 12px var(--brand); }
   @keyframes pulse{ 0%{filter:brightness(1)} 50%{filter:brightness(1.4)} 100%{filter:brightness(1)} }
-
-  .sticky-bottom-bar{
-    position:fixed; left:0; right:0; bottom:0; z-index:1000;
-    background:linear-gradient(180deg,rgba(10,16,30,.78),rgba(8,12,24,.95));
-    border-top:1px solid rgba(140,170,255,.18);
-    backdrop-filter: blur(10px);
-  }
-  .sticky-bottom-bar .btn{height:56px; font-weight:1000; letter-spacing:.3px; border-width:2px; box-shadow: 0 10px 28px rgba(0,0,0,.35);}
-
   .neon-progress{height:8px; border-radius:999px; background:rgba(140,170,255,.16); overflow:hidden; box-shadow: inset 0 0 6px rgba(0,0,0,.5);}
   .neon-progress > div{height:100%; width:0%; background: linear-gradient(90deg, var(--brand), var(--accent)); box-shadow:0 0 18px var(--brand); transition: width .25s ease;}
 
+  .sticky-bottom-bar{ position:fixed; left:0; right:0; bottom:0; z-index:1000;
+    background:linear-gradient(180deg,rgba(10,16,30,.78),rgba(8,12,24,.95)); border-top:1px solid rgba(140,170,255,.18);
+    backdrop-filter: blur(10px);}
+  .sticky-bottom-bar .btn{height:56px; font-weight:1000; letter-spacing:.3px; border-width:2px; box-shadow: 0 10px 28px rgba(0,0,0,.35);}
+
   .live-box{font-family:ui-monospace, Menlo, Consolas, monospace; background:#08101f; border:1px solid rgba(140,170,255,.18); color:#b8ffcc; border-radius:10px; padding:8px; height:140px; overflow:auto;}
 
-  .result-card{background:linear-gradient(180deg,rgba(10,16,30,.55),rgba(10,16,30,.4)); border:1px solid rgba(140,170,255,.16); border-radius:12px; padding:8px; margin-bottom:8px;}
-  .result-card .nums .chip{height:22px; min-width:22px; border-radius:6px; font-size:.72rem;}
-  .btn-ghost{--c:rgba(140,170,255,.38); color:#d9e7ff; border:1px solid var(--c); background:rgba(255,255,255,.03);} .btn-ghost:hover{border-color:#7c5cff; box-shadow:0 0 12px rgba(124,92,255,.55) inset;}
+  /* Ergebnis-Karten */
+  .variant-card{position:relative; border:1px solid rgba(140,170,255,.2); border-radius:14px; padding:10px; margin-bottom:10px; background:linear-gradient(180deg,rgba(10,16,30,.6),rgba(8,12,24,.5));}
+  .variant-card:after{content:""; position:absolute; inset:-1px; border-radius:14px; box-shadow:0 0 30px rgba(57,255,215,.12), 0 0 40px rgba(124,92,255,.12); pointer-events:none;}
+  .variant-head{display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;}
+  .nums-row{display:flex; flex-wrap:wrap; gap:4px; align-items:center;}
+  .badge-soft{background:rgba(140,170,255,.12); border:1px solid rgba(140,170,255,.25); color:#eaf5ff; border-radius:999px; padding:.15rem .5rem; font-size:.72rem;}
+  .stat-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;}
+  .stat{background:rgba(255,255,255,.03); border:1px solid rgba(140,170,255,.16); border-radius:10px; padding:6px 8px; font-size:.82rem;}
+  .stat strong{font-weight:900;}
+  .variant-actions{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
+  .btn-ghost{--c:rgba(140,170,255,.38); color:#d9e7ff; border:1px solid var(--c); background:rgba(255,255,255,.03);} 
+  .btn-ghost:hover{border-color:#7c5cff; box-shadow:0 0 12px rgba(124,92,255,.55) inset;}
 
   .range-row{display:grid; grid-template-columns: 120px 1fr 60px; gap:8px; align-items:center; margin-bottom:8px;}
   .counter-pill{padding:.15rem .5rem; border-radius:999px; font-weight:1000; font-size:.75rem;}
-  .counter-ok{background:rgba(57,255,144,.16); color:#5dffa9; border:1px solid rgba(57,255,144,.38);} .counter-bad{background:rgba(255,107,107,.14); color:#ff9f9f; border:1px solid rgba(255,107,107,.38);}
+  .counter-ok{background:rgba(57,255,144,.16); color:#5dffa9; border:1px solid rgba(57,255,144,.38);} 
+  .counter-bad{background:rgba(255,107,107,.14); color:#ff9f9f; border:1px solid rgba(255,107,107,.38);}
 
   .heat-grid{display:grid; grid-template-columns: repeat(10, 1fr); gap:4px;}
   .heat-cell{height:16px; border-radius:4px; text-align:center; font-size:.68rem; line-height:16px; color:#eaf5ff; background:#1a2445;}
   .bar{height:6px; border-radius:999px; background:rgba(140,170,255,.18); overflow:hidden;} .bar > i{display:block; height:100%; width:0%; background:linear-gradient(90deg,#39ffd7,#7c5cff);}
 
-  /* Hologram loader */
   .overlay{ position:fixed; inset:0; background:rgba(5,8,18,.75); display:none; align-items:center; justify-content:center; z-index:1200; backdrop-filter: blur(6px); }
   .holo{ width:260px; height:260px; border-radius:50%; border:2px solid rgba(124,92,255,.35); box-shadow: inset 0 0 40px rgba(57,255,215,.25), 0 0 40px rgba(124,92,255,.25); animation:spin 2.2s linear infinite; position:relative; }
   .holo:after{ content:"KOMPLEX-ANALYSE"; position:absolute; inset:auto 0 40% 0; text-align:center; color:#cfe8ff; font-weight:1000; letter-spacing:.2em; font-size:.8rem; text-shadow:0 0 12px #7c5cff; }
@@ -126,7 +106,7 @@
   <!-- Map -->
   <div class="cardx mb-3" id="mapSection">
     <div class="d-flex align-items-center justify-content-between">
-      <div class="section-title mb-1">3) Map (1–50) & Euro (1–12) – ultra kompakt</div>
+      <div class="section-title mb-1">3) Map (1–50) & Euro (1–12) – extra kompakt</div>
       <div class="small muted" id="progressLabel">Bereit</div>
     </div>
     <div class="neon-progress mb-2"><div id="progressBar"></div></div>
@@ -166,6 +146,7 @@
             <option value="hot">Hot Paare & Triples</option>
             <option value="groups">5er-Gruppen + Wünsche</option>
             <option value="complex">Komplex (vollständiger Durchgang)</option>
+            <option value="runs">Folgen‑Zahlen (Archiv‑sequenzen)</option>
           </select>
         </div>
 
@@ -196,8 +177,6 @@
 
       <div class="cardx mt-3">
         <div class="section-title mb-2">5) Analyse</div>
-
-        <!-- Wunsch-Tipp Analyse -->
         <div class="mb-2">
           <div class="muted small mb-1">Wunsch‑Tipp analysieren</div>
           <div class="row g-1">
@@ -210,7 +189,6 @@
             <button class="btn btn-ghost btn-sm" id="allAnalyseBtn">Alle Varianten analysieren</button>
           </div>
         </div>
-
         <div id="analysisBox" class="small"></div>
       </div>
     </div>
@@ -237,7 +215,6 @@
   </div>
 </div>
 
-<!-- Hologram Loader -->
 <div class="overlay" id="overlay"><div class="holo"></div></div>
 
 <script>
@@ -247,9 +224,10 @@ const $$ = sel => Array.from(document.querySelectorAll(sel));
 const sleep = ms => new Promise(r=>setTimeout(r,ms));
 function iso(y,m,d){ const dt=new Date(+y, +m-1, +d); return isNaN(dt)? null : dt.toISOString().slice(0,10); }
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
-function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
 function sum(a){ return a.reduce((s,v)=>s+v,0); }
 function normalizeVec(v){ const m=Math.max(...v); return v.map(x=> m? x/m : 0); }
+function uniqueSorted(a){ return Array.from(new Set(a)).sort((x,y)=>x-y); }
+function meanGap(indexes){ if(indexes.length<2) return null; let gaps=[]; for(let i=1;i<indexes.length;i++) gaps.push(indexes[i]-indexes[i-1]); return (gaps.reduce((a,b)=>a+b,0)/gaps.length).toFixed(1); }
 
 /* ---------- State ---------- */
 let draws=[]; let freqMain=Array(51).fill(0); let freqEuro=Array(13).fill(0);
@@ -257,16 +235,10 @@ let lastSeen=Array(51).fill(null); let lastSeenE=Array(13).fill(null);
 let generated=[];
 
 /* ---------- Map ---------- */
-const GROUPS=[
-  {label:'1–10', from:1, to:10, grad:'var(--g1)'},
-  {label:'11–20', from:11, to:20, grad:'var(--g2)'},
-  {label:'21–30', from:21, to:30, grad:'var(--g3)'},
-  {label:'31–40', from:31, to:40, grad:'var(--g4)'},
-  {label:'41–50', from:41, to:50, grad:'var(--g5)'}
-];
+const GROUPS=[{label:'1–10', from:1, to:10, grad:'var(--g1)'},{label:'11–20', from:11, to:20, grad:'var(--g2)'},{label:'21–30', from:21, to:30, grad:'var(--g3)'},{label:'31–40', from:31, to:40, grad:'var(--g4)'},{label:'41–50', from:41, to:50, grad:'var(--g5)'}];
 const EGROUPS=[{label:'1–6', from:1, to:6, grad:'var(--e1)'},{label:'7–12', from:7, to:12, grad:'var(--e2)'}];
 
-function buildBands(container, groups){
+function buildBands(container, groups, euro=false){
   container.innerHTML='';
   groups.forEach(g=>{
     const band=document.createElement('div'); band.className='band';
@@ -275,13 +247,13 @@ function buildBands(container, groups){
     head.innerHTML=`<div class="fw-bold">${g.label}</div>`; head.appendChild(status);
     const grad=document.createElement('div'); grad.className='grad'; grad.style.background=g.grad;
     const row=document.createElement('div');
-    for(let n=g.from;n<=g.to;n++){ const chip=document.createElement('div'); chip.className='chip'; chip.textContent=n; chip.dataset.num=n; row.appendChild(chip); }
+    for(let n=g.from;n<=g.to;n++){ const chip=document.createElement('div'); chip.className='chip'+(euro?' euro':''); chip.textContent=n; chip.dataset.num=n; row.appendChild(chip); }
     band.appendChild(head); band.appendChild(grad); band.appendChild(row);
     container.appendChild(band);
   });
 }
-buildBands($('#bandsMain'), GROUPS);
-buildBands($('#bandsEuro'), EGROUPS);
+buildBands($('#bandsMain'), GROUPS, false);
+buildBands($('#bandsEuro'), EGROUPS, true);
 
 /* ---------- Controls ---------- */
 for(let i=1;i<=25;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i; $('#kombis').appendChild(o); }
@@ -321,13 +293,12 @@ function setModeUI(){
   updateCounters(); updateBandStatus();
 }
 $('#modus').addEventListener('change', setModeUI);
-
 $('#toggleEuro').addEventListener('change', e=>{ $('#euroSection').style.display = e.target.checked ? '' : 'none'; updateCounters(); updateBandStatus(); });
 
 function updateCounters(){
-  let sum=0;
-  $$('#groupControls select').forEach(sel=>{ const v=+sel.value||0; sum+=v; sel.parentElement.lastChild.textContent=v; });
-  const mc=$('#mainCounter'); if(mc){ mc.textContent=sum+'/≤5'; mc.className='counter-pill ' + (sum<=5?'counter-ok':'counter-bad'); }
+  let sumG=0;
+  $$('#groupControls select').forEach(sel=>{ const v=+sel.value||0; sumG+=v; sel.parentElement.lastChild.textContent=v; });
+  const mc=$('#mainCounter'); if(mc){ mc.textContent=sumG+'/≤5'; mc.className='counter-pill ' + (sumG<=5?'counter-ok':'counter-bad'); }
   let esum=0;
   if($('#toggleEuro').checked){
     $$('#euroControls select').forEach(sel=>{ const v=+sel.value||0; esum+=v; sel.parentElement.lastChild.textContent=v; });
@@ -395,8 +366,8 @@ function parseArchiveText(txt){
   draws.sort((a,b)=>a.date.localeCompare(b.date));
   // Stats
   draws.forEach((d,idx)=>{
-    d.main.forEach(n=>{ freqMain[n]++; lastSeen[n]=idx; });
-    d.euro.forEach(n=>{ freqEuro[n]++; lastSeenE[n]=idx; });
+    d.main.forEach(n=>{ freqMain[n]++; if(!lastSeen[n]&&lastSeen[n]!==0) lastSeen[n]=idx; else lastSeen[n]=idx; });
+    d.euro.forEach(n=>{ freqEuro[n]++; if(!lastSeenE[n]&&lastSeenE[n]!==0) lastSeenE[n]=idx; else lastSeenE[n]=idx; });
   });
   $('#kpiCount').textContent=String(draws.length);
   $('#kpiFrom').textContent=draws[0].date;
@@ -407,7 +378,7 @@ function parseArchiveText(txt){
   renderAnalysis();
 }
 
-/* ---------- Analyse Grund-Heat ---------- */
+/* ---------- Analyse (Heat) ---------- */
 function renderAnalysis(){
   if(!draws.length){ $('#analysisBox').innerHTML='<div class="muted">Bitte Archiv laden.</div>'; return; }
   const fm=[...freqMain], fe=[...freqEuro];
@@ -420,7 +391,48 @@ function renderAnalysis(){
   $('#analysisBox').innerHTML = html;
 }
 
-/* ---------- Einzel-/Gesamt-Analyse ---------- */
+/* ---------- Analyse einer Variante ---------- */
+function analyseVariant(tip){
+  // Finde alle Ziehungen mit gleicher 5er-Kombination (Main egal Euro) und sammle Indexe
+  let occurIdx=[]; for(let i=0;i<draws.length;i++){ const d=draws[i]; if(tip.main.every(n=>d.main.includes(n))) occurIdx.push(i); }
+  const occurCount = occurIdx.length;
+  const last = occurCount? draws[occurIdx[occurIdx.length-1]].date : 'nie';
+  const avgGap = occurCount? meanGap(occurIdx) : '–';
+  // Overlap-Verteilung
+  const dist = Array(8).fill(0);
+  for(const d of draws){ const ov = tip.main.filter(x=>d.main.includes(x)).length + tip.euro.filter(x=>d.euro.includes(x)).length; dist[ov]++; }
+  const ov3p = dist.slice(3).reduce((a,b)=>a+b,0);
+  const freqSum = tip.main.reduce((s,n)=>s+freqMain[n],0);
+  return {occurCount,last,avgGap,dist,ov3p,freqSum};
+}
+function variantCard(idx, tip){
+  const a = analyseVariant(tip);
+  const card=document.createElement('div'); card.className='variant-card';
+  const head=document.createElement('div'); head.className='variant-head';
+  const nums=document.createElement('div'); nums.className='nums-row';
+  tip.main.forEach(n=>{ const c=document.createElement('div'); c.className='chip'; c.textContent=n; nums.appendChild(c); });
+  if(tip.euro.length){ const sep=document.createElement('span'); sep.className='badge-soft'; sep.textContent='Euro'; nums.appendChild(sep);
+    tip.euro.forEach(n=>{ const c=document.createElement('div'); c.className='chip euro'; c.textContent=n; nums.appendChild(c); }); }
+  const tag=document.createElement('span'); tag.className='badge-soft'; tag.textContent='#'+idx;
+  head.appendChild(nums); head.appendChild(tag); card.appendChild(head);
+  // Stats
+  const stats=document.createElement('div'); stats.className='stat-row';
+  stats.innerHTML=`
+    <div class="stat">Vorkommen: <strong>${a.occurCount}</strong></div>
+    <div class="stat">Letztes Mal: <strong>${a.last}</strong></div>
+    <div class="stat">Ø Abstand: <strong>${a.avgGap}</strong></div>
+    <div class="stat">Overlap ≥3: <strong>${a.ov3p}</strong></div>
+    <div class="stat">FreqSum: <strong>${a.freqSum}</strong></div>`;
+  card.appendChild(stats);
+  // Actions
+  const actions=document.createElement('div'); actions.className='variant-actions';
+  const btnMap=document.createElement('button'); btnMap.className='btn btn-ghost btn-sm'; btnMap.textContent='👁 Map'; btnMap.onclick=()=>{ $('#mapSection').scrollIntoView({behavior:'smooth'}); liveType(tip, idx, generated.length); };
+  const btnAna=document.createElement('button'); btnAna.className='btn btn-success btn-sm'; btnAna.textContent='📊 Detailanalyse'; btnAna.onclick=()=>renderTipAnalysis(tip,true);
+  actions.appendChild(btnMap); actions.appendChild(btnAna); card.appendChild(actions);
+  return card;
+}
+
+/* ---------- Wunsch-/Alle-Analyse ---------- */
 function analyseTip(tip){
   if(!draws.length) return {error:'Kein Archiv geladen'};
   const dist = Array(8).fill(0);
@@ -438,7 +450,7 @@ function renderTipAnalysis(tip, prepend=false){
   const tipStr = tip.main.join('-') + (tip.euro.length? ' | E:'+tip.euro.join('-') : '');
   const html = `
     <div class="mt-2">
-      <div><strong>Analyse für Tipp:</strong> ${tipStr}</div>
+      <div><strong>Detailanalyse:</strong> ${tipStr}</div>
       <div class="row g-2 mt-1">
         <div class="col-6"><div class="small muted">Overlap-Verteilung</div>
           <div class="table-responsive"><table class="table table-dark table-sm"><thead><tr><th>Treffer</th><th>Anzahl Ziehungen</th></tr></thead><tbody>${distRows}</tbody></table></div>
@@ -456,51 +468,36 @@ function renderTipAnalysis(tip, prepend=false){
   if(prepend){ $('#analysisBox').prepend(box); } else { $('#analysisBox').appendChild(box); }
   box.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
-
 function analyseAllGenerated(){
   if(!generated.length){ alert('Noch keine Varianten generiert.'); return; }
   const fG=Array(51).fill(0), fGE=Array(13).fill(0);
   generated.forEach(t=>{ t.main.forEach(n=>fG[n]++); t.euro.forEach(e=>fGE[e]++); });
-  const topG = [...Array(51).keys()].slice(1).map(n=>[n,fG[n]]).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const topGE = [...Array(13).keys()].slice(1).map(n=>[n,fGE[n]]).sort((a,b)=>b[1]-a[1]).slice(0,5);
-
+  const top = [...Array(51).keys()].slice(1).map(n=>[n,fG[n]]).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const topE = [...Array(13).keys()].slice(1).map(n=>[n,fGE[n]]).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const dist=Array(8).fill(0);
   generated.forEach(t=>{ for(const d of draws){ const ov = t.main.filter(x=>d.main.includes(x)).length + t.euro.filter(x=>d.euro.includes(x)).length; dist[ov]++; } });
-
   const list = (arr)=>arr.map(([k,v])=>`<span class="badge text-bg-dark me-1 mb-1">${k} <small class="text-muted">(${v})</small></span>`).join('');
   const table = dist.map((v,i)=>`<tr><td>${i}</td><td>${v}</td></tr>`).join('');
-  const html = `
-  <div class="mt-3">
-    <div><strong>Gesamt‑Analyse der ${generated.length} Varianten</strong></div>
+  const html = `<div class="mt-3"><div><strong>Gesamt‑Analyse der ${generated.length} Varianten</strong></div>
     <div class="row g-2 mt-1">
-      <div class="col-6">
-        <div class="small muted">Top Zahlen (generiert)</div>
-        <div class="mt-1">${list(topG)}</div>
-        <div class="mt-2 small muted">Top Euro</div>
-        <div class="mt-1">${list(topGE)}</div>
-      </div>
-      <div class="col-6">
-        <div class="small muted">Overlap-Verteilung (alle Varianten × Archiv)</div>
-        <div class="table-responsive"><table class="table table-dark table-sm"><thead><tr><th>Treffer</th><th>Anzahl</th></tr></thead><tbody>${table}</tbody></table></div>
-      </div>
-    </div>
-  </div>`;
+      <div class="col-6"><div class="small muted">Top Zahlen (generiert)</div><div class="mt-1">${list(top)}</div>
+        <div class="mt-2 small muted">Top Euro</div><div class="mt-1">${list(topE)}</div></div>
+      <div class="col-6"><div class="small muted">Overlap-Verteilung (alle Varianten × Archiv)</div>
+        <div class="table-responsive"><table class="table table-dark table-sm"><thead><tr><th>Treffer</th><th>Anzahl</th></tr></thead><tbody>${table}</tbody></table></div></div>
+    </div></div>`;
   const box = document.createElement('div'); box.innerHTML = html; $('#analysisBox').appendChild(box); box.scrollIntoView({behavior:'smooth'});
 }
-
 document.getElementById('allAnalyseBtn').addEventListener('click', analyseAllGenerated);
 document.getElementById('wishAnalyseBtn').addEventListener('click', ()=>{
   const m = $('#wishMain').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=50);
   const e = $('#wishEuro').value.trim()? $('#wishEuro').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=12) : [];
   if(m.length!==5){ alert('Bitte genau 5 Hauptzahlen (1–50) eingeben.'); return; }
   if(!(e.length===0 || e.length===2)){ alert('Euro: 0 oder 2 Zahlen (1–12).'); return; }
-  renderTipAnalysis({main:[...new Set(m)].slice(0,5).sort((a,b)=>a-b), euro:[...new Set(e)].slice(0,2).sort((a,b)=>a-b)}, true);
+  renderTipAnalysis({main:uniqueSorted(m).slice(0,5), euro:uniqueSorted(e).slice(0,2)}, true);
 });
 document.getElementById('wishFromCurrent').addEventListener('click', ()=>{
   if(!generated.length){ alert('Noch keine Variante generiert.'); return; }
-  const t = generated[generated.length-1];
-  $('#wishMain').value = t.main.join(' ');
-  $('#wishEuro').value = t.euro.join(' ');
+  const t = generated[generated.length-1]; $('#wishMain').value = t.main.join(' '); $('#wishEuro').value = t.euro.join(' ');
   $('#analysisBox').scrollIntoView({behavior:'smooth', block:'start'});
 });
 
@@ -524,10 +521,10 @@ function euroAuto(){
   return e;
 }
 
-/* ---------- Komplex (vollständiger Durchgang) ---------- */
+/* ---------- Komplex (vollständiger Durchgang, diversifiziert) ---------- */
 function buildMatrices(){
   const C = Array.from({length:51}, ()=>Array(51).fill(0));
-  const recentW = Math.min(100, draws.length);
+  const recentW = Math.min(120, draws.length);
   const recentStart = draws.length - recentW;
   const recentF = Array(51).fill(0);
   for(let i=0;i<draws.length;i++){
@@ -548,7 +545,7 @@ function buildMatrices(){
 }
 function scoreSet(set, mats){
   const {pairScore,fNorm,trendNorm,gapNorm} = mats;
-  const wF=0.4, wT=0.3, wR=0.3, wPair=0.8, wBal=0.25;
+  const wF=0.35, wT=0.30, wR=0.35, wPair=0.7, wBal=0.25;
   const base = set.reduce((s,n)=> s + (wF*fNorm[n] + wT*trendNorm[n] + wR*gapNorm[n]), 0);
   let p=0; for(let i=0;i<set.length;i++) for(let j=i+1;j<set.length;j++){ p += pairScore(set[i],set[j]); }
   const target=[1,1,1,1,1]; const counts=[0,0,0,0,0];
@@ -564,18 +561,65 @@ function complexGenerateK(k){
     const next=[];
     for(const s of beams){
       const used=new Set(s);
-      for(let n=1;n<=50;n++){
+      // Diversifikation: zufällige Startreihenfolge je Schritt
+      const pool=[...Array(50).keys()].map(x=>x+1); shuffle(pool);
+      for(const n of pool){
         if(used.has(n)) continue;
         const cand=[...s,n].sort((a,b)=>a-b);
         next.push([cand, scoreSet(cand,mats)]);
       }
     }
     next.sort((a,b)=>b[1]-a[1]);
-    beams = next.slice(0,k).map(x=>x[0]);
+    // Top + Random Tails für Vielfalt
+    const top = next.slice(0,Math.floor(k*0.6)).map(x=>x[0]);
+    const tails = shuffle(next.slice(Math.floor(k*0.6))).slice(0, Math.max(1,Math.floor(k*0.2))).map(x=>x[0]);
+    beams = top.concat(tails);
   }
   const best = beams[0] || pickFromRange(1,50,[],5,null);
   const euro = euroAuto();
   return {main:best, euro};
+}
+
+/* ---------- Folgen-Zahlen (Runs) ---------- */
+function runsBest(){
+  // Scanne Archiv nach 2er/3er/4er-Folgen innerhalb einer Ziehung
+  const runMap=new Map();
+  function inc(key){ runMap.set(key,(runMap.get(key)||0)+1); }
+  for(const d of draws){
+    const m=[...d.main].sort((a,b)=>a-b);
+    // Finde aufeinanderfolgende Sequenzen
+    let seq=[m[0]];
+    for(let i=1;i<m.length;i++){
+      if(m[i]===m[i-1]+1){ seq.push(m[i]); }
+      else{
+        if(seq.length>=2){ for(let L=2; L<=Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
+        seq=[m[i]];
+      }
+    }
+    if(seq.length>=2){ for(let L=2; L<=Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
+  }
+  // Score: Häufigkeit * Frischebonus
+  const lastIdx = draws.length-1;
+  const scoreEntries=[];
+  for(const [k,v] of runMap.entries()){
+    const nums=k.split('-').map(Number);
+    // letzte Sichtung (grob): min letzter der Zahlen
+    const lastSeenMin = Math.min(...nums.map(n=> lastSeen[n]==null? -1 : lastSeen[n]));
+    const gap = lastSeenMin<0? lastIdx+1 : (lastIdx-lastSeenMin);
+    const fresh = 1 + gap/(lastIdx+1);
+    scoreEntries.push([nums, v*fresh]);
+  }
+  scoreEntries.sort((a,b)=>b[1]-a[1]);
+  const pick = scoreEntries.slice(0,50); // Kandidaten
+  // Baue eine Variante: nimm eine Top-Run (2-4 Länge), fülle auf 5
+  const base = pick.length? pick[Math.floor(Math.random()*Math.min(10,pick.length))][0] : [];
+  let main = uniqueSorted(base);
+  while(main.length<5){
+    const add = pickFromRange(1,50,main,1, n=> (freqMain[n]? freqMain[n]:1) + (lastSeen[n]==null?3:0) );
+    if(add.length) main.push(add[0]); else break;
+  }
+  main = uniqueSorted(main).slice(0,5);
+  return {main, euro:euroAuto()};
 }
 
 /* ---------- Generator pro Modus ---------- */
@@ -604,11 +648,11 @@ function generateOne(){
         main = pickFromRange(1,50,[],5,weightMain);
       }
     }
-    main = Array.from(new Set(main)).slice(0,5).sort((a,b)=>a-b);
+    main = uniqueSorted(main).slice(0,5);
     let euro=[];
     if($('#toggleEuro').checked){
       const ecounts = $$('#euroControls select').map(s=>+s.value||0);
-      const esum = sum(ecounts);
+      const esum = ecounts.reduce((a,b)=>a+b,0);
       if(!(esum===0 || esum===2)) throw new Error('Euro-Summe muss 0 oder 2 sein.');
       if(esum===2){ EGROUPS.forEach((g,i)=>{ const need=ecounts[i]; if(need>0){ euro.push(...pickFromRange(g.from,g.to,euro,need,null)); } }); euro.sort((a,b)=>a-b); }
     }
@@ -646,10 +690,12 @@ function generateOne(){
   }
   else if(mode==='complex' && draws.length){
     $('#overlay').style.display='flex';
-    // Sofort synchron berechnen (blockiert nicht lange bei JS)
-    const tip = complexGenerateK(60);
+    const tip = complexGenerateK(80); // größerer Beam + Diversifikation
     $('#overlay').style.display='none';
     return tip;
+  }
+  else if(mode==='runs' && draws.length){
+    return runsBest();
   }
   else{
     main = pickFromRange(1,50,[],5,null).sort((a,b)=>a-b);
@@ -662,24 +708,15 @@ function clearMapMarks(){ $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.
 async function liveType(tip, index, total){
   clearMapMarks();
   const pb = $('#progressBar'); const pl = $('#progressLabel');
-  for(const n of tip.main){ const el = document.querySelector(`#bandsMain .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(95); el.classList.remove('typing'); el.classList.add('done'); } }
-  for(const n of tip.euro){ const el = document.querySelector(`#bandsEuro .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(95); el.classList.remove('typing'); el.classList.add('done'); } }
+  for(const n of tip.main){ const el = document.querySelector(`#bandsMain .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(90); el.classList.remove('typing'); el.classList.add('done'); } }
+  for(const n of tip.euro){ const el = document.querySelector(`#bandsEuro .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(90); el.classList.remove('typing'); el.classList.add('done'); } }
   $('#progressText').textContent = `Variante #${index} / ${total}`; pb.style.width = Math.round(index/total*100)+'%'; pl.textContent = `#${index}/${total}`;
 }
 
 /* ---------- Ergebnisse ---------- */
-function createResultCard(idx, tip){
-  const card=document.createElement('div'); card.className='result-card d-flex align-items-center justify-content-between flex-wrap gap-2';
-  const left=document.createElement('div'); left.innerHTML=`<div class="muted small">#${idx}</div>`;
-  const nums=document.createElement('div'); nums.className='nums d-flex align-items-center flex-wrap';
-  tip.main.forEach(n=>{ const c=document.createElement('div'); c.className='chip'; c.textContent=n; nums.appendChild(c); });
-  if(tip.euro.length){ const sep=document.createElement('span'); sep.className='muted small ms-2 me-1'; sep.textContent='|'; nums.appendChild(sep); tip.euro.forEach(n=>{ const c=document.createElement('div'); c.className='chip'; c.textContent='E'+n; nums.appendChild(c); }); }
-  const actions=document.createElement('div'); actions.className='d-flex gap-2';
-  const eye=document.createElement('button'); eye.className='btn btn-ghost btn-sm'; eye.textContent='👁 Map'; eye.onclick=()=>{ $('#mapSection').scrollIntoView({behavior:'smooth'}); liveType(tip, idx, generated.length); };
-  const ana=document.createElement('button'); ana.className='btn btn-success btn-sm'; ana.textContent='Analyse'; ana.onclick=()=>{ $('#analysisBox').scrollIntoView({behavior:'smooth'}); renderTipAnalysis(tip,true); };
-  actions.appendChild(eye); actions.appendChild(ana);
-  card.appendChild(left); card.appendChild(nums); card.appendChild(actions);
-  return card;
+function renderResults(){
+  const cards = $('#cards'); cards.innerHTML='';
+  generated.forEach((tip, i)=>{ cards.appendChild(variantCard(i+1, tip)); });
 }
 
 /* ---------- Buttons ---------- */
@@ -688,17 +725,16 @@ document.getElementById('generateBtn').addEventListener('click', async ()=>{
   $('#mapSection').scrollIntoView({behavior:'smooth', block:'start'});
   const total = +$('#kombis').value || 1;
   const out = $('#liveOutput'); out.textContent='';
-  const cards = $('#cards'); cards.innerHTML='';
   $('#progressText').textContent='Start…'; $('#progressBar').style.width='0%'; $('#progressLabel').textContent='Start…';
   generated=[];
   for(let i=1;i<=total;i++){
     try{
       const tip = generateOne(); generated.push(tip);
-      out.textContent += '#'+i+': '+ tip.main.join('-') + (tip.euro.length? ' | E:'+tip.euro.join('-'):'') + '\\n';
+      out.textContent += '#'+i+': '+ tip.main.join('-') + (tip.euro.length? ' | E:'+tip.euro.join('-'):'') + '\n';
       await liveType(tip, i, total);
-      cards.appendChild(createResultCard(i, tip));
+      renderResults();
       out.scrollTop = out.scrollHeight;
-    }catch(e){ out.textContent += 'FEHLER: '+e.message+'\\n'; break; }
+    }catch(e){ out.textContent += 'FEHLER: '+e.message+'\n'; break; }
   }
 });
 document.getElementById('analyseBtn').addEventListener('click', ()=>{ $('#analysisBox').scrollIntoView({behavior:'smooth', block:'start'}); });
@@ -706,6 +742,7 @@ document.getElementById('analyseBtn').addEventListener('click', ()=>{ $('#analys
 /* ---------- Init ---------- */
 function init(){
   $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.classList.add('dim'));
+  for(let i=1;i<=25;i++){ if(i===10||i===20||i===25) continue; } // filler to keep select fine
   setModeUI();
 }
 init();
