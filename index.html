@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eurojackpot • Cyberpunk Tool v6.0</title>
+<title>Eurojackpot • Cyberpunk Tool v6.1</title>
 
 <!-- Libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
 <style>
-  :root{ --cy-c:#00fff0; --cy-m:#ff00ea; --ink:#eaf7ff; --bg:#060712; }
+  :root{ --cy-c:#00fff0; --cy-m:#ff00ea; --ink:#eaf7ff; --bg:#060712; --ok:#39ff88; --warn:#ffd86b; --bad:#ff6b94; }
   html,body{height:100%;}
   body{background:
        radial-gradient(1000px 800px at -10% -10%, rgba(0,255,240,.12), transparent 60%),
@@ -34,17 +34,26 @@
   .nav-btn span{font-size:.78rem; letter-spacing:.2px; white-space:nowrap;}
   .nav-btn .ico{font-size:20px; line-height:1;}
   .nav-btn.active{outline:2px solid rgba(255,255,255,.15); box-shadow:0 0 20px rgba(0,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.1);}
-  .chip{display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:28px; border-radius:8px; margin:3px; font-weight:800; font-size:.8rem; color:#bdfcff; background:linear-gradient(180deg,#0e1530,#15204a); border:1px solid rgba(0,255,255,.25); transition:transform .2s, box-shadow .2s;}
+  .chip{display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:30px; border-radius:10px; margin:4px; font-weight:800; font-size:.85rem; color:#bdfcff; background:linear-gradient(180deg,#0e1530,#15204a); border:1px solid rgba(0,255,255,.25); transition:transform .2s, box-shadow .2s, background .2s;}
   .chip.euro{color:#ffe6ff; background:linear-gradient(180deg,#1c1433,#1c2b53); border-color:rgba(255,0,234,.3);}
-  .chip:hover{transform:scale(1.16); box-shadow:0 0 10px var(--cy-m);}
+  .chip:hover{transform:scale(1.12); box-shadow:0 0 10px var(--cy-m);}
+  .chip.sel{background:linear-gradient(180deg,rgba(0,255,240,.25),rgba(0,255,240,.05)); box-shadow:0 0 16px rgba(0,255,240,.35), inset 0 0 0 1px rgba(0,255,255,.45); }
+  .chip.flash{animation:flash .45s ease;}
+  @keyframes flash{0%{transform:scale(1); box-shadow:0 0 0 rgba(0,255,240,0);} 40%{transform:scale(1.2); box-shadow:0 0 22px rgba(0,255,240,.9);} 100%{transform:scale(1.0);}}
   .badge{background:rgba(255,255,255,.06); border:1px solid rgba(140,170,255,.22); border-radius:999px; padding:.15rem .5rem; font-size:.72rem;}
-  .error{background:#411015; border:1px solid #ff6b94; color:#ffd8e6; border-radius:10px; padding:.6rem .75rem;}
+  .error{background:#411015; border:1px solid var(--bad); color:#ffd8e6; border-radius:10px; padding:.6rem .75rem;}
   .mono{font-family:ui-monospace, Menlo, Consolas, 'Cascadia Code', monospace;}
   /* Typing area */
   #liveOutput{position:relative;}
   #liveOutput .caret{display:inline-block; width:10px; margin-left:1px; background:linear-gradient(180deg,var(--cy-c),var(--cy-m)); animation:blink 1s step-end infinite; height:1.1em; vertical-align:bottom;}
   @keyframes blink{50%{opacity:0;}}
-  /* Mobile spacing */
+  /* Favorites toolbar */
+  .fav-toolbar{display:flex; gap:8px; flex-wrap:wrap;}
+  .fav-btn{display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.08);
+           background:linear-gradient(180deg,rgba(18,24,50,.9),rgba(14,18,36,.9));}
+  .fav-btn span{font-size:.85rem;}
+  .fav-card{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.08); background:rgba(16,20,40,.7);}
+  .icon{width:18px; height:18px; display:inline-block;}
   @media (max-width:420px){
     .nav-btn{min-width:74px; height:68px;}
     .nav-btn span{font-size:.72rem;}
@@ -53,27 +62,17 @@
 </head>
 <body class="p-5">
   <div class="text-center mb-5 animate__animated animate__fadeInDown">
-    <h1 class="text-3xl md:text-4xl title">Eurojackpot • Cyberpunk Tool v6.0</h1>
+    <h1 class="text-3xl md:text-4xl title">Eurojackpot • Cyberpunk Tool v6.1</h1>
     <p class="text-pink-300">FINAL – Archiv · Map · Generator · Analyse · Favoriten</p>
   </div>
 
   <!-- NAV -->
   <div class="flex justify-center flex-wrap gap-3 mb-6">
-    <button onclick="tab('archiv', this)" class="btn-glow nav-btn active" id="btn-archiv">
-      <div class="ico">📂</div><span>Archiv</span>
-    </button>
-    <button onclick="tab('map', this)" class="btn-glow nav-btn" id="btn-map">
-      <div class="ico">🗺️</div><span>Map</span>
-    </button>
-    <button onclick="tab('gen', this)" class="btn-glow nav-btn" id="btn-gen">
-      <div class="ico">⚡</div><span>Generieren</span>
-    </button>
-    <button onclick="tab('ana', this)" class="btn-glow nav-btn" id="btn-ana">
-      <div class="ico">📊</div><span>Analyse</span>
-    </button>
-    <button onclick="tab('fav', this)" class="btn-glow nav-btn" id="btn-fav">
-      <div class="ico">⭐</div><span>Favoriten</span>
-    </button>
+    <button onclick="tab('archiv', this)" class="btn-glow nav-btn active" id="btn-archiv"><div class="ico">📂</div><span>Archiv</span></button>
+    <button onclick="tab('map', this)" class="btn-glow nav-btn" id="btn-map"><div class="ico">🗺️</div><span>Map</span></button>
+    <button onclick="tab('gen', this)" class="btn-glow nav-btn" id="btn-gen"><div class="ico">⚡</div><span>Generieren</span></button>
+    <button onclick="tab('ana', this)" class="btn-glow nav-btn" id="btn-ana"><div class="ico">📊</div><span>Analyse</span></button>
+    <button onclick="tab('fav', this)" class="btn-glow nav-btn" id="btn-fav"><div class="ico">⭐</div><span>Favoriten</span></button>
   </div>
 
   <!-- ARCHIV -->
@@ -88,7 +87,7 @@
         <button id="loadLatestBtn" class="btn-glow px-3 py-2 bg-blue-600 rounded">📥 Neueste laden</button>
         <button id="clearArchiveBtn" class="btn-glow px-3 py-2 bg-gray-600 rounded">🧹 Cache löschen</button>
       </div>
-      <p class="text-xs text-gray-300 mt-2">Bei CORS-Block versucht das Tool automatisch mehrere Fallbacks. Im Zweifel: Link öffnen, Datei speichern und hier ablegen.</p>
+      <p class="text-xs text-gray-300 mt-2">Bei CORS-Block werden mehrere Fallbacks versucht. Notfalls manuell laden & hier ablegen.</p>
     </div>
 
     <div class="glass mb-3">
@@ -135,7 +134,7 @@
       </div>
       <div>
         <label class="text-sm text-gray-300">Anzahl Kombinationen</label>
-        <input type="number" id="kombis" value="8" min="1" max="25" class="bg-gray-900 p-2 rounded w-full">
+        <input type="number" id="kombis" value="5" min="1" max="25" class="bg-gray-900 p-2 rounded w-full">
       </div>
       <div class="flex items-end gap-2">
         <button id="generateBtn" class="btn-glow flex-1 px-3 py-2 bg-green-600 rounded">⚡ Generieren</button>
@@ -171,13 +170,13 @@
   <!-- FAVORITEN -->
   <div id="v-fav" class="glass hidden animate__animated animate__fadeIn">
     <h2 class="text-xl font-bold mb-2">⭐ Favoriten</h2>
-    <div class="flex items-center gap-2 mb-2">
-      <input id="favSearch" placeholder="Suche…" class="bg-gray-900 p-2 rounded flex-1">
-      <button id="favExport" class="btn-glow px-3 py-2 bg-indigo-700 rounded">⬇️ Export</button>
-      <button id="favImport" class="btn-glow px-3 py-2 bg-indigo-700 rounded">⬆️ Import</button>
-      <button id="favClear" class="btn-glow px-3 py-2 bg-red-700 rounded">🗑 Leeren</button>
+    <div class="fav-toolbar mb-3">
+      <input id="favSearch" placeholder="Suche…" class="bg-gray-900 p-2 rounded flex-1 min-w-[180px]">
+      <button id="favExport" class="fav-btn"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Export</span></button>
+      <button id="favImport" class="fav-btn"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 21V9m0 0l-4 4m4-4l4 4M5 3h14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Import</span></button>
+      <button id="favClear" class="fav-btn" style="border-color: rgba(255,0,0,.25)"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M6 7h12m-9 0l.5 12m6-12L15 19M9 7l.5 12M10 4h4l1 3H9l1-3z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Leeren</span></button>
     </div>
-    <div id="favoritesBox"></div>
+    <div id="favoritesBox" class="space-y-2"></div>
   </div>
 
 <script>
@@ -199,7 +198,6 @@ let favorites = JSON.parse(localStorage.getItem("ej_favs_v1")||"[]");
 function tab(name, btn){
   ['archiv','map','gen','ana','fav'].forEach(n=>$('#v-'+n).classList.add('hidden'));
   $('#v-'+name).classList.remove('hidden');
-  // active styles
   $$('.nav-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
 }
@@ -207,14 +205,36 @@ function tab(name, btn){
 /* ===== Map ===== */
 function renderMap(){
   const m=$('#mapMain'); m.innerHTML='';
-  for(let i=1;i<=50;i++){ const d=document.createElement('div'); d.className='chip'; d.textContent=i; m.appendChild(d); }
+  for(let i=1;i<=50;i++){ const d=document.createElement('div'); d.className='chip'; d.textContent=i; d.dataset.n=i; m.appendChild(d); }
   const e=$('#mapEuro'); e.innerHTML='';
-  for(let i=1;i<=12;i++){ const d=document.createElement('div'); d.className='chip euro'; d.textContent=i; e.appendChild(d); }
+  for(let i=1;i<=12;i++){ const d=document.createElement('div'); d.className='chip euro'; d.textContent=i; d.dataset.n=i; e.appendChild(d); }
   $('#progress').textContent='Bereit';
 }
 renderMap();
 
-/* ===== Archiv Parsing ===== */
+function clearMapSelection(){
+  $$('#mapMain .chip, #mapEuro .chip').forEach(c=>c.classList.remove('sel','flash'));
+}
+
+async function animateSelection(mainNums, euroNums){
+  tab('map', $('#btn-map')); // switch to map
+  clearMapSelection();
+  $('#progress').textContent='Tippt…';
+  // animate main numbers
+  for(const n of mainNums){
+    const el = $(`#mapMain .chip[data-n="${n}"]`);
+    if(el){ el.classList.add('sel','flash'); await sleep(180); }
+  }
+  await sleep(120);
+  // animate euro numbers
+  for(const n of euroNums){
+    const el = $(`#mapEuro .chip[data-n="${n}"]`);
+    if(el){ el.classList.add('sel','flash'); await sleep(180); }
+  }
+  $('#progress').textContent='Fertig';
+}
+
+/* ===== Archiv Parsing (mit Fallbacks) ===== */
 const ARCH_KEY='ej_archive_v1';
 function setKPIs(){
   if(!draws.length){ $('#kpiCount').textContent='–'; $('#kpiFrom').textContent='–'; $('#kpiTo').textContent='–'; $('#kpiFresh').textContent='–'; return; }
@@ -227,7 +247,7 @@ function setKPIs(){
 }
 function parseArchiveText(txt){
   try{
-    txt=txt.replace(/^\uFEFF/,''); // BOM
+    txt=txt.replace(/^\uFEFF/,'');
     const lines = txt.replace(/\r\n?/g,'\n').split('\n').map(l=>l.trim()).filter(Boolean);
     const cleaned = lines.filter(l => (l.match(/\d+/g)||[]).length >= 7);
     const regDMY=/^(\d{1,2})[.\-\/](\d{1,2})[.\-\/](\d{2,4})$/; const regYMD=/^(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})$/;
@@ -260,14 +280,8 @@ function parseArchiveText(txt){
     renderCharts();
   }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
 }
-
-/* Robust Loader mit Fallbacks */
 async function fetchWithProxies(url){
-  const trials=[
-    url,
-    'https://cors.isomorphic-git.org/'+url,
-    'https://api.allorigins.win/raw?url='+encodeURIComponent(url)
-  ];
+  const trials=[url,'https://cors.isomorphic-git.org/'+url,'https://api.allorigins.win/raw?url='+encodeURIComponent(url)];
   let lastErr=null;
   for(const u of trials){
     try{
@@ -282,14 +296,11 @@ async function fetchWithProxies(url){
         if(!entry) throw new Error('ZIP ohne TXT/CSV.');
         const text=await entry.async('string');
         return text;
-      }else{
-        return await res.text();
-      }
+      }else{ return await res.text(); }
     }catch(e){ lastErr=e; }
   }
   throw lastErr || new Error('Unbekannter Fehler beim Laden.');
 }
-// File input & dragdrop
 $('#zipInput').addEventListener('change', async (evt)=>{
   const file=evt.target.files?.[0]; if(!file) return;
   try{
@@ -323,7 +334,7 @@ $('#loadLatestBtn').addEventListener('click', async ()=>{
   const url=$('#archiveUrl').value.trim();
   $('#statusText').textContent='Lade neuestes Archiv…';
   try{ const text=await fetchWithProxies(url); parseArchiveText(text); }
-  catch(e){ $('#statusText').innerHTML="Download nicht möglich (CORS/Netzwerk). <a class='underline text-cyan-300' target='_blank' href='"+url+"'>Manuell laden</a>."; }
+  catch(e){ $('#statusText').innerHTML="Download nicht möglich. <a class='underline text-cyan-300' target='_blank' href='"+url+"'>Manuell laden</a>."; }
 });
 $('#clearArchiveBtn').addEventListener('click', ()=>{ localStorage.removeItem(ARCH_KEY); $('#statusText').textContent='Cache gelöscht.'; });
 (()=>{ const saved=localStorage.getItem(ARCH_KEY); if(saved){ try{ parseArchiveText(saved); $('#statusText').textContent='Archiv aus Speicher geladen ✔'; }catch{} } })();
@@ -342,7 +353,8 @@ const GROUPS=[{label:'1–10',from:1,to:10},{label:'11–20',from:11,to:20},{lab
 const EGROUPS=[{label:'1–6',from:1,to:6},{label:'7–12',from:7,to:12}];
 function buildGroupUI(){
   const host=$('#groupControls'); host.innerHTML='';
-  GROUPS.forEach((g,i)=>{ const row=document.createElement('div'); row.className='grid grid-cols-3 gap-2 items-center';
+  GROUPS.forEach((g,i)=>{
+    const row=document.createElement('div'); row.className='grid grid-cols-3 gap-2 items-center';
     row.innerHTML=`<div class="font-bold">${g.label}</div><select class="bg-gray-900 p-2 rounded" data-idx="${i}">${[0,1,2,3,4,5].map(v=>`<option value="${v}">${v}</option>`).join('')}</select><div class="text-right text-sm text-gray-400">0</div>`;
     host.appendChild(row);
   });
@@ -351,7 +363,8 @@ function buildGroupUI(){
 }
 function buildEuroUI(){
   const host=$('#euroControls'); host.innerHTML='';
-  EGROUPS.forEach((g,i)=>{ const row=document.createElement('div'); row.className='grid grid-cols-3 gap-2 items-center';
+  EGROUPS.forEach((g,i)=>{
+    const row=document.createElement('div'); row.className='grid grid-cols-3 gap-2 items-center';
     row.innerHTML=`<div class="font-bold">${g.label}</div><select class="bg-gray-900 p-2 rounded euro" data-idx="${i}">${[0,1,2].map(v=>`<option value="${v}">${v}</option>`).join('')}</select><div class="text-right text-sm text-gray-400">0</div>`;
     host.appendChild(row);
   });
@@ -360,8 +373,7 @@ function buildEuroUI(){
 function updateGroupCounters(){
   let sumG=0; $$('#groupControls select').forEach(s=>{ const v=+s.value||0; sumG+=v; s.parentElement.lastChild.textContent=v; });
   let sumE=0; if($('#useEuro').checked){ $$('#euroControls select').forEach(s=>{ const v=+s.value||0; sumE+=v; s.parentElement.lastChild.textContent=v; }); }
-  const err=$('#groupError');
-  err.classList.add('hidden'); err.textContent='';
+  const err=$('#groupError'); err.classList.add('hidden'); err.textContent='';
   if(sumG>5){ err.classList.remove('hidden'); err.textContent='Gruppen-Summe darf max. 5 sein.'; }
   if($('#useEuro').checked && !(sumE===0 || sumE===2)){ err.classList.remove('hidden'); err.textContent='Euro-Summe muss 0 oder 2 sein.'; }
 }
@@ -486,23 +498,16 @@ function runsBest(){
   return {main, euro:euroAuto()};
 }
 
-/* ===== Typing Engine ===== */
+/* ===== Typing Engine (text) ===== */
 async function typeLine(el, text){
-  // Fügt caret hinzu und tippt Zeichen für Zeichen
   const caret = document.createElement('span'); caret.className='caret';
-  const frag = document.createDocumentFragment();
-  el.appendChild(frag);
-  for(const ch of text){
-    el.append(ch);
-    await sleep(12);
-  }
+  for(const ch of text){ el.append(ch); await sleep(10); }
   el.appendChild(caret);
-  // kurze Pause, dann caret entfernen
-  await sleep(250);
+  await sleep(180);
   caret.remove();
 }
 
-/* ===== Analyse einer Variante & Karten ===== */
+/* ===== Analyse & Karten ===== */
 function exactOccurrences(tip){
   const idx=[]; for(let i=0;i<draws.length;i++){ const d=draws[i];
     if(tip.main.length===5 && d.main.length===5 && tip.main.every((n,j)=>n===d.main[j])) idx.push(i);
@@ -616,7 +621,7 @@ function generateOne(){
   main = pickFromRange(1,50,[],5).sort((a,b)=>a-b); return {main, euro:euroAuto()};
 }
 
-/* ===== Typing Output + Karten rendern ===== */
+/* ===== Typing Output + Map Animation + Cards ===== */
 async function printTip(outEl, index, tip){
   await typeLine(outEl, "#"+index+": ");
   for(const n of tip.main){ await typeLine(outEl, n+" "); }
@@ -630,7 +635,7 @@ $('#generateBtn').addEventListener('click', async ()=>{
   if(!draws.length){ alert('Bitte zuerst ein Archiv laden.'); return; }
   if($('#modus').value==='groups' && $('#groupControls').children.length===0){ buildGroupUI(); }
   const total = +$('#kombis').value || 1;
-  const out = $('#liveOutput'); out.textContent=''; // reset
+  const out = $('#liveOutput'); out.textContent='';
   const cards = $('#cards'); cards.innerHTML='';
   generated=[];
   const seen=new Set();
@@ -641,7 +646,8 @@ $('#generateBtn').addEventListener('click', async ()=>{
       let guard=0; while(seen.has(key) && guard<10){ tip = generateOne(); key=tip.main.join('-'); guard++; }
       seen.add(key);
       generated.push(tip);
-      await printTip(out, i, tip);
+      await animateSelection(tip.main, tip.euro);  // <<< Map-Animation
+      await printTip(out, i, tip);                 // <<< Text-Tippen
       cards.appendChild(tipCard(i, tip));
     }catch(e){
       const err=$('#groupError'); err.classList.remove('hidden'); err.textContent=e.message; break;
@@ -666,11 +672,11 @@ function renderFavs(){
   const q=($('#favSearch')?.value||'').toLowerCase();
   const box=$('#favoritesBox'); if(!box) return; box.innerHTML='';
   favorites.filter(f=> (f.main.join(' ')+' '+f.euro.join(' ')).toLowerCase().includes(q)).forEach((f,i)=>{
-    const div=document.createElement('div'); div.className='glass mb-2 p-2 flex items-center justify-between';
+    const div=document.createElement('div'); div.className='fav-card';
     div.innerHTML=`<div>${f.main.join(' ')} | <span class="text-pink-300">E:${f.euro.join(' ')}</span></div>
       <div class="flex gap-2">
-        <button class="btn-glow px-2 py-1 bg-gray-700 rounded" onclick='navigator.clipboard.writeText("${f.main.join('-')} | E:${f.euro.join('-')}")'>📋</button>
-        <button class="btn-glow px-2 py-1 bg-red-700 rounded" onclick="favorites.splice(${i},1); saveFavs();">✖</button>
+        <button class="fav-btn" title="Kopieren" onclick='navigator.clipboard.writeText("${f.main.join('-')} | E:${f.euro.join('-')}")'><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M9 9h8a2 2 0 012 2v7a2 2 0 01-2 2H9a2 2 0 01-2-2v-7a2 2 0 012-2z"/><path d="M7 7h8a2 2 0 012 2v1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Copy</span></button>
+        <button class="fav-btn" title="Entfernen" onclick="favorites.splice(${i},1); saveFavs();"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M6 7h12m-9 0l.5 12m6-12L15 19M9 7l.5 12M10 4h4l1 3H9l1-3z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Entfernen</span></button>
       </div>`;
     box.appendChild(div);
   });
