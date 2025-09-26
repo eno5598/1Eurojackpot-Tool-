@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eurojackpot • Ultra Cyber Tool v2</title>
+<title>Eurojackpot • Ultra Cyber Tool v2.1</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -48,7 +48,6 @@
   .section-title{font-weight:1000; letter-spacing:.35px;}
   .muted{color:var(--muted);}
 
-  /* Map kompakter */
   .band{border:1px solid rgba(140,170,255,.16); border-radius:14px; padding:6px 8px; margin-bottom:8px; background:rgba(9,14,27,.45);}
   .band-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
   .grad{height:5px; border-radius:999px; margin:4px 0 6px 0; box-shadow: inset 0 0 6px rgba(0,0,0,.5);}
@@ -58,7 +57,6 @@
     border:1px solid rgba(140,170,255,.18); transition:transform .06s ease, box-shadow .12s ease, background .2s ease;
     user-select:none; font-size:.68rem;}
   .chip.euro{background:linear-gradient(180deg,var(--chipE),var(--chipE2));}
-  .chip:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(124,92,255,.25); }
   .chip.dim{opacity:.32;} .chip.typing{ box-shadow:0 0 0 2px var(--ok), 0 0 12px var(--ok); animation:pulse .75s ease-in-out infinite; }
   .chip.done{ box-shadow:0 0 0 2px var(--brand), 0 0 12px var(--brand); }
   @keyframes pulse{ 0%{filter:brightness(1)} 50%{filter:brightness(1.4)} 100%{filter:brightness(1)} }
@@ -72,7 +70,6 @@
 
   .live-box{font-family:ui-monospace, Menlo, Consolas, monospace; background:#08101f; border:1px solid rgba(140,170,255,.18); color:#b8ffcc; border-radius:10px; padding:8px; height:140px; overflow:auto;}
 
-  /* Ergebnis-Karten */
   .variant-card{position:relative; border:1px solid rgba(140,170,255,.2); border-radius:14px; padding:10px; margin-bottom:10px; background:linear-gradient(180deg,rgba(10,16,30,.6),rgba(8,12,24,.5));}
   .variant-card:after{content:""; position:absolute; inset:-1px; border-radius:14px; box-shadow:0 0 30px rgba(57,255,215,.12), 0 0 40px rgba(124,92,255,.12); pointer-events:none;}
   .variant-head{display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;}
@@ -103,7 +100,6 @@
 <body>
 <div class="container py-3 pb-5">
 
-  <!-- Map -->
   <div class="cardx mb-3" id="mapSection">
     <div class="d-flex align-items-center justify-content-between">
       <div class="section-title mb-1">3) Map (1–50) & Euro (1–12) – extra kompakt</div>
@@ -150,7 +146,6 @@
           </select>
         </div>
 
-        <!-- Gruppen + Euro nur im Modus "groups" sichtbar -->
         <div id="groupSection" style="display:none;">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div class="muted small">Gruppen: Summe ≤ 5 (Rest wird automatisch aufgefüllt)</div>
@@ -177,6 +172,7 @@
 
       <div class="cardx mt-3">
         <div class="section-title mb-2">5) Analyse</div>
+
         <div class="mb-2">
           <div class="muted small mb-1">Wunsch‑Tipp analysieren</div>
           <div class="row g-1">
@@ -189,6 +185,7 @@
             <button class="btn btn-ghost btn-sm" id="allAnalyseBtn">Alle Varianten analysieren</button>
           </div>
         </div>
+
         <div id="analysisBox" class="small"></div>
       </div>
     </div>
@@ -364,10 +361,9 @@ function parseArchiveText(txt){
   for(const l of lines){const r=parseLine(l); if(r){draws.push(r);}}
   if(!draws.length){ $('#statusText').textContent='Keine gültigen Ziehungen erkannt.'; return; }
   draws.sort((a,b)=>a.date.localeCompare(b.date));
-  // Stats
   draws.forEach((d,idx)=>{
-    d.main.forEach(n=>{ freqMain[n]++; if(!lastSeen[n]&&lastSeen[n]!==0) lastSeen[n]=idx; else lastSeen[n]=idx; });
-    d.euro.forEach(n=>{ freqEuro[n]++; if(!lastSeenE[n]&&lastSeenE[n]!==0) lastSeenE[n]=idx; else lastSeenE[n]=idx; });
+    d.main.forEach(n=>{ freqMain[n]++; lastSeen[n]=idx; });
+    d.euro.forEach(n=>{ freqEuro[n]++; lastSeenE[n]=idx; });
   });
   $('#kpiCount').textContent=String(draws.length);
   $('#kpiFrom').textContent=draws[0].date;
@@ -391,19 +387,23 @@ function renderAnalysis(){
   $('#analysisBox').innerHTML = html;
 }
 
-/* ---------- Analyse einer Variante ---------- */
+/* ---------- Analyse einer Variante (verbessert) ---------- */
+function exactOccurrences(tip){
+  const idx=[]; for(let i=0;i<draws.length;i++){ const d=draws[i];
+    if(tip.main.length===5 && d.main.length===5 && tip.main.every((n,j)=>n===d.main[j])) idx.push(i);
+  } return idx;
+}
 function analyseVariant(tip){
-  // Finde alle Ziehungen mit gleicher 5er-Kombination (Main egal Euro) und sammle Indexe
-  let occurIdx=[]; for(let i=0;i<draws.length;i++){ const d=draws[i]; if(tip.main.every(n=>d.main.includes(n))) occurIdx.push(i); }
-  const occurCount = occurIdx.length;
-  const last = occurCount? draws[occurIdx[occurIdx.length-1]].date : 'nie';
-  const avgGap = occurCount? meanGap(occurIdx) : '–';
-  // Overlap-Verteilung
+  const idx=exactOccurrences(tip);
+  const occurCount=idx.length;
+  const last = occurCount? draws[idx.at(-1)].date : 'nie';
+  const avgGap = occurCount? meanGap(idx) : '–';
+  const first = occurCount? draws[idx[0]].date : '–';
   const dist = Array(8).fill(0);
   for(const d of draws){ const ov = tip.main.filter(x=>d.main.includes(x)).length + tip.euro.filter(x=>d.euro.includes(x)).length; dist[ov]++; }
   const ov3p = dist.slice(3).reduce((a,b)=>a+b,0);
   const freqSum = tip.main.reduce((s,n)=>s+freqMain[n],0);
-  return {occurCount,last,avgGap,dist,ov3p,freqSum};
+  return {occurCount,last,first,avgGap,dist,ov3p,freqSum};
 }
 function variantCard(idx, tip){
   const a = analyseVariant(tip);
@@ -415,37 +415,23 @@ function variantCard(idx, tip){
     tip.euro.forEach(n=>{ const c=document.createElement('div'); c.className='chip euro'; c.textContent=n; nums.appendChild(c); }); }
   const tag=document.createElement('span'); tag.className='badge-soft'; tag.textContent='#'+idx;
   head.appendChild(nums); head.appendChild(tag); card.appendChild(head);
-  // Stats
   const stats=document.createElement('div'); stats.className='stat-row';
   stats.innerHTML=`
-    <div class="stat">Vorkommen: <strong>${a.occurCount}</strong></div>
-    <div class="stat">Letztes Mal: <strong>${a.last}</strong></div>
-    <div class="stat">Ø Abstand: <strong>${a.avgGap}</strong></div>
+    <div class="stat">Vorkommen (exakt): <strong>${a.occurCount}</strong></div>
+    <div class="stat">Erstes: <strong>${a.first}</strong></div>
+    <div class="stat">Letztes: <strong>${a.last}</strong></div>
+    <div class="stat">Ø Abstand (Ziehungen): <strong>${a.avgGap}</strong></div>
     <div class="stat">Overlap ≥3: <strong>${a.ov3p}</strong></div>
     <div class="stat">FreqSum: <strong>${a.freqSum}</strong></div>`;
   card.appendChild(stats);
-  // Actions
   const actions=document.createElement('div'); actions.className='variant-actions';
   const btnMap=document.createElement('button'); btnMap.className='btn btn-ghost btn-sm'; btnMap.textContent='👁 Map'; btnMap.onclick=()=>{ $('#mapSection').scrollIntoView({behavior:'smooth'}); liveType(tip, idx, generated.length); };
   const btnAna=document.createElement('button'); btnAna.className='btn btn-success btn-sm'; btnAna.textContent='📊 Detailanalyse'; btnAna.onclick=()=>renderTipAnalysis(tip,true);
   actions.appendChild(btnMap); actions.appendChild(btnAna); card.appendChild(actions);
   return card;
 }
-
-/* ---------- Wunsch-/Alle-Analyse ---------- */
-function analyseTip(tip){
-  if(!draws.length) return {error:'Kein Archiv geladen'};
-  const dist = Array(8).fill(0);
-  let lastDate=null, maxOverlap=0;
-  for(const d of draws){
-    const overlap = tip.main.filter(x=>d.main.includes(x)).length + tip.euro.filter(x=>d.euro.includes(x)).length;
-    dist[overlap]++; if(overlap>maxOverlap){ maxOverlap=overlap; lastDate=d.date; }
-  }
-  const freqSum = tip.main.reduce((s,n)=>s+freqMain[n],0);
-  return {dist, maxOverlap, lastDate, freqSum};
-}
 function renderTipAnalysis(tip, prepend=false){
-  const a = analyseTip(tip); if(a.error){ alert(a.error); return; }
+  const a = analyseVariant(tip);
   const distRows = a.dist.map((v,i)=> `<tr><td>${i}</td><td>${v}</td></tr>`).join('');
   const tipStr = tip.main.join('-') + (tip.euro.length? ' | E:'+tip.euro.join('-') : '');
   const html = `
@@ -457,7 +443,10 @@ function renderTipAnalysis(tip, prepend=false){
         </div>
         <div class="col-6"><div class="small muted">Kennzahlen</div>
           <ul class="small">
-            <li>Max Overlap: <strong>${a.maxOverlap}</strong>${a.lastDate? ' (zuletzt: '+a.lastDate+')':''}</li>
+            <li>Vorkommen (exakt): <strong>${a.occurCount}</strong></li>
+            <li>Erstes/Letztes: <strong>${a.first}</strong> → <strong>${a.last}</strong></li>
+            <li>Ø Abstand (Ziehungen): <strong>${a.avgGap}</strong></li>
+            <li>Overlap ≥3: <strong>${a.ov3p}</strong></li>
             <li>Frequenzsumme Hauptzahlen: <strong>${a.freqSum}</strong></li>
             <li>Archiv-Ziehungen: <strong>${draws.length}</strong></li>
           </ul>
@@ -488,6 +477,8 @@ function analyseAllGenerated(){
   const box = document.createElement('div'); box.innerHTML = html; $('#analysisBox').appendChild(box); box.scrollIntoView({behavior:'smooth'});
 }
 document.getElementById('allAnalyseBtn').addEventListener('click', analyseAllGenerated);
+
+/* ---------- Wunsch-Analyse Buttons ---------- */
 document.getElementById('wishAnalyseBtn').addEventListener('click', ()=>{
   const m = $('#wishMain').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=50);
   const e = $('#wishEuro').value.trim()? $('#wishEuro').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=12) : [];
@@ -521,10 +512,10 @@ function euroAuto(){
   return e;
 }
 
-/* ---------- Komplex (vollständiger Durchgang, diversifiziert) ---------- */
+/* ---------- Komplex (vollständiger Durchgang) – Simulated Annealing ---------- */
 function buildMatrices(){
   const C = Array.from({length:51}, ()=>Array(51).fill(0));
-  const recentW = Math.min(120, draws.length);
+  const recentW = Math.min(150, draws.length);
   const recentStart = draws.length - recentW;
   const recentF = Array(51).fill(0);
   for(let i=0;i<draws.length;i++){
@@ -545,7 +536,7 @@ function buildMatrices(){
 }
 function scoreSet(set, mats){
   const {pairScore,fNorm,trendNorm,gapNorm} = mats;
-  const wF=0.35, wT=0.30, wR=0.35, wPair=0.7, wBal=0.25;
+  const wF=0.32, wT=0.30, wR=0.38, wPair=0.75, wBal=0.25;
   const base = set.reduce((s,n)=> s + (wF*fNorm[n] + wT*trendNorm[n] + wR*gapNorm[n]), 0);
   let p=0; for(let i=0;i<set.length;i++) for(let j=i+1;j<set.length;j++){ p += pairScore(set[i],set[j]); }
   const target=[1,1,1,1,1]; const counts=[0,0,0,0,0];
@@ -554,40 +545,38 @@ function scoreSet(set, mats){
   const balScore = Math.max(0, 5 - balPenalty)/5;
   return base + wPair*p + wBal*balScore;
 }
-function complexGenerateK(k){
+function complexSimulatedAnnealing(){
   const mats = buildMatrices();
-  let beams=[[]];
-  for(let step=0; step<5; step++){
-    const next=[];
-    for(const s of beams){
-      const used=new Set(s);
-      // Diversifikation: zufällige Startreihenfolge je Schritt
-      const pool=[...Array(50).keys()].map(x=>x+1); shuffle(pool);
-      for(const n of pool){
-        if(used.has(n)) continue;
-        const cand=[...s,n].sort((a,b)=>a-b);
-        next.push([cand, scoreSet(cand,mats)]);
-      }
+  const w = n=> 1 + Math.round(5*(mats.trendNorm[n]*0.6 + mats.gapNorm[n]*0.4));
+  let current = pickFromRange(1,50,[],5,w).sort((a,b)=>a-b);
+  let best = current.slice();
+  let currentScore = scoreSet(current, mats);
+  let bestScore = currentScore;
+  const ITER = 1600 + Math.floor(Math.random()*600);
+  for(let t=0;t<ITER;t++){
+    const T = 1 - t/ITER;
+    const c = current.slice();
+    const k = (Math.random()<T? 2:1);
+    for(let i=0;i<k;i++){
+      const rmIdx = Math.floor(Math.random()*c.length);
+      const avoid = c.slice(); avoid.splice(rmIdx,1);
+      const add = pickFromRange(1,50,avoid,1,w);
+      if(add.length){ c[rmIdx]=add[0]; }
+      c.sort((a,b)=>a-b);
     }
-    next.sort((a,b)=>b[1]-a[1]);
-    // Top + Random Tails für Vielfalt
-    const top = next.slice(0,Math.floor(k*0.6)).map(x=>x[0]);
-    const tails = shuffle(next.slice(Math.floor(k*0.6))).slice(0, Math.max(1,Math.floor(k*0.2))).map(x=>x[0]);
-    beams = top.concat(tails);
+    const s = scoreSet(c, mats);
+    const accept = (s>currentScore) || (Math.random()<Math.exp((s-currentScore)/(0.15+0.0001)));
+    if(accept){ current=c; currentScore=s; if(s>bestScore){ best=c; bestScore=s; } }
   }
-  const best = beams[0] || pickFromRange(1,50,[],5,null);
-  const euro = euroAuto();
-  return {main:best, euro};
+  return {main:best, euro:euroAuto()};
 }
 
 /* ---------- Folgen-Zahlen (Runs) ---------- */
 function runsBest(){
-  // Scanne Archiv nach 2er/3er/4er-Folgen innerhalb einer Ziehung
   const runMap=new Map();
   function inc(key){ runMap.set(key,(runMap.get(key)||0)+1); }
   for(const d of draws){
     const m=[...d.main].sort((a,b)=>a-b);
-    // Finde aufeinanderfolgende Sequenzen
     let seq=[m[0]];
     for(let i=1;i<m.length;i++){
       if(m[i]===m[i-1]+1){ seq.push(m[i]); }
@@ -598,21 +587,18 @@ function runsBest(){
     }
     if(seq.length>=2){ for(let L=2; L<=Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
   }
-  // Score: Häufigkeit * Frischebonus
   const lastIdx = draws.length-1;
   const scoreEntries=[];
   for(const [k,v] of runMap.entries()){
     const nums=k.split('-').map(Number);
-    // letzte Sichtung (grob): min letzter der Zahlen
     const lastSeenMin = Math.min(...nums.map(n=> lastSeen[n]==null? -1 : lastSeen[n]));
     const gap = lastSeenMin<0? lastIdx+1 : (lastIdx-lastSeenMin);
     const fresh = 1 + gap/(lastIdx+1);
     scoreEntries.push([nums, v*fresh]);
   }
   scoreEntries.sort((a,b)=>b[1]-a[1]);
-  const pick = scoreEntries.slice(0,50); // Kandidaten
-  // Baue eine Variante: nimm eine Top-Run (2-4 Länge), fülle auf 5
-  const base = pick.length? pick[Math.floor(Math.random()*Math.min(10,pick.length))][0] : [];
+  const pick = scoreEntries.slice(0,50);
+  const base = pick.length? pick[Math.floor(Math.random()*Math.min(12,pick.length))][0] : [];
   let main = uniqueSorted(base);
   while(main.length<5){
     const add = pickFromRange(1,50,main,1, n=> (freqMain[n]? freqMain[n]:1) + (lastSeen[n]==null?3:0) );
@@ -690,7 +676,7 @@ function generateOne(){
   }
   else if(mode==='complex' && draws.length){
     $('#overlay').style.display='flex';
-    const tip = complexGenerateK(80); // größerer Beam + Diversifikation
+    const tip = complexSimulatedAnnealing();
     $('#overlay').style.display='none';
     return tip;
   }
@@ -708,8 +694,10 @@ function clearMapMarks(){ $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.
 async function liveType(tip, index, total){
   clearMapMarks();
   const pb = $('#progressBar'); const pl = $('#progressLabel');
-  for(const n of tip.main){ const el = document.querySelector(`#bandsMain .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(90); el.classList.remove('typing'); el.classList.add('done'); } }
-  for(const n of tip.euro){ const el = document.querySelector(`#bandsEuro .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(90); el.classList.remove('typing'); el.classList.add('done'); } }
+  const mode = $('#modus').value;
+  const delay = (mode==='complex')? 160 : 110;
+  for(const n of tip.main){ const el = document.querySelector(`#bandsMain .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(delay); el.classList.remove('typing'); el.classList.add('done'); } }
+  for(const n of tip.euro){ const el = document.querySelector(`#bandsEuro .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(delay); el.classList.remove('typing'); el.classList.add('done'); } }
   $('#progressText').textContent = `Variante #${index} / ${total}`; pb.style.width = Math.round(index/total*100)+'%'; pl.textContent = `#${index}/${total}`;
 }
 
@@ -727,9 +715,15 @@ document.getElementById('generateBtn').addEventListener('click', async ()=>{
   const out = $('#liveOutput'); out.textContent='';
   $('#progressText').textContent='Start…'; $('#progressBar').style.width='0%'; $('#progressLabel').textContent='Start…';
   generated=[];
+  const seen = new Set();
   for(let i=1;i<=total;i++){
     try{
-      const tip = generateOne(); generated.push(tip);
+      let tip = generateOne();
+      let key = tip.main.join('-');
+      let guard=0;
+      while(seen.has(key) && guard<10){ tip = generateOne(); key = tip.main.join('-'); guard++; }
+      seen.add(key);
+      generated.push(tip);
       out.textContent += '#'+i+': '+ tip.main.join('-') + (tip.euro.length? ' | E:'+tip.euro.join('-'):'') + '\n';
       await liveType(tip, i, total);
       renderResults();
@@ -742,7 +736,6 @@ document.getElementById('analyseBtn').addEventListener('click', ()=>{ $('#analys
 /* ---------- Init ---------- */
 function init(){
   $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.classList.add('dim'));
-  for(let i=1;i<=25;i++){ if(i===10||i===20||i===25) continue; } // filler to keep select fine
   setModeUI();
 }
 init();
