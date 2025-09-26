@@ -3,56 +3,108 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Eurojackpot • Ultra v5 (vollständig)</title>
+<title>Eurojackpot • ULTRA CYBER</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
-  :root{--ink:#eaf2ff;--mut:#a9b7dd;--bg:#0a1124;--panel:#0f1836;--panel2:#0c1328;--gl1:#39ffd7;--gl2:#7c5cff;--ok:#3cff93;--warn:#ff6b6b}
-  body{background:radial-gradient(60rem 60rem at 120% -10%, rgba(124,92,255,.18),transparent 60%),radial-gradient(60rem 60rem at -10% 110%, rgba(57,255,215,.12),transparent 60%),var(--bg);color:var(--ink)}
-  .cardx{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid rgba(143,170,255,.22);border-radius:16px;padding:12px;margin-bottom:12px;box-shadow:0 14px 30px rgba(0,0,0,.35)}
-  .chip{display:inline-flex;min-width:22px;height:22px;border-radius:7px;align-items:center;justify-content:center;margin:2px 3px;padding:0 6px;background:#12224a;border:1px solid rgba(143,170,255,.25);font-weight:800}
-  .chip.e{background:#1b2a3f}
-  .chip.typing{box-shadow:0 0 0 2px var(--ok),0 0 16px var(--ok)}
-  .chip.done{box-shadow:0 0 0 2px var(--gl1),0 0 12px var(--gl1)}
-  .band{border:1px solid rgba(143,170,255,.2);border-radius:12px;padding:6px 8px;margin-bottom:6px}
-  .grad{height:6px;border-radius:999px;background:linear-gradient(90deg,#6ea0ff,#7c5cff);margin-bottom:6px}
-  .grad.g2{background:linear-gradient(90deg,#6bffc0,#0aa771)}
-  .grad.g3{background:linear-gradient(90deg,#d19aff,#6f36ff)}
-  .grad.g4{background:linear-gradient(90deg,#ffd36b,#c67a00)}
-  .grad.g5{background:linear-gradient(90deg,#ff8989,#c32020)}
-  .grad.ge1{background:linear-gradient(90deg,#ffe066,#9c7a00)}
-  .grad.ge2{background:linear-gradient(90deg,#66ffe6,#0aa3a3)}
-  .sticky{position:fixed;left:0;right:0;bottom:0;background:rgba(9,15,34,.92);border-top:1px solid rgba(143,170,255,.2);backdrop-filter:blur(8px);z-index:6}
-  .progress-neon{height:8px;background:rgba(143,170,255,.18);border-radius:999px;overflow:hidden}
-  .progress-neon>i{display:block;height:100%;background:linear-gradient(90deg,var(--gl1),var(--gl2));width:0%}
-  .overlay{position:fixed;inset:0;background:rgba(5,10,20,.7);display:none;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(4px)}
-  .holo{width:220px;height:220px;border-radius:50%;border:2px solid rgba(124,92,255,.35);box-shadow: inset 0 0 40px rgba(57,255,215,.25),0 0 40px rgba(124,92,255,.25);display:flex;align-items:center;justify-content:center;color:#dfe8ff;font-weight:900;letter-spacing:.2em}
-  .pill{font-size:.75rem;border:1px solid rgba(143,170,255,.3);border-radius:999px;padding:.1rem .5rem}
-  .fav-toggle{position:fixed;right:14px;top:14px;z-index:7}
-  .fav{position:fixed;right:0;top:0;bottom:0;width:360px;max-width:92vw;background:linear-gradient(180deg,rgba(16,24,54,.98),rgba(12,18,40,.98));border-left:1px solid rgba(143,170,255,.2);transform:translateX(100%);transition:.3s;z-index:8}
-  .fav.open{transform:translateX(0)}
-  .fav .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid rgba(143,170,255,.2)}
-  .fav .body{padding:10px;overflow:auto;height:calc(100% - 50px)}
+:root{
+  --bg:#060a17;
+  --panel1:#0c1230;
+  --panel2:#0a1026;
+  --ink:#eaf2ff;
+  --mut:#9fb1e6;
+  --gl1:#3cff93;
+  --gl2:#39ffd7;
+  --gl3:#7c5cff;
+  --err:#ff5a8a;
+  --ok:#37ffb0;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:
+    radial-gradient(40rem 40rem at 120% -10%, rgba(124,92,255,.18),transparent 60%),
+    radial-gradient(45rem 45rem at -10% 120%, rgba(57,255,215,.12),transparent 60%),
+    var(--bg);
+  color:var(--ink);
+  overflow-x:hidden;
+}
+.bg-grid::before, .bg-grid::after{
+  content:""; position:fixed; inset:-200vmax; pointer-events:none; z-index:-1;
+  background:
+    linear-gradient(90deg, rgba(124,92,255,.12) 1px, transparent 1px) 0 0/40px 40px,
+    linear-gradient(0deg, rgba(57,255,215,.1) 1px, transparent 1px) 0 0/40px 40px;
+  animation:gridMove 22s linear infinite;
+}
+.bg-grid::after{ filter:blur(1.5px); opacity:.6; animation-duration:36s; }
+@keyframes gridMove{to{transform:translate3d(60px,40px,0)}}
+.hero{
+  position:relative; padding:20px; border-radius:22px;
+  background:linear-gradient(180deg,var(--panel1),var(--panel2));
+  border:1px solid rgba(143,170,255,.25);
+  box-shadow:0 24px 60px rgba(0,0,0,.45), inset 0 0 90px rgba(124,92,255,.05);
+}
+.badge-cy{border:1px solid rgba(143,170,255,.35); border-radius:999px; padding:.25rem .6rem; font-size:.8rem}
+.btn-cy{
+  background:linear-gradient(90deg,var(--gl2),var(--gl3));
+  border:none; color:#0b1026; font-weight:900; text-transform:uppercase; letter-spacing:.08em;
+  box-shadow:0 8px 40px rgba(57,255,215,.35), inset 0 0 20px rgba(255,255,255,.3);
+}
+.btn-cy:hover{filter:brightness(1.08)}
+.cardx{
+  background:linear-gradient(180deg,var(--panel1),var(--panel2));
+  border:1px solid rgba(143,170,255,.22); border-radius:18px; padding:12px; margin-bottom:12px;
+  box-shadow:0 12px 32px rgba(0,0,0,.35);
+}
+.chip{display:inline-flex;min-width:24px;height:24px;border-radius:8px;align-items:center;justify-content:center;margin:2px 3px;padding:0 7px;background:#121b42;border:1px solid rgba(143,170,255,.25);font-weight:800}
+.chip.e{background:#13233e}
+.chip.typing{box-shadow:0 0 0 2px var(--ok),0 0 18px var(--ok)}
+.chip.done{box-shadow:0 0 0 2px var(--gl2),0 0 12px var(--gl2)}
+.band{border:1px solid rgba(143,170,255,.2);border-radius:12px;padding:6px 8px;margin-bottom:6px}
+.grad{height:6px;border-radius:999px;background:linear-gradient(90deg,#6ea0ff,#7c5cff);margin-bottom:6px}
+.grad.g2{background:linear-gradient(90deg,#6bffc0,#0aa771)}
+.grad.g3{background:linear-gradient(90deg,#d19aff,#6f36ff)}
+.grad.g4{background:linear-gradient(90deg,#ffd36b,#c67a00)}
+.grad.g5{background:linear-gradient(90deg,#ff8989,#c32020)}
+.grad.ge1{background:linear-gradient(90deg,#ffe066,#9c7a00)}
+.grad.ge2{background:linear-gradient(90deg,#66ffe6,#0aa3a3)}
+.sticky{position:fixed;left:0;right:0;bottom:0;background:rgba(10,16,40,.94);border-top:1px solid rgba(143,170,255,.22);backdrop-filter:blur(8px);z-index:6}
+.progress-neon{height:8px;background:rgba(143,170,255,.18);border-radius:999px;overflow:hidden}
+.progress-neon>i{display:block;height:100%;background:linear-gradient(90deg,var(--gl1),var(--gl3));width:0%}
+.overlay{position:fixed;inset:0;background:rgba(5,10,20,.7);display:none;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(4px)}
+.holo{width:240px;height:240px;border-radius:50%;border:2px solid rgba(124,92,255,.35);box-shadow: inset 0 0 40px rgba(57,255,215,.25),0 0 40px rgba(124,92,255,.25);display:flex;align-items:center;justify-content:center;color:#dfe8ff;font-weight:900;letter-spacing:.2em}
+.pill{font-size:.78rem;border:1px solid rgba(143,170,255,.35);border-radius:999px;padding:.15rem .55rem}
+.drop{
+  margin-top:12px;border:2px dashed rgba(143,170,255,.35); border-radius:14px; padding:18px; text-align:center; color:#9fb1e6;
+  background:rgba(12,18,46,.35);
+}
+.drop.drag{border-color:#39ffd7; box-shadow: 0 0 0 2px rgba(57,255,215,.3) inset, 0 0 22px rgba(57,255,215,.25)}
 </style>
 </head>
-<body>
-<button class="btn btn-warning fav-toggle" id="favToggle">⭐ Favoriten</button>
-<div class="fav" id="favPanel">
-  <div class="hdr">
-    <div class="fw-bold">⭐ Favoriten</div>
-    <div class="d-flex gap-2">
-      <button class="btn btn-sm btn-outline-light" id="favExport">Export CSV</button>
-      <button class="btn btn-sm btn-outline-danger" id="favClear">Leeren</button>
-      <button class="btn btn-sm btn-outline-secondary" id="favClose">Schließen</button>
+<body class="bg-grid">
+<div class="container py-3 pb-5">
+  <div class="hero mb-3">
+    <div class="d-flex align-items-center justify-content-between flex-wrap">
+      <h3 class="m-0">EUROJACKPOT • ULTRA CYBER</h3>
+      <span class="badge-cy">Status: <span id="ast" class="text-info">Kein Archiv</span></span>
+    </div>
+    <p class="mt-2 mb-2 text-secondary">Mit einem Klick zum offiziellen Archiv – danach die Datei hier per Drag&Drop ablegen.</p>
+    <div class="d-flex gap-2 flex-wrap">
+      <a id="goArchive" class="btn btn-cy" href="https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip" target="_blank" rel="noopener">📥 Archiv laden</a>
+      <span class="pill">oder Datei unten ablegen</span>
+    </div>
+    <div id="drop" class="drop">ZIP/TXT/CSV hierher ziehen oder <label class="text-info" style="text-decoration:underline;cursor:pointer"><input id="file" type="file" accept=".zip,.txt,.csv" hidden>Datei auswählen</label></div>
+    <div class="row text-center mt-2">
+      <div class="col-3"><div class="small text-secondary">Ziehungen</div><div id="kCount" class="fw-bold">–</div></div>
+      <div class="col-3"><div class="small text-secondary">Von</div><div id="kFrom" class="fw-bold">–</div></div>
+      <div class="col-3"><div class="small text-secondary">Bis</div><div id="kTo" class="fw-bold">–</div></div>
+      <div class="col-3"><div class="small text-secondary">Aktuell?</div><div id="kFresh" class="fw-bold">–</div></div>
     </div>
   </div>
-  <div class="body" id="favBody"></div>
-</div>
 
-<div class="container py-3 pb-5">
   <div class="cardx">
     <div class="d-flex justify-content-between align-items-center">
-      <h5 class="m-0">3) Map (1–50) & Euro (1–12)</h5>
+      <h5 class="m-0">Karte (1–50) & Euro (1–12)</h5>
       <span id="label" class="pill">Bereit</span>
     </div>
     <div class="progress-neon my-2"><i id="pbar"></i></div>
@@ -64,28 +116,7 @@
   <div class="row g-2">
     <div class="col-lg-6">
       <div class="cardx">
-        <h5>1) Archiv</h5>
-        <div class="small">Status: <span id="ast">Kein Archiv</span></div>
-        <div class="row g-2 mt-1">
-          <div class="col-8"><input id="url" class="form-control form-control-sm" placeholder="Archiv-URL" value="https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip"></div>
-          <div class="col-4"><button id="loadUrl" class="btn btn-primary w-100 btn-sm">Vom Link laden</button></div>
-          <div class="col-12"><input id="file" type="file" class="form-control form-control-sm" accept=".zip,.txt,.csv"></div>
-        </div>
-        <div class="row text-center mt-2">
-          <div class="col-3"><div class="small text-secondary">Ziehungen</div><div id="kCount" class="fw-bold">–</div></div>
-          <div class="col-3"><div class="small text-secondary">Von</div><div id="kFrom" class="fw-bold">–</div></div>
-          <div class="col-3"><div class="small text-secondary">Bis</div><div id="kTo" class="fw-bold">–</div></div>
-          <div class="col-3"><div class="small text-secondary">Aktuell?</div><div id="kFresh" class="fw-bold">–</div></div>
-        </div>
-        <div class="mt-2 d-flex gap-2 flex-wrap">
-          <button class="btn btn-outline-info btn-sm" id="saveA">Archiv speichern</button>
-          <button class="btn btn-outline-warning btn-sm" id="loadA">Gespeichertes laden</button>
-          <button class="btn btn-outline-danger btn-sm" id="clearA">Archiv löschen</button>
-        </div>
-      </div>
-
-      <div class="cardx">
-        <h5>2) Einstellungen</h5>
+        <h5>Einstellungen</h5>
         <div class="row g-2">
           <div class="col-6">
             <label class="form-label small">Kombinationen</label>
@@ -119,7 +150,7 @@
       </div>
 
       <div class="cardx">
-        <h5>5) Analyse</h5>
+        <h5>Analyse</h5>
         <div class="row g-1">
           <div class="col-9"><input id="wishM" class="form-control form-control-sm" placeholder="5 Hauptzahlen z. B. 1 12 23 34 45"></div>
           <div class="col-3"><input id="wishE" class="form-control form-control-sm" placeholder="Euro (0/2)"></div>
@@ -128,7 +159,6 @@
           <button id="analyseTip" class="btn btn-success btn-sm">Tipp analysieren</button>
           <button id="fromLast" class="btn btn-outline-light btn-sm">Aus letzter Variante</button>
           <button id="analyseAll" class="btn btn-outline-info btn-sm">Alle Varianten analysieren</button>
-          <button id="csvAll" class="btn btn-outline-warning btn-sm">CSV Export (Varianten)</button>
         </div>
         <div id="ana" class="mt-2 small"></div>
       </div>
@@ -137,7 +167,7 @@
     <div class="col-lg-6">
       <div class="cardx">
         <div class="d-flex justify-content-between align-items-center">
-          <h5 class="m-0">4) Generieren</h5>
+          <h5 class="m-0">Generieren</h5>
           <div id="prog" class="small">–</div>
         </div>
         <div id="live" class="mt-2" style="height:140px;overflow:auto;background:#0d1933;border:1px solid rgba(143,170,255,.2);border-radius:8px;padding:8px;font-family:ui-monospace,Consolas"></div>
@@ -150,9 +180,8 @@
 <div class="sticky py-2">
   <div class="container">
     <div class="row g-2">
-      <div class="col-4"><button id="gen" class="btn btn-primary w-100">⚡ Generieren</button></div>
-      <div class="col-4"><button id="gotoAna" class="btn btn-outline-light w-100">📈 Analysieren</button></div>
-      <div class="col-4"><button id="favAdd" class="btn btn-outline-warning w-100">⭐ Favorit speichern</button></div>
+      <div class="col-6"><button id="gen" class="btn btn-cy w-100">⚡ Generieren</button></div>
+      <div class="col-6"><button id="gotoAna" class="btn btn-outline-light w-100">📈 Analysieren</button></div>
     </div>
   </div>
 </div>
@@ -166,9 +195,9 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.rando
 function uniqueSorted(a){return Array.from(new Set(a)).sort((x,y)=>x-y);}
 function iso(y,m,d){const dt=new Date(+y,+m-1,+d);return isNaN(dt)?null:dt.toISOString().slice(0,10);}
 
-const LS_ARCH='ej_arch_v5', LS_RAW='ej_arch_raw_v5', LS_FAV='ej_favs_v5';
+const LS_ARCH='ej_arch_cy', LS_RAW='ej_raw_cy';
 let draws=[], freqM=Array(51).fill(0), freqE=Array(13).fill(0), lastM=Array(51).fill(null), lastE=Array(13).fill(null);
-let generated=[], lastTip=null, favs=[];
+let generated=[], lastTip=null;
 
 for(let i=1;i<=25;i++){const o=document.createElement('option');o.value=i;o.textContent=i;$('#n').appendChild(o);}
 const GROUPS=[['1–10',1,10,'g1'],['11–20',11,20,'g2'],['21–30',21,30,'g3'],['31–40',31,40,'g4'],['41–50',41,50,'g5']];
@@ -224,56 +253,32 @@ $('#mode').addEventListener('change',()=>{
 });
 $('#euroOn').addEventListener('change',()=>{$('#eCtrls').style.display=$('#euroOn').checked?'block':'none';});
 
-/* ======= Archiv ======= */
-$('#file').addEventListener('change', async e=>{
-  const f=e.target.files?.[0]; if(!f) return;
-  let txt='';
-  if(f.name.toLowerCase().endsWith('.zip')){
-    const zip=await JSZip.loadAsync(f);
-    const entry=Object.values(zip.files).find(x=>/\.(txt|csv)$/i.test(x.name));
-    txt=await entry.async('string');
-  }else{
-    txt=await f.text();
-  }
-  parseArchive(txt,true);
-});
-$('#loadUrl').addEventListener('click', async()=>{
-  try{
-    $('#ast').textContent='Lade vom Link…';
-    const r=await fetch($('#url').value, {mode:'cors'});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const blob=await r.blob();
-    if($('#url').value.endsWith('.zip')){
-      const zip=await JSZip.loadAsync(blob);
-      const entry=Object.values(zip.files).find(x=>/\.(txt|csv)$/i.test(x.name));
-      const txt=await entry.async('string');
-      parseArchive(txt,true);
-    }else{
-      const txt = await blob.text();
-      parseArchive(txt,true);
-    }
-  }catch(err){
-    $('#ast').textContent='CORS/Download fehlgeschlagen – bitte Datei manuell laden.';
-  }
-});
-$('#saveA').addEventListener('click',()=>{
-  if(!draws.length){alert('Kein Archiv im Speicher');return;}
-  localStorage.setItem(LS_ARCH, JSON.stringify({draws,freqM,freqE,lastM,lastE}));
-  localStorage.setItem(LS_RAW, window.__raw||'');
-  $('#ast').textContent='Archiv gespeichert ✔';
-});
-$('#loadA').addEventListener('click',()=>{
-  const s=localStorage.getItem(LS_ARCH), raw=localStorage.getItem(LS_RAW);
-  if(!s){alert('Kein gespeichertes Archiv');return;}
-  const obj=JSON.parse(s); draws=obj.draws; freqM=obj.freqM; freqE=obj.freqE; lastM=obj.lastM; lastE=obj.lastE;
-  window.__raw=raw||''; updateKPIs(); $('#ast').textContent='Archiv aus Speicher ✔';
-});
-$('#clearA').addEventListener('click',()=>{
-  localStorage.removeItem(LS_ARCH); localStorage.removeItem(LS_RAW);
-  draws=[]; freqM.fill(0); freqE.fill(0); lastM.fill(null); lastE.fill(null);
-  updateKPIs(true); $('#ast').textContent='Archiv gelöscht';
-});
+/* ======= Dropzone (lokale Datei) ======= */
+const dz=$('#drop');
+;['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();dz.classList.add('drag');}));
+;['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();dz.classList.remove('drag');}));
+dz.addEventListener('drop',e=>{ const f=e.dataTransfer.files?.[0]; if(f) handleFile(f); });
+$('#file').addEventListener('change',e=>{ const f=e.target.files?.[0]; if(f) handleFile(f); });
 
+async function handleFile(f){
+  try{
+    $('#ast').textContent='Lese Datei…';
+    let txt='';
+    if(f.name.toLowerCase().endsWith('.zip')){
+      const zip=await JSZip.loadAsync(f);
+      const entry=Object.values(zip.files).find(x=>/\.(txt|csv)$/i.test(x.name));
+      if(!entry) throw new Error('Keine TXT/CSV in ZIP');
+      txt=await entry.async('string');
+    } else {
+      txt=await f.text();
+    }
+    parseArchive(txt,true);
+  }catch(err){
+    $('#ast').textContent='Fehler beim Lesen: '+err.message;
+  }
+}
+
+/* ======= Archiv Parser ======= */
 function parseArchive(txt, save){
   window.__raw = txt;
   const lines = txt.replace(/\r\n?/g,'\n').split('\n').map(l=>l.trim()).filter(Boolean);
@@ -299,8 +304,8 @@ function parseArchive(txt, save){
   $('#ast').textContent='Archiv geladen ✔';
   if(save){ localStorage.setItem(LS_ARCH, JSON.stringify({draws,freqM,freqE,lastM,lastE})); localStorage.setItem(LS_RAW, txt); }
 }
-function updateKPIs(empty){
-  if(!draws.length||empty){ $('#kCount').textContent='–';$('#kFrom').textContent='–';$('#kTo').textContent='–';$('#kFresh').textContent='–'; return; }
+function updateKPIs(){
+  if(!draws.length){ $('#kCount').textContent='–';$('#kFrom').textContent='–';$('#kTo').textContent='–';$('#kFresh').textContent='–'; return; }
   $('#kCount').textContent=draws.length;
   $('#kFrom').textContent=draws[0].date;
   $('#kTo').textContent=draws.at(-1).date;
@@ -316,6 +321,7 @@ function pickRange(from,to,avoid,count,weight){
   return res;
 }
 function euroAuto(){
+  if(!draws.length){ return [1,2]; }
   const lastIdx=draws.length-1;
   const w = (e)=>{
     const f = freqE[e]/Math.max(1,Math.max(...freqE.slice(1)));
@@ -343,56 +349,6 @@ function ensureFive(main, weight=null){
   }
   return m.slice(0,5);
 }
-
-/* Komplex (kompakte SA) */
-function genComplex(){
-  const fN=n=>freqM[n]/Math.max(1,Math.max(...freqM.slice(1)));
-  const gN=n=>{const li=lastM[n]==null?-1:lastM[n]; return li<0?1:(draws.length-1-li)/draws.length;};
-  const w=n=>1+Math.round(5*(0.6*gN(n)+0.4*fN(n)));
-  let cur=ensureFive([],w), best=cur.slice();
-  function score(set){
-    let s=set.reduce((a,x)=>a+0.5*fN(x)+0.8*gN(x),0);
-    const cnt=[0,0,0,0,0]; set.forEach(n=>cnt[Math.floor((n-1)/10)]++);
-    const bal = cnt.reduce((a,c)=>a+Math.abs(c-1),0); s += Math.max(0,5-bal)/5;
-    return s;
-  }
-  let cs=score(cur), bs=cs; const ITER=1200;
-  for(let t=0;t<ITER;t++){
-    const c=cur.slice(); const rm=Math.floor(Math.random()*c.length);
-    const avoid=c.slice(); avoid.splice(rm,1);
-    const add=pickRange(1,50,avoid,1,w); if(add.length) c[rm]=add[0];
-    c.sort((a,b)=>a-b); const sc=score(c);
-    if(sc>cs || Math.random()<Math.exp((sc-cs)/(0.12+1e-4))){ cur=c; cs=sc; if(sc>bs){best=c; bs=sc;} }
-  }
-  return best;
-}
-
-/* Folgen-Zahlen (Runs) */
-function genRuns(){
-  const runMap=new Map(); const inc=(k)=>runMap.set(k,(runMap.get(k)||0)+1);
-  for(const d of draws){
-    const m=[...d.main].sort((a,b)=>a-b); let seq=[m[0]];
-    for(let i=1;i<m.length;i++){
-      if(m[i]===m[i-1]+1) seq.push(m[i]); else{
-        if(seq.length>=2){ for(let L=2;L<=Math.min(4,seq.length);L++) for(let s=0;s+L<=seq.length;s++) inc(seq.slice(s,s+L).join('-')); }
-        seq=[m[i]];
-      }
-    }
-    if(seq.length>=2){ for(let L=2;L<=Math.min(4,seq.length);L++) for(let s=0;s+L<=seq.length;s++) inc(seq.slice(s,s+L).join('-')); }
-  }
-  const lastIdx=draws.length-1, score=[];
-  for(const [k,v] of runMap.entries()){
-    const nums=k.split('-').map(Number);
-    const minLast=Math.min(...nums.map(n=> lastM[n]==null?-1:lastM[n]));
-    const gap=minLast<0? lastIdx+1 : (lastIdx-minLast);
-    const fresh=1 + gap/(lastIdx+1);
-    score.push([nums, v*fresh]);
-  }
-  score.sort((a,b)=>b[1]-a[1]);
-  const base=score.length? score[Math.floor(Math.random()*Math.min(12,score.length))][0] : [];
-  return ensureFive(base, n=>1);
-}
-
 function genOne(){
   const mode=$('#mode').value;
   const recent = draws.slice(-100);
@@ -430,11 +386,55 @@ function genOne(){
     let base=[]; if(Math.random()<0.5 && tt.length) base=tt[Math.floor(Math.random()*tt.length)]; else if(tp.length) base=tp[Math.floor(Math.random()*tp.length)]; 
     return {main:ensureFive(base,wRecent), euro:euroAuto()};
   }
-  if(mode==='runs' && draws.length){ return {main:genRuns(), euro:euroAuto()}; }
+  if(mode==='runs' && draws.length){
+    const runMap=new Map(); const inc=(k)=>runMap.set(k,(runMap.get(k)||0)+1);
+    for(const d of draws){
+      const m=[...d.main].sort((a,b)=>a-b); let seq=[m[0]];
+      for(let i=1;i<m.length;i++){
+        if(m[i]===m[i-1]+1) seq.push(m[i]); else{
+          if(seq.length>=2){ for(let L=2;L<=Math.min(4,seq.length);L++) for(let s=0;s+L<=seq.length;s++) inc(seq.slice(s,s+L).join('-')); }
+          seq=[m[i]];
+        }
+      }
+      if(seq.length>=2){ for(let L=2;L<=Math.min(4,seq.length);L++) for(let s=0;s+L<=seq.length;s++) inc(seq.slice(s,s+L).join('-')); }
+    }
+    const lastIdx=draws.length-1, score=[];
+    for(const [k,v] of runMap.entries()){
+      const nums=k.split('-').map(Number);
+      const minLast=Math.min(...nums.map(n=> lastM[n]==null?-1:lastM[n]));
+      const gap=minLast<0? lastIdx+1 : (lastIdx-minLast);
+      const fresh=1 + gap/(lastIdx+1);
+      score.push([nums, v*fresh]);
+    }
+    score.sort((a,b)=>b[1]-a[1]);
+    const base=score.length? score[Math.floor(Math.random()*Math.min(12,score.length))][0] : [];
+    return {main:ensureFive(base, wRecent), euro:euroAuto()};
+  }
   if(mode==='complex' && draws.length){
     $('#ov').style.display='flex';
-    try{ return {main:genComplex(), euro:euroAuto()}; }
-    finally{ $('#ov').style.display='none'; }
+    try{
+      const fN=n=>freqM[n]/Math.max(1,Math.max(...freqM.slice(1)));
+      const gN=n=>{const li=lastM[n]==null?-1:lastM[n]; return li<0?1:(draws.length-1-li)/draws.length;};
+      const w=n=>1+Math.round(5*(0.6*gN(n)+0.4*fN(n)));
+      let cur=ensureFive([],w), best=cur.slice();
+      function score(set){
+        let s=set.reduce((a,x)=>a+0.5*fN(x)+0.8*gN(x),0);
+        const cnt=[0,0,0,0,0]; set.forEach(n=>cnt[Math.floor((n-1)/10)]++);
+        const bal = cnt.reduce((a,c)=>a+Math.abs(c-1),0); s += Math.max(0,5-bal)/5;
+        return s;
+      }
+      let cs=score(cur), bs=cs; const ITER=1200;
+      for(let t=0;t<ITER;t++){
+        const c=cur.slice(); const rm=Math.floor(Math.random()*c.length);
+        const avoid=c.slice(); avoid.splice(rm,1);
+        const add=pickRange(1,50,avoid,1,w); if(add.length) c[rm]=add[0];
+        c.sort((a,b)=>a-b); const sc=score(c);
+        if(sc>cs || Math.random()<Math.exp((sc-cs)/(0.12+1e-4))){ cur=c; cs=sc; if(sc>bs){best=c; bs=sc;} }
+      }
+      return {main:best, euro:euroAuto()};
+    } finally {
+      $('#ov').style.display='none';
+    }
   }
   return {main:ensureFive([]), euro:euroAuto()};
 }
@@ -445,10 +445,11 @@ async function typeOnMap(tip,i,total){
   const delay=$('#mode').value==='complex'?160:100;
   for(const n of tip.main){ const el=document.querySelector(`.chip[data-num="${n}"]`); if(el){el.classList.add('typing'); await sleep(delay); el.classList.remove('typing'); el.classList.add('done');}}
   for(const n of tip.euro){ const el=document.querySelector(`.chip[data-enum="${n}"]`); if(el){el.classList.add('typing'); await sleep(delay); el.classList.remove('typing'); el.classList.add('done');}}
-  $('#label').textContent = `#${i}/${total}`; $('#pbar').style.width = Math.round(i/total*100)+'%';
+  $('#label').textContent = `#${i}/${total}`;
+  $('#pbar').style.width = Math.round(i/total*100)+'%';
 }
 
-function formatTip(t){return t.main.join('-') + (t.euro.length? ' | E:' + t.euro.join('-') : '');}
+function formatTip(t){return t.main.join('-') + ' | E:' + t.euro.join('-');}
 function addCard(idx, t){
   const c=document.createElement('div'); c.className='cardx';
   const nums=document.createElement('div');
@@ -457,14 +458,22 @@ function addCard(idx, t){
   t.euro.forEach(n=>{const d=document.createElement('span');d.className='chip e';d.textContent=n;nums.appendChild(d);});
   const head=document.createElement('div'); head.className='d-flex justify-content-between align-items-center';
   head.innerHTML=`<strong>#${idx}</strong>`; head.appendChild(nums); c.appendChild(head);
-  const act=document.createElement('div'); act.className='mt-2 d-flex gap-2 flex-wrap';
-  const bFav=document.createElement('button'); bFav.className='btn btn-outline-warning btn-sm'; bFav.textContent='⭐ Favorit'; bFav.onclick=()=>addFav(t);
-  const bAna=document.createElement('button'); bAna.className='btn btn-outline-light btn-sm'; bAna.textContent='📊 Analysieren'; bAna.onclick=()=>analyse(t);
-  act.appendChild(bFav); act.appendChild(bAna); c.appendChild(act);
   $('#cards').appendChild(c);
 }
 
-/* ======= Analyse ======= */
+$('#gen').addEventListener('click', async ()=>{
+  if(!draws.length){ alert('Bitte zuerst Archiv laden (Button oben klicken und Datei hier ablegen).'); return; }
+  const total=+$('#n').value||1; $('#cards').innerHTML=''; $('#live').textContent=''; $('#pbar').style.width='0%';
+  generated=[]; lastTip=null;
+  for(let i=1;i<=total;i++){
+    const t=genOne(); t.main = ensureFive(t.main); t.euro = euroAuto();
+    generated.push(t); lastTip=t;
+    $('#live').textContent += '#'+i+': '+formatTip(t)+'\n';
+    await typeOnMap(t,i,total);
+    addCard(i,t);
+  }
+});
+
 function analyse(t){
   const dist=Array(8).fill(0); let occ=0, idxs=[];
   for(let i=0;i<draws.length;i++){
@@ -506,93 +515,13 @@ $('#fromLast').addEventListener('click',()=>{
 });
 $('#analyseAll').addEventListener('click',()=>{
   if(!generated.length){alert('Keine Varianten');return;}
-  $('#ana').innerHTML=''; generated.forEach(t=>analyse(t));
-});
-$('#csvAll').addEventListener('click',()=>{
-  if(!generated.length){alert('Keine Varianten');return;}
-  const rows = generated.map((t,i)=>[i+1, ...t.main, ...(t.euro.length?t.euro:['',''])].join(','));
-  const header='Index,N1,N2,N3,N4,N5,E1,E2\n';
-  const blob=new Blob([header+rows.join('\n')],{type:'text/csv'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='varianten.csv'; a.click(); URL.revokeObjectURL(a.href);
+  $('#ana').innerHTML='';
+  generated.forEach(t=>analyse(t));
 });
 
-/* ======= Favoriten ======= */
-function loadFavs(){ try{favs=JSON.parse(localStorage.getItem(LS_FAV) || '[]');}catch{favs=[];} renderFavs(); }
-function saveFavs(){ localStorage.setItem(LS_FAV, JSON.stringify(favs)); }
-function addFav(t){ favs.push(t); saveFavs(); renderFavs(); $('#favPanel').classList.add('open'); }
-function delFav(i){ favs.splice(i,1); saveFavs(); renderFavs(); }
-function renderFavs(){
-  const host=$('#favBody'); host.innerHTML='';
-  if(!favs.length){ host.innerHTML='<div class="text-secondary">Keine Favoriten.</div>'; return; }
-  favs.forEach((t,i)=>{
-    const c=document.createElement('div'); c.className='cardx';
-    const nums=document.createElement('div');
-    t.main.forEach(n=>{const d=document.createElement('span');d.className='chip';d.textContent=n;nums.appendChild(d);});
-    const sep=document.createElement('span'); sep.className='chip e'; sep.textContent='E'; nums.appendChild(sep);
-    t.euro.forEach(n=>{const d=document.createElement('span');d.className='chip e';d.textContent=n;nums.appendChild(d);});
-    const actions=document.createElement('div'); actions.className='mt-2 d-flex gap-2';
-    const bMap=document.createElement('button'); bMap.className='btn btn-outline-light btn-sm'; bMap.textContent='👁 Map'; bMap.onclick=()=>{document.getElementById('mwrap').scrollIntoView({behavior:'smooth'}); typeOnMap(t,1,1);};
-    const bAna=document.createElement('button'); bAna.className='btn btn-success btn-sm'; bAna.textContent='📊 Analysieren'; bAna.onclick=()=>analyse(t);
-    const bDel=document.createElement('button'); bDel.className='btn btn-outline-danger btn-sm'; bDel.textContent='🗑'; bDel.onclick=()=>delFav(i);
-    actions.append(bMap,bAna,bDel);
-    c.append(nums,actions);
-    host.appendChild(c);
-  });
-}
-$('#favToggle').addEventListener('click',()=>$('#favPanel').classList.toggle('open'));
-$('#favClose').addEventListener('click',()=>$('#favPanel').classList.remove('open'));
-$('#favClear').addEventListener('click',()=>{ if(confirm('Alle Favoriten löschen?')){ favs=[]; saveFavs(); renderFavs(); } });
-$('#favExport').addEventListener('click',()=>{
-  if(!favs.length){alert('Keine Favoriten');return;}
-  const rows = favs.map((t,i)=>[i+1, ...t.main, ...(t.euro.length?t.euro:['',''])].join(','));
-  const header='Index,N1,N2,N3,N4,N5,E1,E2\n';
-  const blob=new Blob([header+rows.join('\n')],{type:'text/csv'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='favoriten.csv'; a.click(); URL.revokeObjectURL(a.href);
-});
-$('#favAdd').addEventListener('click',()=>{ if(!lastTip){alert('Noch keine Variante');return;} addFav(lastTip); });
-
-/* ======= Generieren ======= */
-function formatTip(t){return t.main.join('-') + (t.euro.length? ' | E:' + t.euro.join('-') : '');}
-function addCardAfterGen(i,t){ $('#live').textContent += '#'+i+': '+formatTip(t)+'\n'; addCard(i,t); }
-
-$('#gen').addEventListener('click', async ()=>{
-  if(!draws.length){ alert('Bitte erst Archiv laden.'); return; }
-  const total=+$('#n').value||1; $('#cards').innerHTML=''; $('#live').textContent=''; $('#pbar').style.width='0%';
-  generated=[]; lastTip=null;
-  const seen=new Set();
-  for(let i=1;i<=total;i++){
-    let t=genOne(); t.main=ensureFive(t.main);
-    if($('#mode').value!=='groups' || !$('#euroOn').checked || $$('#eCtrls select').reduce((a,x)=>a+ +x.value,0)!==0){ t.euro=euroAuto(); } else { t.euro=[]; }
-    let key=t.main.join('-')+'|'+t.euro.join('-'); let guard=0;
-    while(seen.has(key) && guard<10){ t=genOne(); t.main=ensureFive(t.main); t.euro=euroAuto(); key=t.main.join('-')+'|'+t.euro.join('-'); guard++; }
-    seen.add(key);
-    generated.push(t); lastTip=t;
-    await typeOnMap(t,i,total); addCardAfterGen(i,t);
-  }
-});
-$('#gotoAna').addEventListener('click',()=>$('#ana').scrollIntoView({behavior:'smooth'}));
-
-/* ======= Analyse UI ======= */
-$('#analyseAll').addEventListener('click',()=>{
-  if(!generated.length){alert('Keine Varianten');return;}
-  $('#ana').innerHTML=''; generated.forEach(t=>analyse(t));
-});
-$('#analyseTip').addEventListener('click', ()=>{
-  if(!draws.length){alert('Archiv fehlt');return;}
-  const m=$('#wishM').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=50);
-  const e=$('#wishE').value.trim()? $('#wishE').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=12):[];
-  if(m.length!==5){alert('5 Hauptzahlen angeben');return;}
-  if(!(e.length===0||e.length===2)){alert('Euro 0 oder 2');return;}
-  analyse({main:uniqueSorted(m).slice(0,5), euro:uniqueSorted(e).slice(0,2)});
-});
-$('#fromLast').addEventListener('click',()=>{ if(!lastTip){alert('Noch keine Variante');return;} $('#wishM').value=lastTip.main.join(' '); $('#wishE').value=lastTip.euro.join(' '); analyse(lastTip); });
-
-/* Init: Archiv + Favoriten laden */
 (function(){
   const s=localStorage.getItem(LS_ARCH), raw=localStorage.getItem(LS_RAW);
   if(s){ const obj=JSON.parse(s); draws=obj.draws||[]; freqM=obj.freqM||freqM; freqE=obj.freqE||freqE; lastM=obj.lastM||lastM; lastE=obj.lastE||lastE; updateKPIs(); $('#ast').textContent='Archiv aus Speicher ✔'; }
-  try{ favs=JSON.parse(localStorage.getItem(LS_FAV)||'[]'); }catch{ favs=[]; }
-  renderFavs();
 })();
 </script>
 </body>
