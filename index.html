@@ -1,108 +1,594 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Eurojackpot • Cyberpunk Tool v5.0</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eurojackpot • Cyberpunk Tool v5.0 – FINAL – Komplett (Archiv + Map + Generator + Analyse + Favoriten)</title>
 
-  <!-- Frameworks & Libs -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<!-- Libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-  <style>
-    body{background:radial-gradient(circle at top left,#0ff2,#000),#050510;color:#eef;font-family:'Inter',sans-serif;min-height:100vh;}
-    .glass{background:rgba(15,15,35,.8);backdrop-filter:blur(14px);border:1px solid rgba(0,255,255,.2);border-radius:1rem;padding:1rem;box-shadow:0 0 25px rgba(0,255,255,.2);}
-    .btn-glow{transition:all .25s ease;position:relative;overflow:hidden;}
-    .btn-glow:hover{box-shadow:0 0 15px #0ff,0 0 30px #f0f;transform:translateY(-2px) scale(1.05);}
-    .chip{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border-radius:8px;background:linear-gradient(180deg,#111a33,#182242);margin:3px;font-weight:700;font-size:.8rem;color:#0ff;border:1px solid rgba(0,255,255,.3);transition:all .25s;}
-    .chip:hover{transform:scale(1.25);box-shadow:0 0 12px #f0f;}
-    .error-box{background:#420c0c;border:1px solid #ff5c5c;color:#ffd7d7;padding:.75rem;border-radius:.5rem;}
-    .title{background:linear-gradient(90deg,#0ff,#f0f);-webkit-background-clip:text;color:transparent;font-weight:800;}
-  </style>
+<style>
+  :root{
+    --cy-c:#00fff0; --cy-m:#ff00ea; --cy-g:#39ff88; --cy-y:#ffd86b; --ink:#eaf7ff;
+  }
+  body{background:radial-gradient(1000px 800px at -10% -10%, rgba(0,255,240,.12), transparent 60%), radial-gradient(800px 700px at 110% -10%, rgba(255,0,234,.10), transparent 60%), #050510; color:var(--ink); font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; min-height:100vh;}
+  .title{background:linear-gradient(90deg,var(--cy-c),var(--cy-m)); -webkit-background-clip:text; color:transparent; font-weight:900; letter-spacing:.3px;}
+  .glass{background:rgba(15,18,40,.78); backdrop-filter: blur(14px); border:1px solid rgba(0,255,255,.25); border-radius:14px; padding:14px; box-shadow: 0 12px 40px rgba(0,0,0,.45);}
+  .btn-glow{transition:all .25s ease; position:relative; overflow:hidden;}
+  .btn-glow:hover{transform: translateY(-2px) scale(1.02); box-shadow:0 0 16px var(--cy-c), 0 0 26px var(--cy-m);}
+  .chip{display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:28px; border-radius:8px; margin:3px; font-weight:800; font-size:.8rem; color:#bdfcff; background:linear-gradient(180deg,#0e1530,#15204a); border:1px solid rgba(0,255,255,.25); transition:transform .2s, box-shadow .2s;}
+  .chip.euro{color:#ffe6ff; background:linear-gradient(180deg,#1c1433,#1c2b53); border-color:rgba(255,0,234,.3);}
+  .chip:hover{transform:scale(1.16); box-shadow:0 0 10px var(--cy-m);}
+  .badge{background:rgba(255,255,255,.06); border:1px solid rgba(140,170,255,.22); border-radius:999px; padding:.15rem .5rem; font-size:.72rem;}
+  .error{background:#411015; border:1px solid #ff6b94; color:#ffd8e6; border-radius:10px; padding:.6rem .75rem;}
+  .mono{font-family:ui-monospace, Menlo, Consolas, 'Cascadia Code', monospace;}
+  .flip{animation:flipInX .7s;}
+</style>
 </head>
-<body class="p-6">
+<body class="p-5">
   <div class="text-center mb-6 animate__animated animate__fadeInDown">
     <h1 class="text-4xl title">Eurojackpot • Cyberpunk Tool v5.0</h1>
-    <p class="text-pink-300">Archiv • Map • Generieren • Analyse • Favoriten</p>
+    <p class="text-pink-300">FINAL: Archiv + Map + Generator (alle Modi) + Analyse + Favoriten</p>
   </div>
 
   <!-- Tabs -->
-  <div class="flex justify-center mb-6 space-x-4">
-    <button onclick="showTab('tab-archiv')" class="btn-glow px-4 py-2 bg-cyan-600 rounded-lg">📂 Archiv</button>
-    <button onclick="showTab('tab-map')" class="btn-glow px-4 py-2 bg-fuchsia-600 rounded-lg">🗺 Map</button>
-    <button onclick="showTab('tab-generate')" class="btn-glow px-4 py-2 bg-green-600 rounded-lg">⚡ Generieren</button>
-    <button onclick="showTab('tab-analyse')" class="btn-glow px-4 py-2 bg-yellow-600 rounded-lg">📊 Analyse</button>
-    <button onclick="showTab('tab-favs')" class="btn-glow px-4 py-2 bg-pink-600 rounded-lg">⭐ Favoriten</button>
+  <div class="flex justify-center mb-6 gap-3">
+    <button onclick="tab('archiv')" class="btn-glow px-4 py-2 bg-cyan-600 rounded-lg">📂 Archiv</button>
+    <button onclick="tab('map')" class="btn-glow px-4 py-2 bg-fuchsia-600 rounded-lg">🗺 Map</button>
+    <button onclick="tab('gen')" class="btn-glow px-4 py-2 bg-green-600 rounded-lg">⚡ Generieren</button>
+    <button onclick="tab('ana')" class="btn-glow px-4 py-2 bg-yellow-600 rounded-lg">📊 Analyse</button>
+    <button onclick="tab('fav')" class="btn-glow px-4 py-2 bg-pink-600 rounded-lg">⭐ Favoriten</button>
   </div>
 
-  <!-- Archiv -->
-  <div id="tab-archiv" class="glass animate__animated animate__fadeIn">
+  <!-- ARCHIV -->
+  <div id="v-archiv" class="glass animate__animated animate__fadeIn">
     <h2 class="text-xl font-bold mb-2">📂 Archiv</h2>
     <p id="statusText" class="text-sm mb-2">Noch kein Archiv geladen.</p>
-    <div class="flex flex-wrap gap-2 mb-2">
+    <div class="flex flex-wrap gap-2 mb-3">
       <input type="file" id="zipInput" accept=".zip,.txt,.csv" class="bg-gray-900 p-2 rounded">
       <button id="loadLatestBtn" class="btn-glow px-3 py-2 bg-blue-600 rounded">📥 Neueste laden</button>
       <button id="clearArchiveBtn" class="btn-glow px-3 py-2 bg-gray-600 rounded">🧹 Cache löschen</button>
     </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
+      <div><div class="text-sm text-gray-300">Ziehungen</div><div id="kpiCount" class="font-bold">–</div></div>
+      <div><div class="text-sm text-gray-300">Von</div><div id="kpiFrom" class="font-bold">–</div></div>
+      <div><div class="text-sm text-gray-300">Bis</div><div id="kpiTo" class="font-bold">–</div></div>
+      <div><div class="text-sm text-gray-300">Aktualität</div><div id="kpiFresh" class="font-bold">–</div></div>
+    </div>
   </div>
 
-  <!-- Map -->
-  <div id="tab-map" class="glass hidden animate__animated animate__fadeIn">
+  <!-- MAP -->
+  <div id="v-map" class="glass hidden animate__animated animate__fadeIn">
     <h2 class="text-xl font-bold mb-2">🗺 Map</h2>
+    <div class="mb-1 flex items-center justify-between">
+      <div class="badge">Hauptzahlen 1–50</div><div id="progress" class="badge">0%</div>
+    </div>
     <div id="mapMain" class="flex flex-wrap"></div>
-    <div class="mt-2">Eurozahlen:</div>
+    <div class="mt-3 badge">Eurozahlen 1–12</div>
     <div id="mapEuro" class="flex flex-wrap"></div>
   </div>
 
-  <!-- Generieren -->
-  <div id="tab-generate" class="glass hidden animate__animated animate__fadeIn">
+  <!-- GENERIEREN -->
+  <div id="v-gen" class="glass hidden animate__animated animate__fadeIn">
     <h2 class="text-xl font-bold mb-2">⚡ Generieren</h2>
-    <div class="mb-2"><label>Modus</label>
-      <select id="modus" class="bg-gray-900 p-2 rounded w-full">
-        <option value="never">Nie gezogene</option>
-        <option value="last100">Letzte 100</option>
-        <option value="hot">Hot</option>
-        <option value="groups">5er-Gruppen</option>
-        <option value="complex">Komplex</option>
-        <option value="runs">Folgen</option>
-      </select>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div>
+        <label class="text-sm text-gray-300">Modus</label>
+        <select id="modus" class="bg-gray-900 p-2 rounded w-full">
+          <option value="never">Nie gezogene</option>
+          <option value="last100">Letzte 100 – Frequenzmuster</option>
+          <option value="hot">Hot Paare & Triples</option>
+          <option value="groups">5er-Gruppen + Wünsche</option>
+          <option value="complex">Komplex (Simulated Annealing)</option>
+          <option value="runs">Folgen‑Zahlen</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-sm text-gray-300">Anzahl Kombinationen</label>
+        <input type="number" id="kombis" value="8" min="1" max="25" class="bg-gray-900 p-2 rounded w-full">
+      </div>
+      <div class="flex items-end gap-2">
+        <button id="generateBtn" class="btn-glow flex-1 px-3 py-2 bg-green-600 rounded">⚡ Generieren</button>
+        <button id="analyseAllBtn" class="btn-glow px-3 py-2 bg-yellow-700 rounded">📊 Alle analysieren</button>
+      </div>
     </div>
-    <div class="mb-2"><label>Anzahl Kombinationen</label>
-      <input type="number" id="kombis" value="5" min="1" max="25" class="bg-gray-900 p-2 rounded w-full">
+
+    <div id="groupUI" class="mt-4 hidden">
+      <div class="mb-1 text-sm text-gray-300">Gruppen: Summe ≤ 5 (Rest wird automatisch aufgefüllt)</div>
+      <div id="groupControls" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
+      <div class="mt-1 flex items-center justify-between">
+        <div class="badge">Eurozahlen (optional, 0 oder 2)</div>
+        <label class="inline-flex items-center gap-2">
+          <input id="useEuro" type="checkbox">
+          <span class="text-sm">Euro berücksichtigen</span>
+        </label>
+      </div>
+      <div id="euroControls" class="grid grid-cols-2 gap-2 mt-1 hidden"></div>
+      <div id="groupError" class="error hidden mt-2"></div>
     </div>
-    <button id="generateBtn" class="btn-glow w-full px-3 py-2 bg-green-600 rounded">⚡ Generieren</button>
-    <div id="errorBox" class="mt-2 hidden"></div>
-    <pre id="liveOutput" class="bg-black p-3 mt-3 rounded h-40 overflow-auto text-green-300 font-mono text-xs"></pre>
+
+    <pre id="liveOutput" class="mono bg-black/70 p-3 mt-3 rounded h-40 overflow-auto text-green-300"></pre>
     <div id="cards" class="mt-3"></div>
   </div>
 
-  <!-- Analyse -->
-  <div id="tab-analyse" class="glass hidden animate__animated animate__fadeIn">
+  <!-- ANALYSE -->
+  <div id="v-ana" class="glass hidden animate__animated animate__fadeIn">
     <h2 class="text-xl font-bold mb-2">📊 Analyse</h2>
     <canvas id="chartMain" class="w-full h-64 mb-4"></canvas>
     <canvas id="chartEuro" class="w-full h-64"></canvas>
+    <div id="analysisBox" class="mt-3 text-sm"></div>
   </div>
 
-  <!-- Favoriten -->
-  <div id="tab-favs" class="glass hidden animate__animated animate__fadeIn">
+  <!-- FAVORITEN -->
+  <div id="v-fav" class="glass hidden animate__animated animate__fadeIn">
     <h2 class="text-xl font-bold mb-2">⭐ Favoriten</h2>
+    <div class="flex items-center gap-2 mb-2">
+      <input id="favSearch" placeholder="Suche…" class="bg-gray-900 p-2 rounded flex-1">
+      <button id="favExport" class="btn-glow px-3 py-2 bg-indigo-700 rounded">⬇️ Export</button>
+      <button id="favImport" class="btn-glow px-3 py-2 bg-indigo-700 rounded">⬆️ Import</button>
+      <button id="favClear" class="btn-glow px-3 py-2 bg-red-700 rounded">🗑 Leeren</button>
+    </div>
     <div id="favoritesBox"></div>
   </div>
 
 <script>
-let draws=[],favorites=[];
-function showTab(id){document.querySelectorAll('[id^="tab-"]').forEach(el=>el.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");}
-// Archiv Handling
-document.getElementById("zipInput").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;let t="";if(f.name.endsWith(".zip")){const z=await JSZip.loadAsync(f);t=await Object.values(z.files)[0].async("string");}else{t=await f.text();}parseArchive(t);});
-document.getElementById("loadLatestBtn").addEventListener("click",async()=>{try{const res=await fetch("https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip");const b=await res.blob();const z=await JSZip.loadAsync(b);const t=await Object.values(z.files)[0].async("string");parseArchive(t);}catch(e){document.getElementById("statusText").innerHTML="Fehler. <a href='https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip' target='_blank'>Manuell laden</a>";}});
-document.getElementById("clearArchiveBtn").addEventListener("click",()=>{localStorage.removeItem("archive");document.getElementById("statusText").textContent="Cache gelöscht."});
-function parseArchive(txt){localStorage.setItem("archive",txt);const lines=txt.split(/\n/).filter(Boolean);draws=lines.map(l=>l.split(/[;\s,]/).map(Number).filter(Boolean));document.getElementById("statusText").textContent="Archiv geladen ✔ ("+draws.length+" Ziehungen)";}
-// Map
-function renderMap(){const main=document.getElementById("mapMain");main.innerHTML="";for(let i=1;i<=50;i++){const c=document.createElement("div");c.className="chip animate__animated animate__pulse";c.textContent=i;main.appendChild(c);}const euro=document.getElementById("mapEuro");euro.innerHTML="";for(let i=1;i<=12;i++){const c=document.createElement("div");c.className="chip bg-pink-800";c.textContent=i;euro.appendChild(c);}}renderMap();
-// Generator Dummy
-document.getElementById("generateBtn").addEventListener("click",()=>{const modus=document.getElementById("modus").value;const n=+document.getElementById("kombis").value||1;const err=document.getElementById("errorBox");err.classList.add("hidden");err.innerHTML="";if(modus==="groups"){const chosen=0;if(chosen<5){err.classList.remove("hidden");err.className="error-box animate__animated animate__shakeX";err.innerText="Bitte mindestens 5 Zahlen aus Gruppen wählen!";return;}}const out=document.getElementById("liveOutput");out.textContent="";const cards=document.getElementById("cards");cards.innerHTML="";for(let i=0;i<n;i++){const main=Array.from({length:50},(_,j)=>j+1).sort(()=>Math.random()-0.5).slice(0,5).sort((a,b)=>a-b);const euro=Array.from({length:12},(_,j)=>j+1).sort(()=>Math.random()-0.5).slice(0,2).sort((a,b)=>a-b);out.textContent+="#"+(i+1)+": "+main.join("-")+" | E:"+euro.join("-")+"\n";const d=document.createElement("div");d.className="glass p-2 mb-2 animate__animated animate__flipInX";d.innerHTML="<div class='flex justify-between'><div>"+main.join(" ")+" | <span class='text-pink-400'>"+euro.join(" ")+"</span></div></div>";cards.appendChild(d);}});
+/* ===== Helpers ===== */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const uniqueSorted = a => Array.from(new Set(a)).sort((x,y)=>x-y);
+const sum = a => a.reduce((s,v)=>s+v,0);
+
+/* ===== State ===== */
+let draws=[];                // {date, main[5], euro[2]}
+let freqMain=Array(51).fill(0), freqEuro=Array(13).fill(0);
+let lastSeen=Array(51).fill(null), lastSeenE=Array(13).fill(null);
+let generated=[];
+let favorites = JSON.parse(localStorage.getItem("ej_favs_v1")||"[]");
+
+/* ===== Tabs ===== */
+function tab(name){
+  ['archiv','map','gen','ana','fav'].forEach(n=>$('#v-'+n).classList.add('hidden'));
+  $('#v-'+name).classList.remove('hidden');
+}
+
+/* ===== Map ===== */
+function renderMap(){
+  const m=$('#mapMain'); m.innerHTML='';
+  for(let i=1;i<=50;i++){ const d=document.createElement('div'); d.className='chip'; d.textContent=i; m.appendChild(d); }
+  const e=$('#mapEuro'); e.innerHTML='';
+  for(let i=1;i<=12;i++){ const d=document.createElement('div'); d.className='chip euro'; d.textContent=i; e.appendChild(d); }
+  $('#progress').textContent='Bereit';
+}
+renderMap();
+
+/* ===== Archiv Handling ===== */
+const ARCH_KEY='ej_archive_v1';
+function setKPIs(){
+  if(!draws.length){ $('#kpiCount').textContent='–'; $('#kpiFrom').textContent='–'; $('#kpiTo').textContent='–'; $('#kpiFresh').textContent='–'; return; }
+  $('#kpiCount').textContent=String(draws.length);
+  $('#kpiFrom').textContent=draws[0].date;
+  $('#kpiTo').textContent=draws.at(-1).date;
+  const last=new Date(draws.at(-1).date);
+  const days=Math.round((Date.now()-last.getTime())/86400000);
+  $('#kpiFresh').textContent = days<=14? 'aktuell' : (days<=60? 'ok' : 'veraltet');
+}
+function parseArchiveText(txt){
+  try{
+    txt=txt.replace(/^\\uFEFF/,''); const lines = txt.replace(/\\r\\n?/g,'\\n').split('\\n').map(l=>l.trim()).filter(Boolean);
+    const regDMY=/^(\\d{1,2})[.\\-/](\\d{1,2})[.\\-/](\\d{2,4})$/; const regYMD=/^(\\d{4})[.\\-/](\\d{1,2})[.\\-/](\\d{1,2})$/;
+    function iso(y,m,d){ const dt=new Date(+y, +m-1, +d); return isNaN(dt)? null : dt.toISOString().slice(0,10); }
+    function parseLine(line){
+      const t=line.split(/;|,|\\t|\\s+/).filter(Boolean); let date=null,rest=[];
+      if(t.length>=1){
+        if(regDMY.test(t[0])){const m=t[0].match(regDMY); date=iso(m[3],m[2],m[1]); rest=t.slice(1);}
+        else if(regYMD.test(t[0])){const m=t[0].match(regYMD); date=iso(m[1],m[2],m[3]); rest=t.slice(1);}
+        else if(t.length>=3 && /^\\d+$/.test(t[0]) && /^\\d+$/.test(t[1]) && /^\\d+$/.test(t[2])){date=iso(t[2],t[1],t[0]); rest=t.slice(3);}
+        else rest=t.slice();
+      }
+      const nums=rest.map(Number).filter(n=>!Number.isNaN(n));
+      if(!date && nums.length>=3){const [a,b,c]=nums; const d=iso(c,b,a); if(d) date=d;}
+      const main=nums.filter(n=>n>=1&&n<=50).slice(0,5).sort((a,b)=>a-b);
+      const euro=nums.filter(n=>n>=1&&n<=12).slice(0,2).sort((a,b)=>a-b);
+      if(!date||main.length!==5||euro.length!==2) return null;
+      return {date, main, euro};
+    }
+    draws=[]; freqMain.fill(0); freqEuro.fill(0); lastSeen.fill(null); lastSeenE.fill(null);
+    lines.forEach((l,ix)=>{ const r=parseLine(l); if(r){draws.push(r);} });
+    if(!draws.length) throw new Error('Keine gültigen Ziehungen erkannt.');
+    draws.sort((a,b)=>a.date.localeCompare(b.date));
+    draws.forEach((d,idx)=>{ d.main.forEach(n=>{freqMain[n]++; lastSeen[n]=idx;}); d.euro.forEach(n=>{freqEuro[n]++; lastSeenE[n]=idx;}); });
+    localStorage.setItem(ARCH_KEY, txt);
+    $('#statusText').textContent='Archiv geladen ✔';
+    setKPIs();
+    renderCharts();
+  }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
+}
+$('#zipInput').addEventListener('change', async (evt)=>{
+  const file=evt.target.files?.[0]; if(!file) return;
+  try{
+    let text='';
+    if(file.name.toLowerCase().endsWith('.zip')){
+      const zip=await JSZip.loadAsync(file); const entries=Object.values(zip.files);
+      let entry = entries.find(f=>/\\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\\.(txt|csv)$/i.test(f.name));
+      if(!entry) throw new Error('ZIP ohne TXT/CSV.');
+      text = await entry.async('string');
+    }else{ text = await file.text(); }
+    parseArchiveText(text);
+  }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
+});
+$('#loadLatestBtn').addEventListener('click', async ()=>{
+  try{
+    $('#statusText').textContent='Lade neuestes Archiv…';
+    const res=await fetch('https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip', {mode:'cors'});
+    const blob=await res.blob();
+    const zip=await JSZip.loadAsync(blob);
+    const entries=Object.values(zip.files);
+    let entry = entries.find(f=>/\\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\\.(txt|csv)$/i.test(f.name));
+    if(!entry) throw new Error('ZIP ohne TXT/CSV.');
+    const text = await entry.async('string');
+    parseArchiveText(text);
+  }catch(e){
+    $('#statusText').innerHTML = "Fehler beim Laden – ggf. CORS. <a class='underline text-cyan-300' target='_blank' href='https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip'>Manuell laden</a>";
+  }
+});
+$('#clearArchiveBtn').addEventListener('click', ()=>{ localStorage.removeItem(ARCH_KEY); $('#statusText').textContent='Cache gelöscht.'; });
+// Auto-load
+(()=>{ const saved=localStorage.getItem(ARCH_KEY); if(saved){ try{ parseArchiveText(saved); $('#statusText').textContent='Archiv aus Speicher geladen ✔'; }catch{} } })();
+
+/* ===== Charts (Analyse) ===== */
+let chartMain, chartEuro;
+function renderCharts(){
+  if(!draws.length){ return; }
+  const fm=[...freqMain], fe=[...freqEuro];
+  if(chartMain) chartMain.destroy();
+  if(chartEuro) chartEuro.destroy();
+  chartMain=new Chart($('#chartMain'),{type:'bar', data:{labels:[...Array(50).keys()].slice(1), datasets:[{data:fm.slice(1)}]}, options:{plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#9ad'}} , y:{ticks:{color:'#9ad'}}}}});
+  chartEuro=new Chart($('#chartEuro'),{type:'bar', data:{labels:[...Array(12).keys()].slice(1), datasets:[{data:fe.slice(1)}]}, options:{plugins:{legend:{display:false}}, scales:{x:{ticks:{color:'#f9c'}}, y:{ticks:{color:'#f9c'}}}}});
+}
+
+/* ===== Gruppen UI ===== */
+const GROUPS=[{label:'1–10',from:1,to:10},{label:'11–20',from:11,to:20},{label:'21–30',from:21,to:30},{label:'31–40',from:31,to:40},{label:'41–50',from:41,to:50}];
+const EGROUPS=[{label:'1–6',from:1,to:6},{label:'7–12',from:7,to:12}];
+function buildGroupUI(){
+  const host=$('#groupControls'); host.innerHTML='';
+  GROUPS.forEach((g,i)=>{ const row=document.createElement('div'); row.className='grid grid-cols-3 gap-2 items-center';
+    row.innerHTML=`<div class="font-bold">${g.label}</div><select class="bg-gray-900 p-2 rounded" data-idx="${i}">${[0,1,2,3,4,5].map(v=>`<option value="${v}">${v}</option>`).join('')}</select><div class="text-right text-sm text-gray-400">0</div>`;
+    host.appendChild(row);
+  });
+  $$('#groupControls select').forEach(sel=> sel.addEventListener('change', updateGroupCounters));
+  updateGroupCounters();
+}
+function buildEuroUI(){
+  const host=$('#euroControls'); host.innerHTML='';
+  EGROUPS.forEach((g,i)=>{ const row=document.createElement('div'); row.className='grid grid-cols-3 gap-2 items-center';
+    row.innerHTML=`<div class="font-bold">${g.label}</div><select class="bg-gray-900 p-2 rounded euro" data-idx="${i}">${[0,1,2].map(v=>`<option value="${v}">${v}</option>`).join('')}</select><div class="text-right text-sm text-gray-400">0</div>`;
+    host.appendChild(row);
+  });
+  $$('#euroControls select').forEach(sel=> sel.addEventListener('change', updateGroupCounters));
+}
+function updateGroupCounters(){
+  let sumG=0; $$('#groupControls select').forEach(s=>{ const v=+s.value||0; sumG+=v; s.parentElement.lastChild.textContent=v; });
+  let sumE=0; if($('#useEuro').checked){ $$('#euroControls select').forEach(s=>{ const v=+s.value||0; sumE+=v; s.parentElement.lastChild.textContent=v; }); }
+  const err=$('#groupError');
+  err.classList.add('hidden'); err.textContent='';
+  if(sumG>5){ err.classList.remove('hidden'); err.textContent='Gruppen-Summe darf max. 5 sein.'; }
+  if($('#useEuro').checked && !(sumE===0 || sumE===2)){ err.classList.remove('hidden'); err.textContent='Euro-Summe muss 0 oder 2 sein.'; }
+}
+$('#modus').addEventListener('change', ()=>{
+  const on = $('#modus').value==='groups';
+  $('#groupUI').classList.toggle('hidden', !on);
+  if(on){ buildGroupUI(); }
+});
+$('#useEuro').addEventListener('change', e=>{ $('#euroControls').classList.toggle('hidden', !e.target.checked); if(e.target.checked){ buildEuroUI(); } updateGroupCounters(); });
+
+/* ===== Generator Core ===== */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function pickFromRange(from,to,avoid,count,weightFn){
+  const bag=[]; for(let n=from;n<=to;n++){ if(!avoid.includes(n)){ const w=Math.max(1, weightFn?weightFn(n):1); for(let k=0;k<w;k++) bag.push(n);} }
+  shuffle(bag);
+  const res=[]; for(const v of bag){ if(!res.includes(v)){ res.push(v); if(res.length===count) break; } }
+  return res;
+}
+function euroAuto(){
+  const fe=[...freqEuro]; const maxE=Math.max(...fe.slice(1))||1;
+  const lastIdx=draws.length-1;
+  const w = (e)=>{
+    const f = fe[e]/maxE;
+    const gap = lastSeenE[e]!=null ? (lastIdx-lastSeenE[e]) : lastIdx+1;
+    const gapN = Math.min(1, gap/(lastIdx+1));
+    return 1 + Math.round(3*(0.55*f + 0.45*gapN));
+  };
+  const e = pickFromRange(1,12,[],2,w).sort((a,b)=>a-b);
+  return e;
+}
+
+/* === Complex: Simulated Annealing (vereinfachte, solide Version) === */
+function normalizeVec(v){ const m=Math.max(...v); return v.map(x=> m? x/m : 0); }
+function buildMatrices(){
+  const C = Array.from({length:51}, ()=>Array(51).fill(0));
+  const recentW = Math.min(150, draws.length);
+  const recentStart = draws.length - recentW;
+  const recentF = Array(51).fill(0);
+  for(let i=0;i<draws.length;i++){
+    const d=draws[i]; const m=d.main;
+    for(let a=0;a<m.length;a++) for(let b=a+1;b<m.length;b++){ C[m[a]][m[b]]++; C[m[b]][m[a]]++; }
+    if(i>=recentStart){ m.forEach(x=>recentF[x]++); }
+  }
+  const fNorm = normalizeVec(freqMain);
+  const trendNorm = normalizeVec(recentF);
+  const gaps = lastSeen.map(ix => ix==null ? draws.length : (draws.length-1-ix));
+  const gapNorm = normalizeVec(gaps);
+  const pairScore = (i,j)=>{
+    const fij=C[i][j]; if(fij===0) return 0;
+    const denom = (freqMain[i]||1)*(freqMain[j]||1);
+    return fij/denom;
+  };
+  return {pairScore, fNorm, trendNorm, gapNorm};
+}
+function scoreSet(set, mats){
+  const {pairScore,fNorm,trendNorm,gapNorm} = mats;
+  const wF=0.32, wT=0.30, wR=0.38, wPair=0.75, wBal=0.25;
+  const base = set.reduce((s,n)=> s + (wF*fNorm[n] + wT*trendNorm[n] + wR*gapNorm[n]), 0);
+  let p=0; for(let i=0;i<set.length;i++) for(let j=i+1;j<set.length;j++){ p += pairScore(set[i],set[j]); }
+  const target=[1,1,1,1,1]; const counts=[0,0,0,0,0];
+  set.forEach(n=>{ const g = Math.floor((n-1)/10); counts[g]++; });
+  const balPenalty = counts.reduce((s,c,i)=> s + Math.abs(c-target[i]), 0);
+  const balScore = Math.max(0, 5 - balPenalty)/5;
+  return base + wPair*p + wBal*balScore;
+}
+function complexSimulatedAnnealing(){
+  const mats = buildMatrices();
+  const w = n=> 1 + Math.round(5*(mats.trendNorm[n]*0.6 + mats.gapNorm[n]*0.4));
+  let current = pickFromRange(1,50,[],5,w).sort((a,b)=>a-b);
+  let best = current.slice();
+  let currentScore = scoreSet(current, mats);
+  let bestScore = currentScore;
+  const ITER = 1600 + Math.floor(Math.random()*600);
+  for(let t=0;t<ITER;t++){
+    const T = 1 - t/ITER;
+    const c = current.slice();
+    const k = (Math.random()<T? 2:1);
+    for(let i=0;i<k;i++){
+      const rmIdx = Math.floor(Math.random()*c.length);
+      const avoid = c.slice(); avoid.splice(rmIdx,1);
+      const add = pickFromRange(1,50,avoid,1,w);
+      if(add.length){ c[rmIdx]=add[0]; }
+      c.sort((a,b)=>a-b);
+    }
+    const s = scoreSet(c, mats);
+    const accept = (s>currentScore) || (Math.random()<Math.exp((s-currentScore)/(0.15+0.0001)));
+    if(accept){ current=c; currentScore=s; if(s>bestScore){ best=c; bestScore=s; } }
+  }
+  return {main:best, euro:euroAuto()};
+}
+
+/* === Runs (Folge-Zahlen) === */
+function runsBest(){
+  const runMap=new Map();
+  function inc(key){ runMap.set(key,(runMap.get(key)||0)+1); }
+  for(const d of draws){
+    const m=[...d.main].sort((a,b)=>a-b);
+    let seq=[m[0]];
+    for(let i=1;i<m.length;i++){
+      if(m[i]===m[i-1]+1){ seq.push(m[i]); }
+      else{
+        if(seq.length>=2){ for(let L=2; L<=Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
+        seq=[m[i]];
+      }
+    }
+    if(seq.length>=2){ for(let L=2; L<=Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
+  }
+  const lastIdx = draws.length-1;
+  const scoreEntries=[];
+  for(const [k,v] of runMap.entries()){
+    const nums=k.split('-').map(Number);
+    const lastSeenMin = Math.min(...nums.map(n=> lastSeen[n]==null? -1 : lastSeen[n]));
+    const gap = lastSeenMin<0? lastIdx+1 : (lastIdx-lastSeenMin);
+    const fresh = 1 + gap/(lastIdx+1);
+    scoreEntries.push([nums, v*fresh]);
+  }
+  scoreEntries.sort((a,b)=>b[1]-a[1]);
+  const pick = scoreEntries.slice(0,50);
+  const base = pick.length? pick[Math.floor(Math.random()*Math.min(12,pick.length))][0] : [];
+  let main = uniqueSorted(base);
+  while(main.length<5){
+    const add = pickFromRange(1,50,main,1, n=> (freqMain[n]? freqMain[n]:1) + (lastSeen[n]==null?3:0) );
+    if(add.length) main.push(add[0]); else break;
+  }
+  main = uniqueSorted(main).slice(0,5);
+  return {main, euro:euroAuto()};
+}
+
+/* === Analyse einer Variante === */
+function exactOccurrences(tip){
+  const idx=[]; for(let i=0;i<draws.length;i++){ const d=draws[i];
+    if(tip.main.length===5 && d.main.length===5 && tip.main.every((n,j)=>n===d.main[j])) idx.push(i);
+  } return idx;
+}
+function analyseVariant(tip){
+  const idx=exactOccurrences(tip);
+  const occurCount=idx.length;
+  const last = occurCount? draws[idx.at(-1)].date : 'nie';
+  const avgGap = occurCount? (function(){
+    let gaps=[]; for(let i=1;i<idx.length;i++) gaps.push(idx[i]-idx[i-1]); const m=gaps.reduce((a,b)=>a+b,0)/(gaps.length||1); return m.toFixed(1);
+  })() : '–';
+  const first = occurCount? draws[idx[0]].date : '–';
+  const dist = Array(8).fill(0);
+  for(const d of draws){ const ov = tip.main.filter(x=>d.main.includes(x)).length + tip.euro.filter(x=>d.euro.includes(x)).length; dist[ov]++; }
+  const ov3p = dist.slice(3).reduce((a,b)=>a+b,0);
+  const freqSum = tip.main.reduce((s,n)=>s+freqMain[n],0);
+  return {occurCount,last,first,avgGap,dist,ov3p,freqSum};
+}
+function tipCard(idx, tip){
+  const a = analyseVariant(tip);
+  const card=document.createElement('div'); card.className='glass flip mb-3';
+  card.innerHTML = `
+    <div class="flex items-center justify-between">
+      <div>
+        ${tip.main.map(n=>`<span class="chip">${n}</span>`).join('')}
+        <span class="badge">Euro</span>
+        ${tip.euro.map(n=>`<span class="chip euro">${n}</span>`).join('')}
+      </div>
+      <span class="badge">#${idx}</span>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-sm">
+      <div class="badge">Vorkommen exakt: <b>${a.occurCount}</b></div>
+      <div class="badge">Erstes: <b>${a.first}</b></div>
+      <div class="badge">Letztes: <b>${a.last}</b></div>
+      <div class="badge">Ø Abstand: <b>${a.avgGap}</b></div>
+      <div class="badge">Overlap ≥3: <b>${a.ov3p}</b></div>
+      <div class="badge">FreqSum: <b>${a.freqSum}</b></div>
+    </div>
+    <div class="mt-2 flex gap-2">
+      <button class="btn-glow px-3 py-2 bg-pink-700 rounded" onclick='addFav(${JSON.stringify(tip)})'>⭐ Favorit</button>
+      <button class="btn-glow px-3 py-2 bg-gray-700 rounded" onclick='navigator.clipboard.writeText("${tip.main.join('-')} | E:${tip.euro.join('-')}")'>📋 Kopieren</button>
+    </div>
+  `;
+  return card;
+}
+
+/* ===== Generator pro Modus ===== */
+function generateOne(){
+  const mode = $('#modus').value;
+  let main=[];
+  if(!draws.length){
+    main = pickFromRange(1,50,[],5); return {main:main.sort((a,b)=>a-b), euro: pickFromRange(1,12,[],2).sort((a,b)=>a-b)};
+  }
+  if(mode==='groups'){
+    // validate
+    const want = $$('#groupControls select').map(s=>+s.value||0);
+    const sumWant = sum(want);
+    const err=$('#groupError'); err.classList.add('hidden'); err.textContent='';
+    if(sumWant<5){ err.classList.remove('hidden'); err.textContent='Bitte mindestens 5 Zahlen über Gruppen wählen (Summe ≤ 5, Rest wird aufgefüllt).'; throw new Error('Gruppen nicht vollständig.'); }
+    let weightMain=null;
+    const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
+    const maxM=Math.max(...fm.slice(1)); weightMain=n=>Math.ceil(3*fm[n]/maxM);
+    GROUPS.forEach((g,i)=>{ const need=want[i]; if(need>0){ main.push(...pickFromRange(g.from,g.to,main,need,weightMain)); } });
+    while(main.length<5){
+      const g = GROUPS[Math.floor(Math.random()*GROUPS.length)];
+      const add = pickFromRange(g.from,g.to,main,1,weightMain);
+      if(add.length) main.push(add[0]); else break;
+    }
+    main = uniqueSorted(main).slice(0,5);
+    let euro=[];
+    if($('#useEuro').checked){
+      const eWant = $$('#euroControls select').map(s=>+s.value||0);
+      const eSum = sum(eWant);
+      if(!(eSum===0 || eSum===2)) throw new Error('Euro-Summe muss 0 oder 2 sein.');
+      if(eSum===2){ EGROUPS.forEach((g,i)=>{ const need=eWant[i]; if(need>0){ euro.push(...pickFromRange(g.from,g.to,euro,need)); } }); euro.sort((a,b)=>a-b); }
+    }else{ euro=euroAuto(); }
+    return {main, euro};
+  }
+  if(mode==='last100'){
+    const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
+    const maxM=Math.max(...fm.slice(1)); const w=n=>Math.ceil(3*fm[n]/maxM);
+    main = pickFromRange(1,50,[],5,w).sort((a,b)=>a-b);
+    return {main, euro:euroAuto()};
+  }
+  if(mode==='never'){
+    const fm=freqMain.slice(); const w=n=> fm[n]===0?5:(fm[n]<=5?3:1);
+    main = pickFromRange(1,50,[],5,w).sort((a,b)=>a-b);
+    return {main, euro:euroAuto()};
+  }
+  if(mode==='hot'){
+    const recent = draws.slice(-200);
+    const pairMap=new Map(); const tripleMap=new Map();
+    function inc(map,key){ map.set(key,(map.get(key)||0)+1); }
+    for(const d of recent){
+      const m=[...d.main].sort((a,b)=>a-b);
+      for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++){ inc(pairMap, `${m[i]}-${m[j]}`); }
+      for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++) for(let k=j+1;k<m.length;k++){ inc(tripleMap, `${m[i]}-${m[j]}-${m[k]}`); }
+    }
+    const topPairs=[...pairMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,30).map(e=>e[0].split('-').map(Number));
+    const topTrip=[...tripleMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,20).map(e=>e[0].split('-').map(Number));
+    if(Math.random()<0.5 && topTrip.length){ main = [...topTrip[Math.floor(Math.random()*topTrip.length)]]; }
+    else if(topPairs.length){ main = [...topPairs[Math.floor(Math.random()*topPairs.length)]]; }
+    const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
+    const maxM=Math.max(...fm.slice(1)); const w=n=>Math.ceil(2*fm[n]/maxM);
+    while(main.length<5){ const add = pickFromRange(1,50,main,1,w); if(add.length) main.push(add[0]); else break; }
+    main.sort((a,b)=>a-b);
+    return {main, euro:euroAuto()};
+  }
+  if(mode==='complex'){ return complexSimulatedAnnealing(); }
+  if(mode==='runs'){ return runsBest(); }
+  // fallback
+  main = pickFromRange(1,50,[],5).sort((a,b)=>a-b); return {main, euro:euroAuto()};
+}
+
+/* ===== Generate Button ===== */
+$('#generateBtn').addEventListener('click', async ()=>{
+  if(!draws.length){ alert('Bitte zuerst ein Archiv laden.'); return; }
+  // ensure UI for groups is ready
+  if($('#modus').value==='groups' && $('#groupControls').children.length===0){ buildGroupUI(); }
+  const total = +$('#kombis').value || 1;
+  const out = $('#liveOutput'); out.textContent='';
+  const cards = $('#cards'); cards.innerHTML='';
+  generated=[];
+  const seen=new Set();
+  for(let i=1;i<=total;i++){
+    try{
+      let tip = generateOne();
+      let key = tip.main.join('-');
+      let guard=0; while(seen.has(key) && guard<10){ tip = generateOne(); key=tip.main.join('-'); guard++; }
+      seen.add(key);
+      generated.push(tip);
+      // typing effect
+      out.textContent += '#'+i+': '; await sleep(20);
+      for(const n of tip.main){ out.textContent += n+' '; await sleep(20); }
+      out.textContent += '| E:'; await sleep(20);
+      for(const e of tip.euro){ out.textContent += ' '+e; await sleep(20); }
+      out.textContent += '\n';
+      cards.appendChild(tipCard(i, tip));
+      out.scrollTop = out.scrollHeight;
+    }catch(e){
+      const err=$('#groupError'); err.classList.remove('hidden'); err.textContent=e.message; break;
+    }
+  }
+});
+
+/* ===== Analyse All ===== */
+$('#analyseAllBtn').addEventListener('click', ()=>{
+  if(!generated.length){ alert('Bitte zuerst Varianten generieren.'); return; }
+  const dist=Array(8).fill(0);
+  generated.forEach(t=>{ for(const d of draws){ const ov = t.main.filter(x=>d.main.includes(x)).length + t.euro.filter(x=>d.euro.includes(x)).length; dist[ov]++; } });
+  const table = dist.map((v,i)=>`<tr><td class="px-2 py-1">${i}</td><td class="px-2 py-1">${v}</td></tr>`).join('');
+  $('#analysisBox').innerHTML = `<div class="glass mt-2"><div class="font-bold mb-2">Overlap‑Verteilung (alle Varianten × Archiv)</div><table class="text-sm"><thead><tr><th class="px-2 py-1">Treffer</th><th class="px-2 py-1">Anzahl</th></tr></thead><tbody>${table}</tbody></table></div>`;
+  $('#v-ana').scrollIntoView({behavior:'smooth'});
+});
+
+/* ===== Favoriten ===== */
+function saveFavs(){ localStorage.setItem('ej_favs_v1', JSON.stringify(favorites)); renderFavs(); }
+function addFav(tip){ favorites.push(tip); saveFavs(); }
+function renderFavs(){
+  const q=($('#favSearch')?.value||'').toLowerCase();
+  const box=$('#favoritesBox'); if(!box) return; box.innerHTML='';
+  favorites.filter(f=> (f.main.join(' ')+' '+f.euro.join(' ')).toLowerCase().includes(q)).forEach((f,i)=>{
+    const div=document.createElement('div'); div.className='glass mb-2 p-2 flex items-center justify-between';
+    div.innerHTML=`<div>${f.main.join(' ')} | <span class="text-pink-300">E:${f.euro.join(' ')}</span></div>
+      <div class="flex gap-2">
+        <button class="btn-glow px-2 py-1 bg-gray-700 rounded" onclick='navigator.clipboard.writeText("${f.main.join('-')} | E:${f.euro.join('-')}")'>📋 Kopieren</button>
+        <button class="btn-glow px-2 py-1 bg-red-700 rounded" onclick="favorites.splice(${i},1); saveFavs();">✖</button>
+      </div>`;
+    box.appendChild(div);
+  });
+}
+$('#favSearch')?.addEventListener('input', renderFavs);
+$('#favExport')?.addEventListener('click', ()=>{
+  const blob=new Blob([JSON.stringify(favorites,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='favoriten.json'; a.click(); URL.revokeObjectURL(url);
+});
+$('#favImport')?.addEventListener('click', ()=>{
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange=async e=>{ const file=e.target.files?.[0]; if(!file) return; const txt=await file.text(); favorites=JSON.parse(txt||'[]'); saveFavs(); };
+  inp.click();
+});
+$('#favClear')?.addEventListener('click', ()=>{ if(confirm('Alle Favoriten löschen?')){ favorites=[]; saveFavs(); } });
+renderFavs();
 </script>
 </body>
 </html>
