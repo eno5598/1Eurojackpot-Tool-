@@ -2,872 +2,598 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eurojackpot • Ultra Cyber Tool v3</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eurojackpot • Ultra v5 (vollständig)</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
 <style>
-  :root{
-    --bg:#020514; --panel:#0a0f22; --panel2:#070c1a;
-    --text:#f2f7ff; --muted:#93a9d6;
-    --brand:#3affd3; --accent:#7a5cff; --ok:#3cff93; --warn:#ff6b6b; --info:#58caff;
-    --chip:#0f1a36; --chip2:#18234a;
-    --chipE:#16223f; --chipE2:#102236;
-
-    --g1:linear-gradient(90deg,#75a7ff 0%, #2e57ff 100%);
-    --g2:linear-gradient(90deg,#6bffc0 0%, #0aa771 100%);
-    --g3:linear-gradient(90deg,#d19aff 0%, #6f36ff 100%);
-    --g4:linear-gradient(90deg,#ffd36b 0%, #c67a00 100%);
-    --g5:linear-gradient(90deg,#ff8989 0%, #c32020 100%);
-    --e1:linear-gradient(90deg,#ffe066 0%, #9c7a00 100%);
-    --e2:linear-gradient(90deg,#66ffe6 0%, #0aa3a3 100%);
-  }
-
-  html,body{
-    background:
-      radial-gradient(80rem 80rem at -10% -20%, rgba(122,92,255,.18), transparent 60%),
-      radial-gradient(60rem 60rem at 110% -10%, rgba(58,255,220,.12), transparent 60%),
-      radial-gradient(80rem 80rem at 120% 120%, rgba(0,204,255,.10), transparent 60%),
-      var(--bg);
-    color:var(--text);
-    min-height:100%;
-  }
-  body:before{
-    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
-    background:
-      repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0, rgba(255,255,255,.02) 1px, transparent 1px, transparent 3px);
-    mix-blend-mode:overlay; opacity:.45;
-  }
-
-  .cardx{
-    position:relative; overflow:hidden;
-    background:
-      radial-gradient(40rem 40rem at 20% -10%, rgba(58,255,220,.08), transparent 60%),
-      radial-gradient(40rem 40rem at 120% 120%, rgba(122,92,255,.08), transparent 60%),
-      linear-gradient(180deg, rgba(10,15,34,.9), rgba(8,12,24,.75));
-    border:1px solid rgba(140,170,255,.16);
-    border-radius:18px; padding:12px;
-    box-shadow:0 18px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
-    backdrop-filter: blur(10px);
-  }
-  .cardx:before{
-    content:""; position:absolute; inset:-1px; pointer-events:none;
-    background:conic-gradient(from 0deg at 50% 50%, rgba(124,92,255,.16), transparent 30%, rgba(57,255,215,.14), transparent 70%);
-    filter: blur(30px); opacity:.5;
-  }
-  .section-title{font-weight:1000; letter-spacing:.35px;}
-  .muted{color:var(--muted);}
-
-  /* Map kompakt */
-  .band{border:1px solid rgba(140,170,255,.16); border-radius:14px; padding:6px 8px; margin-bottom:8px; background:rgba(9,14,27,.45);}
-  .band-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
-  .grad{height:5px; border-radius:999px; margin:4px 0 6px 0; box-shadow: inset 0 0 6px rgba(0,0,0,.5);}
-  .status-pill{font-size:.68rem; padding:.1rem .45rem; border-radius:999px; border:1px solid rgba(140,170,255,.25); color:var(--muted); background:rgba(255,255,255,.03);}
-
-  .chip{
-    display:inline-flex; align-items:center; justify-content:center;
-    min-width:20px; height:20px; border-radius:6px;
-    background:linear-gradient(180deg,var(--chip),var(--chip2));
-    margin:2px; font-weight:900; color:#d7e6ff;
-    border:1px solid rgba(140,170,255,.18);
-    transition:transform .06s ease, box-shadow .12s ease, background .2s ease;
-    user-select:none; font-size:.68rem;
-  }
-  .chip.euro{background:linear-gradient(180deg,var(--chipE),var(--chipE2));}
-  .chip:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(124,92,255,.25); }
-  .chip.dim{opacity:.32;}
-  .chip.typing{ box-shadow:0 0 0 2px var(--ok), 0 0 12px var(--ok); animation:pulse .75s ease-in-out infinite; }
-  .chip.done{ box-shadow:0 0 0 2px var(--brand), 0 0 12px var(--brand); }
-  @keyframes pulse{ 0%{filter:brightness(1)} 50%{filter:brightness(1.4)} 100%{filter:brightness(1)} }
-
-  .neon-progress{height:8px; border-radius:999px; background:rgba(140,170,255,.16); overflow:hidden; box-shadow: inset 0 0 6px rgba(0,0,0,.5);}
-  .neon-progress > div{height:100%; width:0%; background: linear-gradient(90deg, var(--brand), var(--accent)); box-shadow:0 0 18px var(--brand); transition: width .25s ease;}
-
-  .sticky-bottom-bar{
-    position:fixed; left:0; right:0; bottom:0; z-index:1100;
-    background:linear-gradient(180deg,rgba(10,16,30,.78),rgba(8,12,24,.95));
-    border-top:1px solid rgba(140,170,255,.18);
-    backdrop-filter: blur(10px);
-  }
-  .sticky-bottom-bar .btn{height:56px; font-weight:1000; letter-spacing:.3px; border-width:2px; box-shadow: 0 10px 28px rgba(0,0,0,.35);}
-
-  .live-box{font-family:ui-monospace, Menlo, Consolas, monospace; background:#08101f; border:1px solid rgba(140,170,255,.18); color:#b8ffcc; border-radius:10px; padding:8px; height:140px; overflow:auto;}
-
-  .variant-card{position:relative; border:1px solid rgba(140,170,255,.2); border-radius:14px; padding:10px; margin-bottom:10px; background:linear-gradient(180deg,rgba(10,16,30,.6),rgba(8,12,24,.5));}
-  .variant-card:after{content:""; position:absolute; inset:-1px; border-radius:14px; box-shadow:0 0 30px rgba(57,255,215,.12), 0 0 40px rgba(124,92,255,.12); pointer-events:none;}
-  .variant-head{display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;}
-  .nums-row{display:flex; flex-wrap:wrap; gap:4px; align-items:center;}
-  .badge-soft{background:rgba(140,170,255,.12); border:1px solid rgba(140,170,255,.25); color:#eaf5ff; border-radius:999px; padding:.15rem .5rem; font-size:.72rem;}
-  .stat-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;}
-  .stat{background:rgba(255,255,255,.03); border:1px solid rgba(140,170,255,.16); border-radius:10px; padding:6px 8px; font-size:.82rem;}
-  .stat strong{font-weight:900;}
-  .variant-actions{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
-  .btn-ghost{--c:rgba(140,170,255,.38); color:#d9e7ff; border:1px solid var(--c); background:rgba(255,255,255,.03);} 
-  .btn-ghost:hover{border-color:#7c5cff; box-shadow:0 0 12px rgba(124,92,255,.55) inset;}
-
-  .range-row{display:grid; grid-template-columns: 120px 1fr 60px; gap:8px; align-items:center; margin-bottom:8px;}
-  .counter-pill{padding:.15rem .5rem; border-radius:999px; font-weight:1000; font-size:.75rem;}
-  .counter-ok{background:rgba(57,255,144,.16); color:#5dffa9; border:1px solid rgba(57,255,144,.38);} 
-  .counter-bad{background:rgba(255,107,107,.14); color:#ff9f9f; border:1px solid rgba(255,107,107,.38);}
-
-  .heat-grid{display:grid; grid-template-columns: repeat(10, 1fr); gap:4px;}
-  .heat-cell{height:16px; border-radius:4px; text-align:center; font-size:.68rem; line-height:16px; color:#eaf5ff; background:#1a2445;}
-  .bar{height:6px; border-radius:999px; background:rgba(140,170,255,.18); overflow:hidden;} 
-  .bar > i{display:block; height:100%; width:0%; background:linear-gradient(90deg,#39ffd7,#7c5cff); transition:width .4s ease;}
-
-  /* Favoriten Panel */
-  .fav-toggle{ position:fixed; right:14px; top:14px; z-index:1200; }
-  .fav-panel{
-    position:fixed; right:0; top:0; bottom:0; width:360px; max-width:92vw; z-index:1190;
-    transform:translateX(100%); transition: transform .35s ease;
-    background:linear-gradient(180deg,rgba(12,18,38,.95),rgba(8,12,24,.96));
-    border-left:1px solid rgba(140,170,255,.2);
-    box-shadow: -18px 0 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
-    backdrop-filter: blur(10px);
-  }
-  .fav-panel.open{ transform:translateX(0%); }
-  .fav-head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; border-bottom:1px solid rgba(140,170,255,.2);}
-  .fav-body{ padding:12px; overflow:auto; height:calc(100% - 56px); }
-
-  .overlay{ position:fixed; inset:0; background:rgba(5,8,18,.75); display:none; align-items:center; justify-content:center; z-index:1200; backdrop-filter: blur(6px); }
-  .holo{ width:260px; height:260px; border-radius:50%; border:2px solid rgba(124,92,255,.35); box-shadow: inset 0 0 40px rgba(57,255,215,.25), 0 0 40px rgba(124,92,255,.25); animation:spin 2.2s linear infinite; position:relative; }
-  .holo:after{ content:"KOMPLEX-ANALYSE"; position:absolute; inset:auto 0 40% 0; text-align:center; color:#cfe8ff; font-weight:1000; letter-spacing:.2em; font-size:.8rem; text-shadow:0 0 12px #7c5cff; }
-  @keyframes spin{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  :root{--ink:#eaf2ff;--mut:#a9b7dd;--bg:#0a1124;--panel:#0f1836;--panel2:#0c1328;--gl1:#39ffd7;--gl2:#7c5cff;--ok:#3cff93;--warn:#ff6b6b}
+  body{background:radial-gradient(60rem 60rem at 120% -10%, rgba(124,92,255,.18),transparent 60%),radial-gradient(60rem 60rem at -10% 110%, rgba(57,255,215,.12),transparent 60%),var(--bg);color:var(--ink)}
+  .cardx{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid rgba(143,170,255,.22);border-radius:16px;padding:12px;margin-bottom:12px;box-shadow:0 14px 30px rgba(0,0,0,.35)}
+  .chip{display:inline-flex;min-width:22px;height:22px;border-radius:7px;align-items:center;justify-content:center;margin:2px 3px;padding:0 6px;background:#12224a;border:1px solid rgba(143,170,255,.25);font-weight:800}
+  .chip.e{background:#1b2a3f}
+  .chip.typing{box-shadow:0 0 0 2px var(--ok),0 0 16px var(--ok)}
+  .chip.done{box-shadow:0 0 0 2px var(--gl1),0 0 12px var(--gl1)}
+  .band{border:1px solid rgba(143,170,255,.2);border-radius:12px;padding:6px 8px;margin-bottom:6px}
+  .grad{height:6px;border-radius:999px;background:linear-gradient(90deg,#6ea0ff,#7c5cff);margin-bottom:6px}
+  .grad.g2{background:linear-gradient(90deg,#6bffc0,#0aa771)}
+  .grad.g3{background:linear-gradient(90deg,#d19aff,#6f36ff)}
+  .grad.g4{background:linear-gradient(90deg,#ffd36b,#c67a00)}
+  .grad.g5{background:linear-gradient(90deg,#ff8989,#c32020)}
+  .grad.ge1{background:linear-gradient(90deg,#ffe066,#9c7a00)}
+  .grad.ge2{background:linear-gradient(90deg,#66ffe6,#0aa3a3)}
+  .sticky{position:fixed;left:0;right:0;bottom:0;background:rgba(9,15,34,.92);border-top:1px solid rgba(143,170,255,.2);backdrop-filter:blur(8px);z-index:6}
+  .progress-neon{height:8px;background:rgba(143,170,255,.18);border-radius:999px;overflow:hidden}
+  .progress-neon>i{display:block;height:100%;background:linear-gradient(90deg,var(--gl1),var(--gl2));width:0%}
+  .overlay{position:fixed;inset:0;background:rgba(5,10,20,.7);display:none;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(4px)}
+  .holo{width:220px;height:220px;border-radius:50%;border:2px solid rgba(124,92,255,.35);box-shadow: inset 0 0 40px rgba(57,255,215,.25),0 0 40px rgba(124,92,255,.25);display:flex;align-items:center;justify-content:center;color:#dfe8ff;font-weight:900;letter-spacing:.2em}
+  .pill{font-size:.75rem;border:1px solid rgba(143,170,255,.3);border-radius:999px;padding:.1rem .5rem}
+  .fav-toggle{position:fixed;right:14px;top:14px;z-index:7}
+  .fav{position:fixed;right:0;top:0;bottom:0;width:360px;max-width:92vw;background:linear-gradient(180deg,rgba(16,24,54,.98),rgba(12,18,40,.98));border-left:1px solid rgba(143,170,255,.2);transform:translateX(100%);transition:.3s;z-index:8}
+  .fav.open{transform:translateX(0)}
+  .fav .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid rgba(143,170,255,.2)}
+  .fav .body{padding:10px;overflow:auto;height:calc(100% - 50px)}
 </style>
 </head>
 <body>
 <button class="btn btn-warning fav-toggle" id="favToggle">⭐ Favoriten</button>
-<div class="fav-panel" id="favPanel">
-  <div class="fav-head">
+<div class="fav" id="favPanel">
+  <div class="hdr">
     <div class="fw-bold">⭐ Favoriten</div>
     <div class="d-flex gap-2">
-      <button class="btn btn-sm btn-outline-light" id="favExport">Export</button>
+      <button class="btn btn-sm btn-outline-light" id="favExport">Export CSV</button>
       <button class="btn btn-sm btn-outline-danger" id="favClear">Leeren</button>
       <button class="btn btn-sm btn-outline-secondary" id="favClose">Schließen</button>
     </div>
   </div>
-  <div class="fav-body" id="favBody"></div>
+  <div class="body" id="favBody"></div>
 </div>
 
 <div class="container py-3 pb-5">
-
-  <div class="cardx mb-3" id="mapSection">
-    <div class="d-flex align-items-center justify-content-between">
-      <div class="section-title mb-1">3) Map (1–50) & Euro (1–12) – extra kompakt</div>
-      <div class="small muted" id="progressLabel">Bereit</div>
+  <div class="cardx">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="m-0">3) Map (1–50) & Euro (1–12)</h5>
+      <span id="label" class="pill">Bereit</span>
     </div>
-    <div class="neon-progress mb-2"><div id="progressBar"></div></div>
-    <div id="bandsMain" class="mb-1"></div>
-    <div class="section-title mt-1 mb-1">Eurozahlen</div>
-    <div id="bandsEuro"></div>
+    <div class="progress-neon my-2"><i id="pbar"></i></div>
+    <div id="mwrap"></div>
+    <h6 class="mt-2">Eurozahlen</h6>
+    <div id="ewrap"></div>
   </div>
 
-  <div class="row g-3">
+  <div class="row g-2">
     <div class="col-lg-6">
       <div class="cardx">
-        <div class="section-title mb-2">1) Archiv</div>
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-          <div id="statusText" class="small muted">Noch kein Archiv geladen.</div>
-          <input class="form-control form-control-sm" type="file" id="zipInput" accept=".zip,.txt,.csv">
+        <h5>1) Archiv</h5>
+        <div class="small">Status: <span id="ast">Kein Archiv</span></div>
+        <div class="row g-2 mt-1">
+          <div class="col-8"><input id="url" class="form-control form-control-sm" placeholder="Archiv-URL" value="https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip"></div>
+          <div class="col-4"><button id="loadUrl" class="btn btn-primary w-100 btn-sm">Vom Link laden</button></div>
+          <div class="col-12"><input id="file" type="file" class="form-control form-control-sm" accept=".zip,.txt,.csv"></div>
         </div>
-        <hr class="text-secondary">
-        <div class="row text-center g-2">
-          <div class="col-6 col-md-3"><div class="muted small">Ziehungen</div><div id="kpiCount" class="fw-bold">–</div></div>
-          <div class="col-6 col-md-3"><div class="muted small">Von</div><div id="kpiFrom" class="fw-bold">–</div></div>
-          <div class="col-6 col-md-3"><div class="muted small">Bis</div><div id="kpiTo" class="fw-bold">–</div></div>
-          <div class="col-6 col-md-3"><div class="muted small">Aktuell?</div><div id="kpiFresh" class="fw-bold">–</div></div>
+        <div class="row text-center mt-2">
+          <div class="col-3"><div class="small text-secondary">Ziehungen</div><div id="kCount" class="fw-bold">–</div></div>
+          <div class="col-3"><div class="small text-secondary">Von</div><div id="kFrom" class="fw-bold">–</div></div>
+          <div class="col-3"><div class="small text-secondary">Bis</div><div id="kTo" class="fw-bold">–</div></div>
+          <div class="col-3"><div class="small text-secondary">Aktuell?</div><div id="kFresh" class="fw-bold">–</div></div>
         </div>
         <div class="mt-2 d-flex gap-2 flex-wrap">
-          <button class="btn btn-outline-info btn-sm" id="archSave">Archiv speichern</button>
-          <button class="btn btn-outline-warning btn-sm" id="archLoad">Gespeichertes laden</button>
-          <button class="btn btn-outline-danger btn-sm" id="archClear">Archiv löschen</button>
+          <button class="btn btn-outline-info btn-sm" id="saveA">Archiv speichern</button>
+          <button class="btn btn-outline-warning btn-sm" id="loadA">Gespeichertes laden</button>
+          <button class="btn btn-outline-danger btn-sm" id="clearA">Archiv löschen</button>
         </div>
       </div>
 
-      <div class="cardx mt-3">
-        <div class="section-title mb-2">2) Einstellungen</div>
-        <div class="mb-2">
-          <label class="form-label muted">Anzahl Kombinationen</label>
-          <select id="kombis" class="form-select form-select-sm"></select>
-        </div>
-        <div class="mb-2">
-          <label class="form-label muted">Modus</label>
-          <select id="modus" class="form-select form-select-sm">
-            <option value="never">Nie gezogene</option>
-            <option value="last100">Letzte 100 – Frequenzmuster</option>
-            <option value="hot">Hot Paare & Triples</option>
-            <option value="groups">5er-Gruppen + Wünsche</option>
-            <option value="complex">Komplex (vollständiger Durchgang)</option>
-            <option value="runs">Folgen‑Zahlen (Archiv‑sequenzen)</option>
-          </select>
-        </div>
-
-        <div id="groupSection" style="display:none;">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="muted small">Gruppen: Summe ≤ 5 (Rest wird automatisch aufgefüllt)</div>
-            <div id="mainCounter" class="counter-pill counter-ok">0/≤5</div>
+      <div class="cardx">
+        <h5>2) Einstellungen</h5>
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label small">Kombinationen</label>
+            <select id="n" class="form-select form-select-sm"></select>
           </div>
-          <div id="groupControls"></div>
-
-          <hr class="text-secondary">
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="toggleEuro">
-            <label class="form-check-label" for="toggleEuro">Eurozahlen berücksichtigen (2 Zahlen)</label>
-          </div>
-          <div id="euroSection" class="mt-2" style="display:none;">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <div class="muted small">Euro-Summe: 0 oder 2</div>
-              <div id="euroCounter" class="counter-pill counter-ok">0/2</div>
-            </div>
-            <div id="euroControls"></div>
+          <div class="col-6">
+            <label class="form-label small">Modus</label>
+            <select id="mode" class="form-select form-select-sm">
+              <option value="never">Nie gezogene</option>
+              <option value="last100">Letzte 100</option>
+              <option value="hot">Hot Paare/Triples</option>
+              <option value="groups">5er-Gruppen</option>
+              <option value="complex">Komplex</option>
+              <option value="runs">Folgen-Zahlen</option>
+            </select>
           </div>
         </div>
-
-        <div id="autoEuroNote" class="small text-info" style="display:block;">Eurozahlen werden in diesem Modus automatisch (2) generiert.</div>
+        <div id="groups" class="mt-2" style="display:none">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="small text-secondary">Summe ≤ 5</div>
+            <div id="gc" class="pill">0/≤5</div>
+          </div>
+          <div id="gCtrls" class="mt-1"></div>
+          <div class="form-check form-switch mt-2">
+            <input id="euroOn" class="form-check-input" type="checkbox">
+            <label class="form-check-label" for="euroOn">Eurozahlen manuell (0/2)</label>
+          </div>
+          <div id="eCtrls" class="mt-1" style="display:none"></div>
+        </div>
+        <div id="note" class="small text-info mt-1">Eurozahlen werden automatisch auf 2 gesetzt (außer im Gruppenmodus mit Schalter).</div>
       </div>
 
-      <div class="cardx mt-3">
-        <div class="section-title mb-2">5) Analyse</div>
-
-        <div class="mb-2">
-          <div class="muted small mb-1">Wunsch‑Tipp analysieren</div>
-          <div class="row g-1">
-            <div class="col-9"><input id="wishMain" class="form-control form-control-sm" placeholder="5 Hauptzahlen (z. B. 1 12 23 34 45)"></div>
-            <div class="col-3"><input id="wishEuro" class="form-control form-control-sm" placeholder="Euro (0/2)"></div>
-          </div>
-          <div class="mt-1 d-flex gap-2 flex-wrap">
-            <button class="btn btn-success btn-sm" id="wishAnalyseBtn">Tipp analysieren</button>
-            <button class="btn btn-ghost btn-sm" id="wishFromCurrent">Aus letzter Variante</button>
-            <button class="btn btn-ghost btn-sm" id="allAnalyseBtn">Alle Varianten analysieren</button>
-          </div>
+      <div class="cardx">
+        <h5>5) Analyse</h5>
+        <div class="row g-1">
+          <div class="col-9"><input id="wishM" class="form-control form-control-sm" placeholder="5 Hauptzahlen z. B. 1 12 23 34 45"></div>
+          <div class="col-3"><input id="wishE" class="form-control form-control-sm" placeholder="Euro (0/2)"></div>
         </div>
-
-        <div id="analysisBox" class="small"></div>
+        <div class="mt-2 d-flex gap-2 flex-wrap">
+          <button id="analyseTip" class="btn btn-success btn-sm">Tipp analysieren</button>
+          <button id="fromLast" class="btn btn-outline-light btn-sm">Aus letzter Variante</button>
+          <button id="analyseAll" class="btn btn-outline-info btn-sm">Alle Varianten analysieren</button>
+          <button id="csvAll" class="btn btn-outline-warning btn-sm">CSV Export (Varianten)</button>
+        </div>
+        <div id="ana" class="mt-2 small"></div>
       </div>
     </div>
 
     <div class="col-lg-6">
-      <div class="cardx" id="resultsSection">
-        <div class="d-flex align-items-center justify-content-between mb-1">
-          <div class="section-title mb-0">4) Generieren</div>
-          <div class="muted small" id="progressText">–</div>
+      <div class="cardx">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="m-0">4) Generieren</h5>
+          <div id="prog" class="small">–</div>
         </div>
-        <div id="liveOutput" class="live-box"></div>
+        <div id="live" class="mt-2" style="height:140px;overflow:auto;background:#0d1933;border:1px solid rgba(143,170,255,.2);border-radius:8px;padding:8px;font-family:ui-monospace,Consolas"></div>
         <div id="cards" class="mt-2"></div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="sticky-bottom-bar py-2">
+<div class="sticky py-2">
   <div class="container">
     <div class="row g-2">
-      <div class="col-4"><button id="generateBtn" class="btn btn-dark w-100 border border-2">⚡ Generieren</button></div>
-      <div class="col-4"><button id="analyseBtn" class="btn btn-outline-dark w-100 border border-2">📈 Analysieren</button></div>
-      <div class="col-4"><button id="favBtn" class="btn btn-outline-warning w-100 border border-2">⭐ Favorit speichern</button></div>
+      <div class="col-4"><button id="gen" class="btn btn-primary w-100">⚡ Generieren</button></div>
+      <div class="col-4"><button id="gotoAna" class="btn btn-outline-light w-100">📈 Analysieren</button></div>
+      <div class="col-4"><button id="favAdd" class="btn btn-outline-warning w-100">⭐ Favorit speichern</button></div>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="overlay"><div class="holo"></div></div>
+<div class="overlay" id="ov"><div class="holo">KOMPLEX‑ANALYSE</div></div>
 
 <script>
-/* ---------- Helpers ---------- */
-const $ = sel => document.querySelector(sel);
-const $$ = sel => Array.from(document.querySelectorAll(sel));
-const sleep = ms => new Promise(r=>setTimeout(r,ms));
-function iso(y,m,d){ const dt=new Date(+y, +m-1, +d); return isNaN(dt)? null : dt.toISOString().slice(0,10); }
-function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j]];} return a; }
-function sum(a){ return a.reduce((s,v)=>s+v,0); }
-function normalizeVec(v){ const m=Math.max(...v); return v.map(x=> m? x/m : 0); }
-function uniqueSorted(a){ return Array.from(new Set(a)).sort((x,y)=>x-y); }
-function meanGap(indexes){ if(indexes.length<2) return null; let gaps=[]; for(let i=1;i<indexes.length;i++) gaps.push(indexes[i]-indexes[i-1]); return (gaps.reduce((a,b)=>a+b,0)/gaps.length).toFixed(1); }
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a;}
+function uniqueSorted(a){return Array.from(new Set(a)).sort((x,y)=>x-y);}
+function iso(y,m,d){const dt=new Date(+y,+m-1,+d);return isNaN(dt)?null:dt.toISOString().slice(0,10);}
 
-/* ---------- LocalStorage Keys ---------- */
-const LS_ARCH_TXT = 'ej_arch_text_v1';
-const LS_FAVS = 'ej_favs_v1';
+const LS_ARCH='ej_arch_v5', LS_RAW='ej_arch_raw_v5', LS_FAV='ej_favs_v5';
+let draws=[], freqM=Array(51).fill(0), freqE=Array(13).fill(0), lastM=Array(51).fill(null), lastE=Array(13).fill(null);
+let generated=[], lastTip=null, favs=[];
 
-/* ---------- State ---------- */
-let draws=[]; let freqMain=Array(51).fill(0); let freqEuro=Array(13).fill(0);
-let lastSeen=Array(51).fill(null); let lastSeenE=Array(13).fill(null);
-let generated=[]; let lastGenerated=null;
-let favorites = [];
-
-/* ---------- Map ---------- */
-const GROUPS=[{label:'1–10', from:1, to:10, grad:'var(--g1)'},{label:'11–20', from:11, to:20, grad:'var(--g2)'},{label:'21–30', from:21, to:30, grad:'var(--g3)'},{label:'31–40', from:31, to:40, grad:'var(--g4)'},{label:'41–50', from:41, to:50, grad:'var(--g5)'}];
-const EGROUPS=[{label:'1–6', from:1, to:6, grad:'var(--e1)'},{label:'7–12', from:7, to:12, grad:'var(--e2)'}];
-function buildBands(container, groups, euro=false){
-  container.innerHTML='';
-  groups.forEach(g=>{
-    const band=document.createElement('div'); band.className='band';
-    const head=document.createElement('div'); head.className='band-head';
-    const status=document.createElement('span'); status.className='status-pill'; status.textContent='GESCHLOSSEN';
-    head.innerHTML=`<div class="fw-bold">${g.label}</div>`; head.appendChild(status);
-    const grad=document.createElement('div'); grad.className='grad'; grad.style.background=g.grad;
-    const row=document.createElement('div');
-    for(let n=g.from;n<=g.to;n++){ const chip=document.createElement('div'); chip.className='chip'+(euro?' euro':''); chip.textContent=n; chip.dataset.num=n; row.appendChild(chip); }
-    band.appendChild(head); band.appendChild(grad); band.appendChild(row);
-    container.appendChild(band);
+for(let i=1;i<=25;i++){const o=document.createElement('option');o.value=i;o.textContent=i;$('#n').appendChild(o);}
+const GROUPS=[['1–10',1,10,'g1'],['11–20',11,20,'g2'],['21–30',21,30,'g3'],['31–40',31,40,'g4'],['41–50',41,50,'g5']];
+const EG=[['1–6',1,6,'ge1'],['7–12',7,12,'ge2']];
+function buildMap(){
+  const m=$('#mwrap'); m.innerHTML='';
+  GROUPS.forEach((g,ix)=>{
+    const d=document.createElement('div'); d.className='band';
+    d.innerHTML=`<div class="grad ${g[3]}"></div>`;
+    const r=document.createElement('div');
+    for(let n=g[1];n<=g[2];n++){ const c=document.createElement('div'); c.className='chip'; c.dataset.num=n; c.textContent=n; r.appendChild(c); }
+    d.appendChild(r); m.appendChild(d);
+  });
+  const e=$('#ewrap'); e.innerHTML='';
+  EG.forEach(g=>{
+    const d=document.createElement('div'); d.className='band';
+    d.innerHTML=`<div class="grad ${g[3]}"></div>`;
+    const r=document.createElement('div');
+    for(let n=g[1];n<=g[2];n++){ const c=document.createElement('div'); c.className='chip e'; c.dataset.enum=n; c.textContent=n; r.appendChild(c); }
+    d.appendChild(r); e.appendChild(d);
   });
 }
-buildBands($('#bandsMain'), GROUPS, false);
-buildBands($('#bandsEuro'), EGROUPS, true);
+buildMap();
 
-/* ---------- Controls ---------- */
-for(let i=1;i<=25;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i; $('#kombis').appendChild(o); }
-
-function buildGroupControls(){
-  const host=$('#groupControls'); host.innerHTML='';
-  GROUPS.forEach((g,idx)=>{
-    const row=document.createElement('div'); row.className='range-row';
-    const lab=document.createElement('div'); lab.innerHTML=`<div class="fw-bold">${g.label}</div>`;
-    const sel=document.createElement('select'); sel.className='form-select form-select-sm'; sel.dataset.idx=idx;
-    for(let v=0;v<=5;v++){ const o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); }
-    sel.addEventListener('change', ()=>{updateCounters(); updateBandStatus();});
-    const hint=document.createElement('div'); hint.className='text-end muted'; hint.textContent='0';
-    row.appendChild(lab); row.appendChild(sel); row.appendChild(hint); host.appendChild(row);
-  });
-}
-function buildEuroControls(){
-  const host=$('#euroControls'); host.innerHTML='';
-  EGROUPS.forEach((g,idx)=>{
-    const row=document.createElement('div'); row.className='range-row';
-    const lab=document.createElement('div'); lab.innerHTML=`<div class="fw-bold">${g.label}</div>`;
-    const sel=document.createElement('select'); sel.className='form-select form-select-sm euro-sel'; sel.dataset.idx=idx;
-    for(let v=0;v<=2;v++){ const o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); }
-    sel.addEventListener('change', ()=>{updateCounters(); updateBandStatus();});
-    const hint=document.createElement('div'); hint.className='text-end muted'; hint.textContent='0';
-    row.appendChild(lab); row.appendChild(sel); row.appendChild(hint); host.appendChild(row);
-  });
-}
-buildGroupControls(); buildEuroControls();
-
-function setModeUI(){
-  const mode = $('#modus').value;
-  const groupsOn = (mode==='groups');
-  $('#groupSection').style.display = groupsOn ? '' : 'none';
-  $('#autoEuroNote').style.display = groupsOn ? 'none' : 'block';
-  if(!groupsOn){ $('#toggleEuro').checked=false; $('#euroSection').style.display='none'; }
-  updateCounters(); updateBandStatus();
-}
-$('#modus').addEventListener('change', setModeUI);
-$('#toggleEuro').addEventListener('change', e=>{ $('#euroSection').style.display = e.target.checked ? '' : 'none'; updateCounters(); updateBandStatus(); });
-
-function updateCounters(){
-  let sumG=0;
-  $$('#groupControls select').forEach(sel=>{ const v=+sel.value||0; sumG+=v; sel.parentElement.lastChild.textContent=v; });
-  const mc=$('#mainCounter'); if(mc){ mc.textContent=sumG+'/≤5'; mc.className='counter-pill ' + (sumG<=5?'counter-ok':'counter-bad'); }
-  let esum=0;
-  if($('#toggleEuro').checked){
-    $$('#euroControls select').forEach(sel=>{ const v=+sel.value||0; esum+=v; sel.parentElement.lastChild.textContent=v; });
-  }
-  const ec=$('#euroCounter'); if(ec){ ec.textContent=esum+'/2'; ec.className='counter-pill '+((esum===0||esum===2)?'counter-ok':'counter-bad'); }
-}
-function updateBandStatus(){
-  const counts = $$('#groupControls select').map(s=>+s.value||0);
+function buildGroupCtrls(){
+  const host=$('#gCtrls'); host.innerHTML='';
   GROUPS.forEach((g,i)=>{
-    const band = Array.from($('#bandsMain').children)[i];
-    const pill = band.querySelector('.status-pill');
-    pill.textContent = counts[i]===0 ? 'GESCHLOSSEN' : 'OFFEN ('+counts[i]+')';
+    const row=document.createElement('div'); row.className='d-flex align-items-center justify-content-between mb-1';
+    row.innerHTML=`<div class="fw-bold">${g[0]}</div>`;
+    const sel=document.createElement('select'); sel.className='form-select form-select-sm'; sel.style.width='80px';
+    for(let v=0;v<=5;v++){const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);}
+    sel.onchange=updateGroupCounter;
+    row.appendChild(sel); host.appendChild(row);
   });
-  if($('#toggleEuro').checked){
-    const ecounts = $$('#euroControls select').map(s=>+s.value||0);
-    EGROUPS.forEach((g,i)=>{
-      const band = Array.from($('#bandsEuro').children)[i];
-      const pill = band.querySelector('.status-pill');
-      pill.textContent = ecounts[i]===0 ? 'GESCHLOSSEN' : 'OFFEN ('+ecounts[i]+')';
-    });
+  const eh=$('#eCtrls'); eh.innerHTML='';
+  EG.forEach((g,i)=>{
+    const row=document.createElement('div'); row.className='d-flex align-items-center justify-content-between mb-1';
+    row.innerHTML=`<div class="fw-bold">${g[0]}</div>`;
+    const sel=document.createElement('select'); sel.className='form-select form-select-sm'; sel.style.width='80px';
+    for(let v=0;v<=2;v++){const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);}
+    sel.onchange=updateEuroCounter;
+    row.appendChild(sel); eh.appendChild(row);
+  });
+}
+buildGroupCtrls();
+function updateGroupCounter(){const s=$$('#gCtrls select').reduce((a,x)=>a+ +x.value,0);$('#gc').textContent=s+'/≤5';}
+function updateEuroCounter(){const s=$$('#eCtrls select').reduce((a,x)=>a+ +x.value,0);$('#gcE').textContent=s+'/2';}
+
+$('#mode').addEventListener('change',()=>{
+  const on=$('#mode').value==='groups';
+  $('#groups').style.display=on?'block':'none';
+  $('#note').style.display=on?'none':'block';
+});
+$('#euroOn').addEventListener('change',()=>{$('#eCtrls').style.display=$('#euroOn').checked?'block':'none';});
+
+/* ======= Archiv ======= */
+$('#file').addEventListener('change', async e=>{
+  const f=e.target.files?.[0]; if(!f) return;
+  let txt='';
+  if(f.name.toLowerCase().endsWith('.zip')){
+    const zip=await JSZip.loadAsync(f);
+    const entry=Object.values(zip.files).find(x=>/\.(txt|csv)$/i.test(x.name));
+    txt=await entry.async('string');
   }else{
-    EGROUPS.forEach((g,i)=>{ const band = Array.from($('#bandsEuro').children)[i]; band.querySelector('.status-pill').textContent='GESCHLOSSEN'; });
+    txt=await f.text();
   }
-}
-
-/* ---------- Archiv Laden / Speichern ---------- */
-document.getElementById('zipInput').addEventListener('change', handleFile);
-$('#archSave').addEventListener('click', ()=>{
-  if(!draws.length){ alert('Kein Archiv im Speicher.'); return; }
-  localStorage.setItem(LS_ARCH_TXT, window.__archRaw || '');
-  alert('Archiv lokal gespeichert.');
+  parseArchive(txt,true);
 });
-$('#archLoad').addEventListener('click', ()=>{
-  const raw = localStorage.getItem(LS_ARCH_TXT);
-  if(!raw){ alert('Kein gespeichertes Archiv gefunden.'); return; }
-  parseArchiveText(raw);
-  alert('Gespeichertes Archiv geladen.');
-});
-$('#archClear').addEventListener('click', ()=>{
-  localStorage.removeItem(LS_ARCH_TXT);
-  draws=[]; freqMain.fill(0); freqEuro.fill(0); lastSeen.fill(null); lastSeenE.fill(null);
-  $('#statusText').textContent='Archiv gelöscht.';
-  $('#kpiCount').textContent='–'; $('#kpiFrom').textContent='–'; $('#kpiTo').textContent='–'; $('#kpiFresh').textContent='–';
-  $('#analysisBox').innerHTML='';
-});
-
-async function handleFile(evt){
-  const file = evt.target.files?.[0]; if(!file) return;
-  $('#statusText').textContent='Lade…'; draws=[]; freqMain.fill(0); freqEuro.fill(0); lastSeen.fill(null); lastSeenE.fill(null);
+$('#loadUrl').addEventListener('click', async()=>{
   try{
-    let text='';
-    if(file.name.toLowerCase().endsWith('.zip')){
-      const zip = await JSZip.loadAsync(file);
-      const entries = Object.values(zip.files);
-      let entry = entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
-      if(!entry) throw new Error('ZIP ohne TXT/CSV.');
-      text = await entry.async('string');
-    }else{ text = await file.text(); }
-    parseArchiveText(text, true);
-  }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
-}
+    $('#ast').textContent='Lade vom Link…';
+    const r=await fetch($('#url').value, {mode:'cors'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const blob=await r.blob();
+    if($('#url').value.endsWith('.zip')){
+      const zip=await JSZip.loadAsync(blob);
+      const entry=Object.values(zip.files).find(x=>/\.(txt|csv)$/i.test(x.name));
+      const txt=await entry.async('string');
+      parseArchive(txt,true);
+    }else{
+      const txt = await blob.text();
+      parseArchive(txt,true);
+    }
+  }catch(err){
+    $('#ast').textContent='CORS/Download fehlgeschlagen – bitte Datei manuell laden.';
+  }
+});
+$('#saveA').addEventListener('click',()=>{
+  if(!draws.length){alert('Kein Archiv im Speicher');return;}
+  localStorage.setItem(LS_ARCH, JSON.stringify({draws,freqM,freqE,lastM,lastE}));
+  localStorage.setItem(LS_RAW, window.__raw||'');
+  $('#ast').textContent='Archiv gespeichert ✔';
+});
+$('#loadA').addEventListener('click',()=>{
+  const s=localStorage.getItem(LS_ARCH), raw=localStorage.getItem(LS_RAW);
+  if(!s){alert('Kein gespeichertes Archiv');return;}
+  const obj=JSON.parse(s); draws=obj.draws; freqM=obj.freqM; freqE=obj.freqE; lastM=obj.lastM; lastE=obj.lastE;
+  window.__raw=raw||''; updateKPIs(); $('#ast').textContent='Archiv aus Speicher ✔';
+});
+$('#clearA').addEventListener('click',()=>{
+  localStorage.removeItem(LS_ARCH); localStorage.removeItem(LS_RAW);
+  draws=[]; freqM.fill(0); freqE.fill(0); lastM.fill(null); lastE.fill(null);
+  updateKPIs(true); $('#ast').textContent='Archiv gelöscht';
+});
 
-function parseArchiveText(txt, saveRaw=false){
-  window.__archRaw = txt; if(saveRaw) localStorage.setItem(LS_ARCH_TXT, txt);
-  txt = txt.replace(/^\uFEFF/, '');
+function parseArchive(txt, save){
+  window.__raw = txt;
   const lines = txt.replace(/\r\n?/g,'\n').split('\n').map(l=>l.trim()).filter(Boolean);
   const regDMY=/^(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{2,4})$/; const regYMD=/^(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})$/;
   function parseLine(line){
     const t=line.split(/;|,|\t|\s+/).filter(Boolean); let date=null,rest=[];
-    if(t.length>=1){
+    if(t[0]){
       if(regDMY.test(t[0])){const m=t[0].match(regDMY); date=iso(m[3],m[2],m[1]); rest=t.slice(1);}
       else if(regYMD.test(t[0])){const m=t[0].match(regYMD); date=iso(m[1],m[2],m[3]); rest=t.slice(1);}
-      else if(t.length>=3 && /^\d+$/.test(t[0]) && /^\d+$/.test(t[1]) && /^\d+$/.test(t[2])){date=iso(t[2],t[1],t[0]); rest=t.slice(3);}
       else rest=t.slice();
     }
     const nums=rest.map(Number).filter(n=>!Number.isNaN(n));
-    if(!date && nums.length>=3){const [a,b,c]=nums; const d=iso(c,b,a); if(d) date=d;}
     const main=nums.filter(n=>n>=1&&n<=50).slice(0,5).sort((a,b)=>a-b);
     const euro=nums.filter(n=>n>=1&&n<=12).slice(0,2).sort((a,b)=>a-b);
     if(!date||main.length!==5||euro.length!==2) return null;
-    return {date, main, euro};
+    return {date,main,euro};
   }
-  draws=[]; freqMain.fill(0); freqEuro.fill(0); lastSeen.fill(null); lastSeenE.fill(null);
-  for(const l of lines){const r=parseLine(l); if(r){draws.push(r);}}
-  if(!draws.length){ $('#statusText').textContent='Keine gültigen Ziehungen erkannt.'; return; }
+  draws=[]; freqM.fill(0); freqE.fill(0); lastM.fill(null); lastE.fill(null);
+  for(const l of lines){const r=parseLine(l); if(r) draws.push(r);}
   draws.sort((a,b)=>a.date.localeCompare(b.date));
-  draws.forEach((d,idx)=>{
-    d.main.forEach(n=>{ freqMain[n]++; lastSeen[n]=idx; });
-    d.euro.forEach(n=>{ freqEuro[n]++; lastSeenE[n]=idx; });
-  });
-  $('#kpiCount').textContent=String(draws.length);
-  $('#kpiFrom').textContent=draws[0].date;
-  $('#kpiTo').textContent=draws[draws.length-1].date;
-  const lastDate=new Date(draws[draws.length-1].date); const deltaDays=Math.round((Date.now()-lastDate.getTime())/86400000);
-  $('#kpiFresh').textContent=(deltaDays<=14)?'ja':'eher alt';
-  $('#statusText').textContent='Archiv geladen ✔';
-  renderAnalysis();
+  draws.forEach((d,i)=>{ d.main.forEach(n=>{freqM[n]++; lastM[n]=i}); d.euro.forEach(n=>{freqE[n]++; lastE[n]=i}); });
+  updateKPIs();
+  $('#ast').textContent='Archiv geladen ✔';
+  if(save){ localStorage.setItem(LS_ARCH, JSON.stringify({draws,freqM,freqE,lastM,lastE})); localStorage.setItem(LS_RAW, txt); }
+}
+function updateKPIs(empty){
+  if(!draws.length||empty){ $('#kCount').textContent='–';$('#kFrom').textContent='–';$('#kTo').textContent='–';$('#kFresh').textContent='–'; return; }
+  $('#kCount').textContent=draws.length;
+  $('#kFrom').textContent=draws[0].date;
+  $('#kTo').textContent=draws.at(-1).date;
+  const dd=Math.round((Date.now()-new Date(draws.at(-1).date))/86400000);
+  $('#kFresh').textContent=dd<=14?'ja':'alt';
 }
 
-/* ---------- Analyse-Views ---------- */
-function renderAnalysis(){
-  if(!draws.length){ $('#analysisBox').innerHTML='<div class="muted">Bitte Archiv laden.</div>'; return; }
-  const fm=[...freqMain], fe=[...freqEuro];
-  const maxM=Math.max(...fm.slice(1)), maxE=Math.max(...fe.slice(1));
-  let html='<div class="mb-1"><strong>Hauptzahlen (1–50) – Häufigkeit</strong></div><div class="heat-grid">';
-  for(let n=1;n<=50;n++){ const p=Math.round((fm[n]/(maxM||1))*100); html+=`<div class="heat-cell">${n}<div class="bar"><i style="width:${p}%"></i></div></div>`; }
-  html+='</div><div class="mt-2 mb-1"><strong>Eurozahlen (1–12) – Häufigkeit</strong></div><div class="heat-grid" style="grid-template-columns: repeat(12,1fr);">';
-  for(let n=1;n<=12;n++){ const p=Math.round((fe[n]/(maxE||1))*100); html+=`<div class="heat-cell">${n}<div class="bar"><i style="width:${p}%"></i></div></div>`; }
-  html+='</div>';
-  $('#analysisBox').innerHTML = html;
-}
-
-function exactOccurrences(tip){
-  const idx=[]; for(let i=0;i<draws.length;i++){ const d=draws[i];
-    if(tip.main.length===5 && d.main.length===5 && tip.main.every((n,j)=>n===d.main[j])) idx.push(i);
-  } return idx;
-}
-
-function analyseVariant(tip){
-  const idx=exactOccurrences(tip);
-  const occurCount=idx.length;
-  const last = occurCount? draws[idx.at(-1)].date : 'nie';
-  const avgGap = occurCount? meanGap(idx) : '–';
-  const first = occurCount? draws[idx[0]].date : '–';
-  const dist = Array(8).fill(0);
-  for(const d of draws){ const ov = tip.main.filter(x=>d.main.includes(x)).length + tip.euro.filter(x=>d.euro.includes(x)).length; dist[ov]++; }
-  const ov3p = dist.slice(3).reduce((a,b)=>a+b,0);
-  const freqSum = tip.main.reduce((s,n)=>s+freqMain[n],0);
-  const perNumber = tip.main.map(n=>({n, f:freqMain[n]}));
-  return {occurCount,last,first,avgGap,dist,ov3p,freqSum,perNumber};
-}
-
-function distTable(dist){
-  const total = draws.length || 1;
-  let rows=''; for(let i=0;i<dist.length;i++){
-    const v=dist[i]; const pct=((v/total)*100).toFixed(1);
-    const barWidth = Math.min(100, Math.round((v/Math.max(1,Math.max(...dist)))*100));
-    rows += `<tr>
-      <td class="text-nowrap">${i} Treffer</td>
-      <td style="width:65%;"><div class="bar"><i style="width:${barWidth}%"></i></div></td>
-      <td class="text-end">${v} <span class="text-secondary">(${pct}%)</span></td>
-    </tr>`;
-  }
-  return `<div class="table-responsive"><table class="table table-dark table-sm align-middle">
-    <thead><tr><th>Treffer</th><th>Verteilung</th><th class="text-end">Anzahl</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-}
-
-function variantCard(idx, tip){
-  const a = analyseVariant(tip);
-  const card=document.createElement('div'); card.className='variant-card';
-  const head=document.createElement('div'); head.className='variant-head';
-  const nums=document.createElement('div'); nums.className='nums-row';
-  tip.main.forEach(n=>{ const c=document.createElement('div'); c.className='chip'; c.textContent=n; nums.appendChild(c); });
-  if(tip.euro.length){ const sep=document.createElement('span'); sep.className='badge-soft'; sep.textContent='Euro'; nums.appendChild(sep);
-    tip.euro.forEach(n=>{ const c=document.createElement('div'); c.className='chip euro'; c.textContent=n; nums.appendChild(c); }); }
-  const tag=document.createElement('span'); tag.className='badge-soft'; tag.textContent='#'+idx;
-  head.appendChild(nums); head.appendChild(tag); card.appendChild(head);
-
-  const stats=document.createElement('div'); stats.className='stat-row';
-  const avg = (a.freqSum/5).toFixed(1);
-  const per = a.perNumber.map(p=>`${p.n}:${p.f}`).join('  ');
-  stats.innerHTML=`
-    <div class="stat">Vorkommen (exakt): <strong>${a.occurCount}</strong></div>
-    <div class="stat">Erstes: <strong>${a.first}</strong></div>
-    <div class="stat">Letztes: <strong>${a.last}</strong></div>
-    <div class="stat">Ø Abstand: <strong>${a.avgGap}</strong></div>
-    <div class="stat">Overlap ≥3: <strong>${a.ov3p}</strong></div>
-    <div class="stat">FreqSum: <strong>${a.freqSum}</strong> <span class="text-secondary">Ø ${avg}</span></div>
-  `;
-  card.appendChild(stats);
-
-  const tableWrap = document.createElement('div');
-  tableWrap.innerHTML = distTable(a.dist);
-  card.appendChild(tableWrap);
-
-  const actions=document.createElement('div'); actions.className='variant-actions';
-  const btnMap=document.createElement('button'); btnMap.className='btn btn-ghost btn-sm'; btnMap.textContent='👁 Map'; btnMap.onclick=()=>{ $('#mapSection').scrollIntoView({behavior:'smooth'}); liveType(tip, idx, generated.length); };
-  const btnFav=document.createElement('button'); btnFav.className='btn btn-warning btn-sm'; btnFav.textContent='⭐ Favorit'; btnFav.onclick=()=>addFavorite(tip);
-  const btnCopy=document.createElement('button'); btnCopy.className='btn btn-ghost btn-sm'; btnCopy.textContent='📋 Kopieren'; btnCopy.onclick=()=>navigator.clipboard.writeText(formatTip(tip));
-  actions.appendChild(btnMap); actions.appendChild(btnFav); actions.appendChild(btnCopy); card.appendChild(actions);
-
-  return card;
-}
-
-/* ---------- Wunsch-/Alle-Analyse ---------- */
-function formatTip(t){ return t.main.join('-') + (t.euro.length? ' | E:'+t.euro.join('-') : ''); }
-function renderTipAnalysis(tip){
-  const a = analyseVariant(tip);
-  const box = document.createElement('div');
-  box.innerHTML = `<div class="mt-2">
-    <div><strong>Detailanalyse:</strong> ${formatTip(tip)}</div>
-    ${distTable(a.dist)}
-  </div>`;
-  $('#analysisBox').prepend(box);
-  box.scrollIntoView({behavior:'smooth', block:'nearest'});
-}
-document.getElementById('allAnalyseBtn').addEventListener('click', ()=>{
-  if(!generated.length){ alert('Noch keine Varianten generiert.'); return; }
-  $('#analysisBox').innerHTML='';
-  generated.forEach(t=> renderTipAnalysis(t));
-});
-document.getElementById('wishAnalyseBtn').addEventListener('click', ()=>{
-  const m = $('#wishMain').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=50);
-  const e = $('#wishEuro').value.trim()? $('#wishEuro').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=12) : [];
-  if(m.length!==5){ alert('Bitte genau 5 Hauptzahlen (1–50) eingeben.'); return; }
-  if(!(e.length===0 || e.length===2)){ alert('Euro: 0 oder 2 Zahlen (1–12).'); return; }
-  const tip = {main:uniqueSorted(m).slice(0,5), euro:uniqueSorted(e).slice(0,2)};
-  renderTipAnalysis(tip);
-});
-document.getElementById('wishFromCurrent').addEventListener('click', ()=>{
-  if(!lastGenerated){ alert('Noch keine Variante generiert.'); return; }
-  const t = lastGenerated; $('#wishMain').value = t.main.join(' '); $('#wishEuro').value = t.euro.join(' ');
-  $('#analysisBox').scrollIntoView({behavior:'smooth', block:'start'});
-});
-
-/* ---------- Generator Bausteine ---------- */
-function pickFromRange(from,to,avoid,count,weightFn){
-  const bag=[]; for(let n=from;n<=to;n++){ if(!avoid.includes(n)){ const w=Math.max(1, weightFn?weightFn(n):1); for(let k=0;k<w;k++) bag.push(n);} }
-  shuffle(bag);
-  const res=[]; for(const v of bag){ if(!res.includes(v)){ res.push(v); if(res.length===count) break; } }
+/* ======= Generator ======= */
+function pickRange(from,to,avoid,count,weight){
+  const bag=[]; for(let n=from;n<=to;n++){ if(!avoid.includes(n)){ let w=weight?weight(n):1; w=Math.max(1,Math.floor(w)); for(let k=0;k<w;k++) bag.push(n);} }
+  shuffle(bag); const res=[];
+  for(const v of bag){ if(!res.includes(v)){ res.push(v); if(res.length===count) break; } }
   return res;
 }
 function euroAuto(){
-  const fe=freqEuro.slice(); const maxE=Math.max(...fe.slice(1))||1;
   const lastIdx=draws.length-1;
   const w = (e)=>{
-    const f = fe[e]/maxE;
-    const gap = lastSeenE[e]!=null ? (lastIdx-lastSeenE[e]) : lastIdx+1;
-    const gapN = Math.min(1, gap/(lastIdx+1));
-    return 1 + Math.round(3*(0.55*f + 0.45*gapN));
+    const f = freqE[e]/Math.max(1,Math.max(...freqE.slice(1)));
+    const gap = lastE[e]==null ? lastIdx+1 : (lastIdx-lastE[e]);
+    const gn = Math.min(1, gap/(lastIdx+1));
+    return 1 + Math.round(3*(0.55*f + 0.45*gn));
   };
-  const e = pickFromRange(1,12,[],2,w).sort((a,b)=>a-b);
-  return e;
-}
-
-/* ---------- Komplex: Simulated Annealing ---------- */
-function buildMatrices(){
-  const C = Array.from({length:51}, ()=>Array(51).fill(0));
-  const recentW = Math.min(150, draws.length);
-  const recentStart = draws.length - recentW;
-  const recentF = Array(51).fill(0);
-  for(let i=0;i<draws.length;i++){
-    const d=draws[i]; const m=d.main;
-    for(let a=0;a<m.length;a++) for(let b=a+1;b<m.length;b++){ C[m[a]][m[b]]++; C[m[b]][m[a]]++; }
-    if(i>=recentStart){ m.forEach(x=>recentF[x]++); }
+  let e = pickRange(1,12,[],2,w);
+  if(e.length<2){
+    const pool=Array.from({length:12},(_,i)=>i+1).filter(x=>!e.includes(x)); shuffle(pool);
+    while(e.length<2 && pool.length) e.push(pool.pop());
   }
-  const fNorm = normalizeVec(freqMain);
-  const trendNorm = normalizeVec(recentF);
-  const gaps = lastSeen.map(ix => ix==null ? draws.length : (draws.length-1-ix));
-  const gapNorm = normalizeVec(gaps);
-  const pairScore = (i,j)=>{
-    const fij=C[i][j]; if(fij===0) return 0;
-    const denom = (freqMain[i]||1)*(freqMain[j]||1);
-    return fij/denom;
-  };
-  return {pairScore, fNorm, trendNorm, gapNorm};
+  return e.sort((a,b)=>a-b);
 }
-function scoreSet(set, mats){
-  const {pairScore,fNorm,trendNorm,gapNorm} = mats;
-  const wF=0.32, wT=0.30, wR=0.38, wPair=0.75, wBal=0.25;
-  const base = set.reduce((s,n)=> s + (wF*fNorm[n] + wT*trendNorm[n] + wR*gapNorm[n]), 0);
-  let p=0; for(let i=0;i<set.length;i++) for(let j=i+1;j<set.length;j++){ p += pairScore(set[i],set[j]); }
-  const target=[1,1,1,1,1]; const counts=[0,0,0,0,0];
-  set.forEach(n=>{ const g = Math.floor((n-1)/10); counts[g]++; });
-  const balPenalty = counts.reduce((s,c,i)=> s + Math.abs(c-target[i]), 0);
-  const balScore = Math.max(0, 5 - balPenalty)/5;
-  return base + wPair*p + wBal*balScore;
-}
-function complexSimulatedAnnealing(){
-  const mats = buildMatrices();
-  const w = n=> 1 + Math.round(5*(mats.trendNorm[n]*0.6 + mats.gapNorm[n]*0.4));
-  let current = pickFromRange(1,50,[],5,w).sort((a,b)=>a-b);
-  let best = current.slice();
-  let currentScore = scoreSet(current, mats);
-  let bestScore = currentScore;
-  const ITER = 1600 + Math.floor(Math.random()*600);
-  for(let t=0;t<ITER;t++){
-    const T = 1 - t/ITER;
-    const c = current.slice();
-    const k = (Math.random()<T? 2:1);
-    for(let i=0;i<k;i++){
-      const rmIdx = Math.floor(Math.random()*c.length);
-      const avoid = c.slice(); avoid.splice(rmIdx,1);
-      const add = pickFromRange(1,50,avoid,1,w);
-      if(add.length){ c[rmIdx]=add[0]; }
-      c.sort((a,b)=>a-b);
+function ensureFive(main, weight=null){
+  let m = uniqueSorted(main).slice(0,5);
+  while(m.length<5){
+    const add = pickRange(1,50,m,1,weight);
+    if(add.length) m = uniqueSorted(m.concat(add));
+    else{
+      const pool=Array.from({length:50},(_,i)=>i+1).filter(x=>!m.includes(x)); shuffle(pool);
+      while(m.length<5 && pool.length) m.push(pool.pop());
+      m=uniqueSorted(m);
     }
-    const s = scoreSet(c, mats);
-    const accept = (s>currentScore) || (Math.random()<Math.exp((s-currentScore)/(0.15+0.0001)));
-    if(accept){ current=c; currentScore=s; if(s>bestScore){ best=c; bestScore=s; } }
   }
-  return {main:best, euro:euroAuto()};
+  return m.slice(0,5);
 }
 
-/* ---------- Folgen-Zahlen (Runs) ---------- */
-function runsBest(){
-  const runMap=new Map();
-  function inc(key){ runMap.set(key,(runMap.get(key)||0)+1); }
+/* Komplex (kompakte SA) */
+function genComplex(){
+  const fN=n=>freqM[n]/Math.max(1,Math.max(...freqM.slice(1)));
+  const gN=n=>{const li=lastM[n]==null?-1:lastM[n]; return li<0?1:(draws.length-1-li)/draws.length;};
+  const w=n=>1+Math.round(5*(0.6*gN(n)+0.4*fN(n)));
+  let cur=ensureFive([],w), best=cur.slice();
+  function score(set){
+    let s=set.reduce((a,x)=>a+0.5*fN(x)+0.8*gN(x),0);
+    const cnt=[0,0,0,0,0]; set.forEach(n=>cnt[Math.floor((n-1)/10)]++);
+    const bal = cnt.reduce((a,c)=>a+Math.abs(c-1),0); s += Math.max(0,5-bal)/5;
+    return s;
+  }
+  let cs=score(cur), bs=cs; const ITER=1200;
+  for(let t=0;t<ITER;t++){
+    const c=cur.slice(); const rm=Math.floor(Math.random()*c.length);
+    const avoid=c.slice(); avoid.splice(rm,1);
+    const add=pickRange(1,50,avoid,1,w); if(add.length) c[rm]=add[0];
+    c.sort((a,b)=>a-b); const sc=score(c);
+    if(sc>cs || Math.random()<Math.exp((sc-cs)/(0.12+1e-4))){ cur=c; cs=sc; if(sc>bs){best=c; bs=sc;} }
+  }
+  return best;
+}
+
+/* Folgen-Zahlen (Runs) */
+function genRuns(){
+  const runMap=new Map(); const inc=(k)=>runMap.set(k,(runMap.get(k)||0)+1);
   for(const d of draws){
-    const m=[...d.main].sort((a,b)=>a-b);
-    let seq=[m[0]];
+    const m=[...d.main].sort((a,b)=>a-b); let seq=[m[0]];
     for(let i=1;i<m.length;i++){
-      if(m[i]===m[i-1]+1){ seq.push(m[i]); }
-      else{
-        if(seq.length>=2){ for(let L=2; L<=Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
+      if(m[i]===m[i-1]+1) seq.push(m[i]); else{
+        if(seq.length>=2){ for(let L=2;L<=Math.min(4,seq.length);L++) for(let s=0;s+L<=seq.length;s++) inc(seq.slice(s,s+L).join('-')); }
         seq=[m[i]];
       }
     }
-    if(seq.length>=2){ for(let L=2; L<=Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
+    if(seq.length>=2){ for(let L=2;L<=Math.min(4,seq.length);L++) for(let s=0;s+L<=seq.length;s++) inc(seq.slice(s,s+L).join('-')); }
   }
-  const lastIdx = draws.length-1;
-  const scoreEntries=[];
+  const lastIdx=draws.length-1, score=[];
   for(const [k,v] of runMap.entries()){
     const nums=k.split('-').map(Number);
-    const lastSeenMin = Math.min(...nums.map(n=> lastSeen[n]==null? -1 : lastSeen[n]));
-    const gap = lastSeenMin<0? lastIdx+1 : (lastIdx-lastSeenMin);
-    const fresh = 1 + gap/(lastIdx+1);
-    scoreEntries.push([nums, v*fresh]);
+    const minLast=Math.min(...nums.map(n=> lastM[n]==null?-1:lastM[n]));
+    const gap=minLast<0? lastIdx+1 : (lastIdx-minLast);
+    const fresh=1 + gap/(lastIdx+1);
+    score.push([nums, v*fresh]);
   }
-  scoreEntries.sort((a,b)=>b[1]-a[1]);
-  const pick = scoreEntries.slice(0,50);
-  const base = pick.length? pick[Math.floor(Math.random()*Math.min(12,pick.length))][0] : [];
-  let main = uniqueSorted(base);
-  while(main.length<5){
-    const add = pickFromRange(1,50,main,1, n=> (freqMain[n]? freqMain[n]:1) + (lastSeen[n]==null?3:0) );
-    if(add.length) main.push(add[0]); else break;
-  }
-  main = uniqueSorted(main).slice(0,5);
-  return {main, euro:euroAuto()};
+  score.sort((a,b)=>b[1]-a[1]);
+  const base=score.length? score[Math.floor(Math.random()*Math.min(12,score.length))][0] : [];
+  return ensureFive(base, n=>1);
 }
 
-/* ---------- Generator pro Modus ---------- */
-function generateOne(){
-  const mode = $('#modus').value;
-  let main=[];
+function genOne(){
+  const mode=$('#mode').value;
+  const recent = draws.slice(-100);
+  const fm = Array(51).fill(1); recent.forEach(d=>d.main.forEach(n=>fm[n]++));
+  const maxM = Math.max(...fm.slice(1));
+  const wRecent = n=> 1 + Math.floor(3*fm[n]/Math.max(1,maxM));
+
   if(mode==='groups'){
-    const wish = $$('#groupControls select').map(s=>+s.value||0);
-    let sumWish = sum(wish);
-    if(sumWish>5) throw new Error('Gruppen-Summe darf max. 5 sein.');
-    let weightMain=null;
-    if(draws.length){
-      const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
-      const maxM=Math.max(...fm.slice(1)); weightMain=n=>Math.ceil(3*fm[n]/maxM);
-    }
-    GROUPS.forEach((g,i)=>{ const need=wish[i]; if(need>0){ main.push(...pickFromRange(g.from,g.to,main,need,weightMain)); } });
-    if(main.length<5){
-      const openRanges = GROUPS.filter((g,i)=>wish[i]>0);
-      if(openRanges.length){
-        while(main.length<5){
-          const g = openRanges[Math.floor(Math.random()*openRanges.length)];
-          const add = pickFromRange(g.from,g.to,main,1,weightMain);
-          if(add.length) main.push(add[0]); else break;
-        }
-      }else{
-        main = pickFromRange(1,50,[],5,weightMain);
-      }
-    }
-    main = uniqueSorted(main).slice(0,5);
+    const wish=$$('#gCtrls select').map(s=>+s.value||0);
+    const sum=wish.reduce((a,b)=>a+b,0); if(sum>5) throw new Error('Gruppen-Summe > 5');
+    let main=[];
+    GROUPS.forEach((g,i)=>{ const need=wish[i]; if(need>0){ main=uniqueSorted(main.concat(pickRange(g[1],g[2],main,need,wRecent))); } });
+    main = ensureFive(main, wRecent);
     let euro=[];
-    if($('#toggleEuro').checked){
-      const ecounts = $$('#euroControls select').map(s=>+s.value||0);
-      const esum = ecounts.reduce((a,b)=>a+b,0);
-      if(!(esum===0 || esum===2)) throw new Error('Euro-Summe muss 0 oder 2 sein.');
-      if(esum===2){ EGROUPS.forEach((g,i)=>{ const need=ecounts[i]; if(need>0){ euro.push(...pickFromRange(g.from,g.to,euro,need,null)); } }); euro.sort((a,b)=>a-b); }
-    }
+    if($('#euroOn').checked){
+      const ec=$$('#eCtrls select').map(s=>+s.value||0); const es=ec.reduce((a,b)=>a+b,0);
+      if(!(es===0||es===2)) throw new Error('Euro-Summe muss 0 oder 2 sein');
+      if(es===2){ EG.forEach((g,i)=>{ const need=ec[i]; if(need>0){ euro=uniqueSorted(euro.concat(pickRange(g[1],g[2],euro,need))); } }); if(euro.length<2){ euro=euroAuto(); } }
+    }else{ euro = euroAuto(); }
     return {main, euro};
   }
-  else if(mode==='last100' && draws.length){
-    const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
-    const maxM=Math.max(...fm.slice(1)); const w=n=>Math.ceil(3*fm[n]/maxM);
-    main = pickFromRange(1,50,[],5,w).sort((a,b)=>a-b);
-    return {main, euro:euroAuto()};
-  }
-  else if(mode==='never' && draws.length){
-    const fm=freqMain.slice(); const w=n=> fm[n]===0?5:(fm[n]<=5?3:1);
-    main = pickFromRange(1,50,[],5,w).sort((a,b)=>a-b);
-    return {main, euro:euroAuto()};
-  }
-  else if(mode==='hot' && draws.length){
-    const recent = draws.slice(-200);
-    const pairMap=new Map(); const tripleMap=new Map();
-    function inc(map,key){ map.set(key,(map.get(key)||0)+1); }
+  if(mode==='never' && draws.length){ const w=n=> (freqM[n]===0?6:(freqM[n]<=5?3:1)); return {main:ensureFive([],w), euro:euroAuto()}; }
+  if(mode==='last100' && draws.length){ return {main:ensureFive([],wRecent), euro:euroAuto()}; }
+  if(mode==='hot' && draws.length){
+    const recent=draws.slice(-200);
+    const pairs=new Map(), triples=new Map();
+    const inc=(m,k)=>m.set(k,(m.get(k)||0)+1);
     for(const d of recent){
       const m=[...d.main].sort((a,b)=>a-b);
-      for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++){ inc(pairMap, `${m[i]}-${m[j]}`); }
-      for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++) for(let k=j+1;k<m.length;k++){ inc(tripleMap, `${m[i]}-${m[j]}-${m[k]}`); }
+      for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++) inc(pairs,`${m[i]}-${m[j]}`);
+      for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++) for(let k=j+1;k<m.length;k++) inc(triples,`${m[i]}-${m[j]}-${m[k]}`);
     }
-    const topPairs=[...pairMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,30).map(e=>e[0].split('-').map(Number));
-    const topTrip=[...tripleMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,20).map(e=>e[0].split('-').map(Number));
-    if(Math.random()<0.5 && topTrip.length){ main = [...topTrip[Math.floor(Math.random()*topTrip.length)]]; }
-    else if(topPairs.length){ main = [...topPairs[Math.floor(Math.random()*topPairs.length)]]; }
-    const r2=draws.slice(-100); const fm=Array(51).fill(1); r2.forEach(d=>d.main.forEach(n=>fm[n]++));
-    const maxM=Math.max(...fm.slice(1)); const w=n=>Math.ceil(2*fm[n]/maxM);
-    while(main.length<5){ const add = pickFromRange(1,50,main,1,w); if(add.length) main.push(add[0]); else break; }
-    main.sort((a,b)=>a-b);
-    return {main, euro:euroAuto()};
+    const tp=[...pairs.entries()].sort((a,b)=>b[1]-a[1]).slice(0,40).map(e=>e[0].split('-').map(Number));
+    const tt=[...triples.entries()].sort((a,b)=>b[1]-a[1]).slice(0,25).map(e=>e[0].split('-').map(Number));
+    let base=[]; if(Math.random()<0.5 && tt.length) base=tt[Math.floor(Math.random()*tt.length)]; else if(tp.length) base=tp[Math.floor(Math.random()*tp.length)]; 
+    return {main:ensureFive(base,wRecent), euro:euroAuto()};
   }
-  else if(mode==='complex' && draws.length){
-    $('#overlay').style.display='flex';
-    const tip = complexSimulatedAnnealing();
-    $('#overlay').style.display='none';
-    return tip;
+  if(mode==='runs' && draws.length){ return {main:genRuns(), euro:euroAuto()}; }
+  if(mode==='complex' && draws.length){
+    $('#ov').style.display='flex';
+    try{ return {main:genComplex(), euro:euroAuto()}; }
+    finally{ $('#ov').style.display='none'; }
   }
-  else if(mode==='runs' && draws.length){
-    return runsBest();
-  }
-  else{
-    main = pickFromRange(1,50,[],5,null).sort((a,b)=>a-b);
-    return {main, euro:euroAuto()};
-  }
+  return {main:ensureFive([]), euro:euroAuto()};
 }
 
-/* ---------- Live Map ---------- */
-function clearMapMarks(){ $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.classList.remove('dim','typing','done')); $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.classList.add('dim')); }
-async function liveType(tip, index, total){
-  clearMapMarks();
-  const pb = $('#progressBar'); const pl = $('#progressLabel');
-  const mode = $('#modus').value;
-  const delay = (mode==='complex')? 170 : 110;
-  for(const n of tip.main){ const el = document.querySelector(`#bandsMain .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(delay); el.classList.remove('typing'); el.classList.add('done'); } }
-  for(const n of tip.euro){ const el = document.querySelector(`#bandsEuro .chip[data-num="${n}"]`); if(el){ el.classList.remove('dim'); el.classList.add('typing'); await sleep(delay); el.classList.remove('typing'); el.classList.add('done'); } }
-  $('#progressText').textContent = `Variante #${index} / ${total}`; pb.style.width = Math.round(index/total*100)+'%'; pl.textContent = `#${index}/${total}`;
+function clearMap(){ $$('.chip').forEach(c=>{c.classList.remove('typing','done')}); }
+async function typeOnMap(tip,i,total){
+  clearMap();
+  const delay=$('#mode').value==='complex'?160:100;
+  for(const n of tip.main){ const el=document.querySelector(`.chip[data-num="${n}"]`); if(el){el.classList.add('typing'); await sleep(delay); el.classList.remove('typing'); el.classList.add('done');}}
+  for(const n of tip.euro){ const el=document.querySelector(`.chip[data-enum="${n}"]`); if(el){el.classList.add('typing'); await sleep(delay); el.classList.remove('typing'); el.classList.add('done');}}
+  $('#label').textContent = `#${i}/${total}`; $('#pbar').style.width = Math.round(i/total*100)+'%';
 }
 
-/* ---------- Ergebnisse ---------- */
-function renderResults(){
-  const cards = $('#cards'); cards.innerHTML='';
-  generated.forEach((tip, i)=>{ cards.appendChild(variantCard(i+1, tip)); });
+function formatTip(t){return t.main.join('-') + (t.euro.length? ' | E:' + t.euro.join('-') : '');}
+function addCard(idx, t){
+  const c=document.createElement('div'); c.className='cardx';
+  const nums=document.createElement('div');
+  t.main.forEach(n=>{const d=document.createElement('span');d.className='chip';d.textContent=n;nums.appendChild(d);});
+  const sep=document.createElement('span'); sep.className='chip e'; sep.textContent='E'; nums.appendChild(sep);
+  t.euro.forEach(n=>{const d=document.createElement('span');d.className='chip e';d.textContent=n;nums.appendChild(d);});
+  const head=document.createElement('div'); head.className='d-flex justify-content-between align-items-center';
+  head.innerHTML=`<strong>#${idx}</strong>`; head.appendChild(nums); c.appendChild(head);
+  const act=document.createElement('div'); act.className='mt-2 d-flex gap-2 flex-wrap';
+  const bFav=document.createElement('button'); bFav.className='btn btn-outline-warning btn-sm'; bFav.textContent='⭐ Favorit'; bFav.onclick=()=>addFav(t);
+  const bAna=document.createElement('button'); bAna.className='btn btn-outline-light btn-sm'; bAna.textContent='📊 Analysieren'; bAna.onclick=()=>analyse(t);
+  act.appendChild(bFav); act.appendChild(bAna); c.appendChild(act);
+  $('#cards').appendChild(c);
 }
 
-/* ---------- Favoriten ---------- */
-function loadFavs(){
-  try{ favorites = JSON.parse(localStorage.getItem(LS_FAVS)||'[]'); }catch{ favorites=[]; }
-  renderFavs();
+/* ======= Analyse ======= */
+function analyse(t){
+  const dist=Array(8).fill(0); let occ=0, idxs=[];
+  for(let i=0;i<draws.length;i++){
+    const d=draws[i];
+    const eqMain = d.main.join(',')===t.main.join(',');
+    if(eqMain) {occ++; idxs.push(i);}
+    const ov = t.main.filter(x=>d.main.includes(x)).length + t.euro.filter(x=>d.euro.includes(x)).length;
+    dist[ov]++;
+  }
+  const ov3 = dist.slice(3).reduce((a,b)=>a+b,0);
+  const freqSum = t.main.reduce((s,n)=>s+freqM[n],0);
+  const box=document.createElement('div'); box.className='cardx';
+  const rows = dist.map((v,i)=>{
+    const pct=((v/draws.length)*100).toFixed(1);
+    const w=Math.round((v/Math.max(1,Math.max(...dist)))*100);
+    return `<tr><td>${i}</td><td style="width:70%"><div class="progress-neon"><i style="width:${w}%"></i></div></td><td class="text-end">${v} <span class="text-secondary">(${pct}%)</span></td></tr>`;
+  }).join('');
+  const first = occ? draws[idxs[0]].date : '–';
+  const last  = occ? draws[idxs.at(-1)].date : '–';
+  let gap='–'; if(idxs.length>1){ let g=0; for(let i=1;i<idxs.length;i++) g+=idxs[i]-idxs[i-1]; gap=(g/(idxs.length-1)).toFixed(1); }
+  box.innerHTML = `<div><strong>Analyse:</strong> ${formatTip(t)}</div>
+  <div class="small text-secondary">Vorkommen (exakt): <b>${occ}</b> — Erstes: <b>${first}</b> — Letztes: <b>${last}</b> — Ø Abstand: <b>${gap}</b> — Overlap ≥3: <b>${ov3}</b> — Frequenzsumme: <b>${freqSum}</b></div>
+  <div class="table-responsive mt-2"><table class="table table-dark table-sm align-middle">
+  <thead><tr><th>Treffer</th><th>Verteilung</th><th class="text-end">Anzahl</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  $('#ana').prepend(box);
 }
-function saveFavs(){ localStorage.setItem(LS_FAVS, JSON.stringify(favorites)); }
-function addFavorite(tip){
-  favorites.push(tip); saveFavs(); renderFavs();
-  $('#favPanel').classList.add('open');
-}
-function delFavorite(idx){ favorites.splice(idx,1); saveFavs(); renderFavs(); }
+$('#analyseTip').addEventListener('click', ()=>{
+  if(!draws.length){alert('Archiv fehlt');return;}
+  const m=$('#wishM').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=50);
+  const e=$('#wishE').value.trim()? $('#wishE').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=12):[];
+  if(m.length!==5){alert('5 Hauptzahlen angeben');return;}
+  if(!(e.length===0||e.length===2)){alert('Euro 0 oder 2');return;}
+  analyse({main:uniqueSorted(m).slice(0,5), euro:uniqueSorted(e).slice(0,2)});
+});
+$('#fromLast').addEventListener('click',()=>{
+  if(!lastTip){alert('Noch keine Variante');return;}
+  $('#wishM').value=lastTip.main.join(' '); $('#wishE').value=lastTip.euro.join(' ');
+  analyse(lastTip);
+});
+$('#analyseAll').addEventListener('click',()=>{
+  if(!generated.length){alert('Keine Varianten');return;}
+  $('#ana').innerHTML=''; generated.forEach(t=>analyse(t));
+});
+$('#csvAll').addEventListener('click',()=>{
+  if(!generated.length){alert('Keine Varianten');return;}
+  const rows = generated.map((t,i)=>[i+1, ...t.main, ...(t.euro.length?t.euro:['',''])].join(','));
+  const header='Index,N1,N2,N3,N4,N5,E1,E2\n';
+  const blob=new Blob([header+rows.join('\n')],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='varianten.csv'; a.click(); URL.revokeObjectURL(a.href);
+});
+
+/* ======= Favoriten ======= */
+function loadFavs(){ try{favs=JSON.parse(localStorage.getItem(LS_FAV) || '[]');}catch{favs=[];} renderFavs(); }
+function saveFavs(){ localStorage.setItem(LS_FAV, JSON.stringify(favs)); }
+function addFav(t){ favs.push(t); saveFavs(); renderFavs(); $('#favPanel').classList.add('open'); }
+function delFav(i){ favs.splice(i,1); saveFavs(); renderFavs(); }
 function renderFavs(){
-  const host = $('#favBody'); host.innerHTML='';
-  if(!favorites.length){ host.innerHTML='<div class="muted">Noch keine Favoriten.</div>'; return; }
-  favorites.forEach((t,i)=>{
-    const c = document.createElement('div'); c.className='variant-card';
-    const head = document.createElement('div'); head.className='variant-head';
-    const nums = document.createElement('div'); nums.className='nums-row';
-    t.main.forEach(n=>{ const chip=document.createElement('div'); chip.className='chip'; chip.textContent=n; nums.appendChild(chip); });
-    if(t.euro.length){ const sep=document.createElement('span'); sep.className='badge-soft'; sep.textContent='Euro'; nums.appendChild(sep);
-      t.euro.forEach(n=>{ const chip=document.createElement('div'); chip.className='chip euro'; chip.textContent=n; nums.appendChild(chip); }); }
-    const tag=document.createElement('span'); tag.className='badge-soft'; tag.textContent='⭐';
-    head.appendChild(nums); head.appendChild(tag); c.appendChild(head);
-    const actions=document.createElement('div'); actions.className='variant-actions';
-    const btnMap=document.createElement('button'); btnMap.className='btn btn-ghost btn-sm'; btnMap.textContent='👁 Map'; btnMap.onclick=()=>{ $('#mapSection').scrollIntoView({behavior:'smooth'}); liveType(t, 1, 1); };
-    const btnAna=document.createElement('button'); btnAna.className='btn btn-success btn-sm'; btnAna.textContent='📊 Analysieren'; btnAna.onclick=()=>renderTipAnalysis(t);
-    const btnDel=document.createElement('button'); btnDel.className='btn btn-outline-danger btn-sm'; btnDel.textContent='🗑 Löschen'; btnDel.onclick=()=>delFavorite(i);
-    actions.appendChild(btnMap); actions.appendChild(btnAna); actions.appendChild(btnDel); c.appendChild(actions);
+  const host=$('#favBody'); host.innerHTML='';
+  if(!favs.length){ host.innerHTML='<div class="text-secondary">Keine Favoriten.</div>'; return; }
+  favs.forEach((t,i)=>{
+    const c=document.createElement('div'); c.className='cardx';
+    const nums=document.createElement('div');
+    t.main.forEach(n=>{const d=document.createElement('span');d.className='chip';d.textContent=n;nums.appendChild(d);});
+    const sep=document.createElement('span'); sep.className='chip e'; sep.textContent='E'; nums.appendChild(sep);
+    t.euro.forEach(n=>{const d=document.createElement('span');d.className='chip e';d.textContent=n;nums.appendChild(d);});
+    const actions=document.createElement('div'); actions.className='mt-2 d-flex gap-2';
+    const bMap=document.createElement('button'); bMap.className='btn btn-outline-light btn-sm'; bMap.textContent='👁 Map'; bMap.onclick=()=>{document.getElementById('mwrap').scrollIntoView({behavior:'smooth'}); typeOnMap(t,1,1);};
+    const bAna=document.createElement('button'); bAna.className='btn btn-success btn-sm'; bAna.textContent='📊 Analysieren'; bAna.onclick=()=>analyse(t);
+    const bDel=document.createElement('button'); bDel.className='btn btn-outline-danger btn-sm'; bDel.textContent='🗑'; bDel.onclick=()=>delFav(i);
+    actions.append(bMap,bAna,bDel);
+    c.append(nums,actions);
     host.appendChild(c);
   });
 }
-$('#favToggle').addEventListener('click', ()=> $('#favPanel').classList.toggle('open'));
-$('#favClose').addEventListener('click', ()=> $('#favPanel').classList.remove('open'));
-$('#favClear').addEventListener('click', ()=>{ if(confirm('Alle Favoriten löschen?')){ favorites=[]; saveFavs(); renderFavs(); } });
-$('#favExport').addEventListener('click', ()=>{
-  if(!favorites.length){ alert('Keine Favoriten.'); return; }
-  const blob = new Blob([ favorites.map(formatTip).join('\n') ], {type:'text/plain'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='favoriten.txt'; a.click(); URL.revokeObjectURL(a.href);
+$('#favToggle').addEventListener('click',()=>$('#favPanel').classList.toggle('open'));
+$('#favClose').addEventListener('click',()=>$('#favPanel').classList.remove('open'));
+$('#favClear').addEventListener('click',()=>{ if(confirm('Alle Favoriten löschen?')){ favs=[]; saveFavs(); renderFavs(); } });
+$('#favExport').addEventListener('click',()=>{
+  if(!favs.length){alert('Keine Favoriten');return;}
+  const rows = favs.map((t,i)=>[i+1, ...t.main, ...(t.euro.length?t.euro:['',''])].join(','));
+  const header='Index,N1,N2,N3,N4,N5,E1,E2\n';
+  const blob=new Blob([header+rows.join('\n')],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='favoriten.csv'; a.click(); URL.revokeObjectURL(a.href);
 });
-$('#favBtn').addEventListener('click', ()=>{
-  if(!lastGenerated){ alert('Noch keine Variante generiert.'); return; }
-  addFavorite(lastGenerated);
-});
+$('#favAdd').addEventListener('click',()=>{ if(!lastTip){alert('Noch keine Variante');return;} addFav(lastTip); });
 
-/* ---------- Buttons ---------- */
-document.getElementById('generateBtn').addEventListener('click', async ()=>{
-  setModeUI();
-  $('#mapSection').scrollIntoView({behavior:'smooth', block:'start'});
-  const total = +$('#kombis').value || 1;
-  const out = $('#liveOutput'); out.textContent='';
-  $('#progressText').textContent='Start…'; $('#progressBar').style.width='0%'; $('#progressLabel').textContent='Start…';
-  generated=[]; lastGenerated=null;
-  const seen = new Set();
+/* ======= Generieren ======= */
+function formatTip(t){return t.main.join('-') + (t.euro.length? ' | E:' + t.euro.join('-') : '');}
+function addCardAfterGen(i,t){ $('#live').textContent += '#'+i+': '+formatTip(t)+'\n'; addCard(i,t); }
+
+$('#gen').addEventListener('click', async ()=>{
+  if(!draws.length){ alert('Bitte erst Archiv laden.'); return; }
+  const total=+$('#n').value||1; $('#cards').innerHTML=''; $('#live').textContent=''; $('#pbar').style.width='0%';
+  generated=[]; lastTip=null;
+  const seen=new Set();
   for(let i=1;i<=total;i++){
-    try{
-      let tip = generateOne();
-      let key = tip.main.join('-');
-      let guard=0;
-      while(seen.has(key) && guard<12){ tip = generateOne(); key = tip.main.join('-'); guard++; }
-      seen.add(key);
-      generated.push(tip); lastGenerated=tip;
-      out.textContent += '#'+i+': '+ formatTip(tip) + '\n';
-      await liveType(tip, i, total);
-      renderResults();
-      out.scrollTop = out.scrollHeight;
-    }catch(e){ out.textContent += 'FEHLER: '+e.message+'\n'; break; }
+    let t=genOne(); t.main=ensureFive(t.main);
+    if($('#mode').value!=='groups' || !$('#euroOn').checked || $$('#eCtrls select').reduce((a,x)=>a+ +x.value,0)!==0){ t.euro=euroAuto(); } else { t.euro=[]; }
+    let key=t.main.join('-')+'|'+t.euro.join('-'); let guard=0;
+    while(seen.has(key) && guard<10){ t=genOne(); t.main=ensureFive(t.main); t.euro=euroAuto(); key=t.main.join('-')+'|'+t.euro.join('-'); guard++; }
+    seen.add(key);
+    generated.push(t); lastTip=t;
+    await typeOnMap(t,i,total); addCardAfterGen(i,t);
   }
 });
-document.getElementById('analyseBtn').addEventListener('click', ()=>{ $('#analysisBox').scrollIntoView({behavior:'smooth', block:'start'}); });
+$('#gotoAna').addEventListener('click',()=>$('#ana').scrollIntoView({behavior:'smooth'}));
 
-/* ---------- Init ---------- */
-function init(){
-  $$('#bandsMain .chip, #bandsEuro .chip').forEach(c=>c.classList.add('dim'));
-  setModeUI();
-  const raw = localStorage.getItem(LS_ARCH_TXT);
-  if(raw){ parseArchiveText(raw); $('#statusText').textContent='Archiv aus Speicher geladen ✔'; }
-  loadFavs();
-}
-init();
+/* ======= Analyse UI ======= */
+$('#analyseAll').addEventListener('click',()=>{
+  if(!generated.length){alert('Keine Varianten');return;}
+  $('#ana').innerHTML=''; generated.forEach(t=>analyse(t));
+});
+$('#analyseTip').addEventListener('click', ()=>{
+  if(!draws.length){alert('Archiv fehlt');return;}
+  const m=$('#wishM').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=50);
+  const e=$('#wishE').value.trim()? $('#wishE').value.trim().split(/\s+|,|;|-/).map(Number).filter(n=>n>=1&&n<=12):[];
+  if(m.length!==5){alert('5 Hauptzahlen angeben');return;}
+  if(!(e.length===0||e.length===2)){alert('Euro 0 oder 2');return;}
+  analyse({main:uniqueSorted(m).slice(0,5), euro:uniqueSorted(e).slice(0,2)});
+});
+$('#fromLast').addEventListener('click',()=>{ if(!lastTip){alert('Noch keine Variante');return;} $('#wishM').value=lastTip.main.join(' '); $('#wishE').value=lastTip.euro.join(' '); analyse(lastTip); });
+
+/* Init: Archiv + Favoriten laden */
+(function(){
+  const s=localStorage.getItem(LS_ARCH), raw=localStorage.getItem(LS_RAW);
+  if(s){ const obj=JSON.parse(s); draws=obj.draws||[]; freqM=obj.freqM||freqM; freqE=obj.freqE||freqE; lastM=obj.lastM||lastM; lastE=obj.lastE||lastE; updateKPIs(); $('#ast').textContent='Archiv aus Speicher ✔'; }
+  try{ favs=JSON.parse(localStorage.getItem(LS_FAV)||'[]'); }catch{ favs=[]; }
+  renderFavs();
+})();
 </script>
 </body>
 </html>
