@@ -1,44 +1,79 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Eurojackpot • Cyberpunk Tool v5.0 – FINAL (Fix: Archiv-Loader)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eurojackpot • Cyberpunk Tool v6.0</title>
 
-  <!-- Libs -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<!-- Libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-  <style>
-    :root{ --cy-c:#00fff0; --cy-m:#ff00ea; --ink:#eaf7ff; }
-    body{background:radial-gradient(1000px 800px at -10% -10%, rgba(0,255,240,.12), transparent 60%), radial-gradient(800px 700px at 110% -10%, rgba(255,0,234,.10), transparent 60%), #050510; color:var(--ink); font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; min-height:100vh;}
-    .title{background:linear-gradient(90deg,var(--cy-c),var(--cy-m)); -webkit-background-clip:text; color:transparent; font-weight:900; letter-spacing:.3px;}
-    .glass{background:rgba(15,18,40,.78); backdrop-filter: blur(14px); border:1px solid rgba(0,255,255,.25); border-radius:14px; padding:14px; box-shadow: 0 12px 40px rgba(0,0,0,.45);}
-    .btn-glow{transition:all .25s ease; position:relative; overflow:hidden;}
-    .btn-glow:hover{transform: translateY(-2px) scale(1.02); box-shadow:0 0 16px var(--cy-c), 0 0 26px var(--cy-m);}
-    .chip{display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:28px; border-radius:8px; margin:3px; font-weight:800; font-size:.8rem; color:#bdfcff; background:linear-gradient(180deg,#0e1530,#15204a); border:1px solid rgba(0,255,255,.25); transition:transform .2s, box-shadow .2s;}
-    .chip.euro{color:#ffe6ff; background:linear-gradient(180deg,#1c1433,#1c2b53); border-color:rgba(255,0,234,.3);}
-    .chip:hover{transform:scale(1.16); box-shadow:0 0 10px var(--cy-m);}
-    .badge{background:rgba(255,255,255,.06); border:1px solid rgba(140,170,255,.22); border-radius:999px; padding:.15rem .5rem; font-size:.72rem;}
-    .error{background:#411015; border:1px solid #ff6b94; color:#ffd8e6; border-radius:10px; padding:.6rem .75rem;}
-    .mono{font-family:ui-monospace, Menlo, Consolas, 'Cascadia Code', monospace;}
-  </style>
+<style>
+  :root{ --cy-c:#00fff0; --cy-m:#ff00ea; --ink:#eaf7ff; --bg:#060712; }
+  html,body{height:100%;}
+  body{background:
+       radial-gradient(1000px 800px at -10% -10%, rgba(0,255,240,.12), transparent 60%),
+       radial-gradient(800px 700px at 110% -10%, rgba(255,0,234,.10), transparent 60%),
+       var(--bg);
+       color:var(--ink);
+       font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+  .title{background:linear-gradient(90deg,var(--cy-c),var(--cy-m)); -webkit-background-clip:text; color:transparent; font-weight:900; letter-spacing:.3px;}
+  .glass{background:rgba(15,18,40,.78); backdrop-filter: blur(14px); border:1px solid rgba(0,255,255,.25); border-radius:14px; padding:14px; box-shadow: 0 12px 40px rgba(0,0,0,.45);}
+  .btn-glow{transition:transform .18s ease, box-shadow .18s ease; position:relative; overflow:hidden;}
+  .btn-glow:hover{transform: translateY(-2px); box-shadow:0 0 18px var(--cy-c), 0 0 26px var(--cy-m);}
+  .btn-glow:active{transform: translateY(0);}
+  /* Better nav buttons */
+  .nav-btn{display:flex; flex-direction:column; align-items:center; justify-content:center;
+           gap:6px; min-width:86px; height:72px; padding:8px 10px; border-radius:16px;
+           background:linear-gradient(180deg,rgba(18,24,50,.9),rgba(14,18,36,.9));
+           border:1px solid rgba(255,255,255,.08);
+           box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 8px 22px rgba(0,0,0,.4);}
+  .nav-btn span{font-size:.78rem; letter-spacing:.2px; white-space:nowrap;}
+  .nav-btn .ico{font-size:20px; line-height:1;}
+  .nav-btn.active{outline:2px solid rgba(255,255,255,.15); box-shadow:0 0 20px rgba(0,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.1);}
+  .chip{display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:28px; border-radius:8px; margin:3px; font-weight:800; font-size:.8rem; color:#bdfcff; background:linear-gradient(180deg,#0e1530,#15204a); border:1px solid rgba(0,255,255,.25); transition:transform .2s, box-shadow .2s;}
+  .chip.euro{color:#ffe6ff; background:linear-gradient(180deg,#1c1433,#1c2b53); border-color:rgba(255,0,234,.3);}
+  .chip:hover{transform:scale(1.16); box-shadow:0 0 10px var(--cy-m);}
+  .badge{background:rgba(255,255,255,.06); border:1px solid rgba(140,170,255,.22); border-radius:999px; padding:.15rem .5rem; font-size:.72rem;}
+  .error{background:#411015; border:1px solid #ff6b94; color:#ffd8e6; border-radius:10px; padding:.6rem .75rem;}
+  .mono{font-family:ui-monospace, Menlo, Consolas, 'Cascadia Code', monospace;}
+  /* Typing area */
+  #liveOutput{position:relative;}
+  #liveOutput .caret{display:inline-block; width:10px; margin-left:1px; background:linear-gradient(180deg,var(--cy-c),var(--cy-m)); animation:blink 1s step-end infinite; height:1.1em; vertical-align:bottom;}
+  @keyframes blink{50%{opacity:0;}}
+  /* Mobile spacing */
+  @media (max-width:420px){
+    .nav-btn{min-width:74px; height:68px;}
+    .nav-btn span{font-size:.72rem;}
+  }
+</style>
 </head>
 <body class="p-5">
-  <div class="text-center mb-6 animate__animated animate__fadeInDown">
-    <h1 class="text-4xl title">Eurojackpot • Cyberpunk Tool v5.0</h1>
-    <p class="text-pink-300">FINAL – Archiv + Map + Generator + Analyse + Favoriten</p>
+  <div class="text-center mb-5 animate__animated animate__fadeInDown">
+    <h1 class="text-3xl md:text-4xl title">Eurojackpot • Cyberpunk Tool v6.0</h1>
+    <p class="text-pink-300">FINAL – Archiv · Map · Generator · Analyse · Favoriten</p>
   </div>
 
-  <!-- Tabs -->
-  <div class="flex justify-center mb-6 gap-3">
-    <button onclick="tab('archiv')" class="btn-glow px-4 py-2 bg-cyan-600 rounded-lg">📂 Archiv</button>
-    <button onclick="tab('map')" class="btn-glow px-4 py-2 bg-fuchsia-600 rounded-lg">🗺 Map</button>
-    <button onclick="tab('gen')" class="btn-glow px-4 py-2 bg-green-600 rounded-lg">⚡ Generieren</button>
-    <button onclick="tab('ana')" class="btn-glow px-4 py-2 bg-yellow-600 rounded-lg">📊 Analyse</button>
-    <button onclick="tab('fav')" class="btn-glow px-4 py-2 bg-pink-600 rounded-lg">⭐ Favoriten</button>
+  <!-- NAV -->
+  <div class="flex justify-center flex-wrap gap-3 mb-6">
+    <button onclick="tab('archiv', this)" class="btn-glow nav-btn active" id="btn-archiv">
+      <div class="ico">📂</div><span>Archiv</span>
+    </button>
+    <button onclick="tab('map', this)" class="btn-glow nav-btn" id="btn-map">
+      <div class="ico">🗺️</div><span>Map</span>
+    </button>
+    <button onclick="tab('gen', this)" class="btn-glow nav-btn" id="btn-gen">
+      <div class="ico">⚡</div><span>Generieren</span>
+    </button>
+    <button onclick="tab('ana', this)" class="btn-glow nav-btn" id="btn-ana">
+      <div class="ico">📊</div><span>Analyse</span>
+    </button>
+    <button onclick="tab('fav', this)" class="btn-glow nav-btn" id="btn-fav">
+      <div class="ico">⭐</div><span>Favoriten</span>
+    </button>
   </div>
 
   <!-- ARCHIV -->
@@ -53,14 +88,14 @@
         <button id="loadLatestBtn" class="btn-glow px-3 py-2 bg-blue-600 rounded">📥 Neueste laden</button>
         <button id="clearArchiveBtn" class="btn-glow px-3 py-2 bg-gray-600 rounded">🧹 Cache löschen</button>
       </div>
-      <p class="text-xs text-gray-300 mt-2">Falls der Server CORS blockiert, probiert das Tool automatisch mehrere **CORS-Proxys**. Wenn alles fehlschlägt, bekommst du einen Direktlink zum manuellen Download (danach Datei hier einfach <b>ziehen & ablegen</b> 💾).</p>
+      <p class="text-xs text-gray-300 mt-2">Bei CORS-Block versucht das Tool automatisch mehrere Fallbacks. Im Zweifel: Link öffnen, Datei speichern und hier ablegen.</p>
     </div>
 
     <div class="glass mb-3">
       <div class="font-semibold mb-2">Manuell laden</div>
       <div class="flex flex-wrap gap-2">
         <input type="file" id="zipInput" accept=".zip,.txt,.csv" class="bg-gray-900 p-2 rounded">
-        <div class="badge">Tipp: ZIP/TXT/CSV einfach auf die Seite ziehen (Drag & Drop)</div>
+        <div class="badge">Tipp: ZIP/TXT/CSV einfach per Drag & Drop auf die Seite ziehen.</div>
       </div>
     </div>
 
@@ -114,15 +149,14 @@
       <div class="mt-1 flex items-center justify-between">
         <div class="badge">Eurozahlen (optional, 0 oder 2)</div>
         <label class="inline-flex items-center gap-2">
-          <input id="useEuro" type="checkbox">
-          <span class="text-sm">Euro berücksichtigen</span>
+          <input id="useEuro" type="checkbox"><span class="text-sm">Euro berücksichtigen</span>
         </label>
       </div>
       <div id="euroControls" class="grid grid-cols-2 gap-2 mt-1 hidden"></div>
       <div id="groupError" class="error hidden mt-2"></div>
     </div>
 
-    <pre id="liveOutput" class="mono bg-black/70 p-3 mt-3 rounded h-40 overflow-auto text-green-300"></pre>
+    <pre id="liveOutput" class="mono bg-black/70 p-3 mt-3 rounded h-44 overflow-auto text-green-300"></pre>
     <div id="cards" class="mt-3"></div>
   </div>
 
@@ -155,16 +189,19 @@ const uniqueSorted = a => Array.from(new Set(a)).sort((x,y)=>x-y);
 const sum = a => a.reduce((s,v)=>s+v,0);
 
 /* ===== State ===== */
-let draws=[];                // {date, main[5], euro[2]}
+let draws=[];
 let freqMain=Array(51).fill(0), freqEuro=Array(13).fill(0);
 let lastSeen=Array(51).fill(null), lastSeenE=Array(13).fill(null);
 let generated=[];
 let favorites = JSON.parse(localStorage.getItem("ej_favs_v1")||"[]");
 
 /* ===== Tabs ===== */
-function tab(name){
+function tab(name, btn){
   ['archiv','map','gen','ana','fav'].forEach(n=>$('#v-'+n).classList.add('hidden'));
   $('#v-'+name).classList.remove('hidden');
+  // active styles
+  $$('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
 }
 
 /* ===== Map ===== */
@@ -192,7 +229,6 @@ function parseArchiveText(txt){
   try{
     txt=txt.replace(/^\uFEFF/,''); // BOM
     const lines = txt.replace(/\r\n?/g,'\n').split('\n').map(l=>l.trim()).filter(Boolean);
-    // Skip header if present (contains non-numeric words)
     const cleaned = lines.filter(l => (l.match(/\d+/g)||[]).length >= 7);
     const regDMY=/^(\d{1,2})[.\-\/](\d{1,2})[.\-\/](\d{2,4})$/; const regYMD=/^(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})$/;
     function iso(y,m,d){ const dt=new Date(+y, +m-1, +d); return isNaN(dt)? null : dt.toISOString().slice(0,10); }
@@ -204,7 +240,7 @@ function parseArchiveText(txt){
         else rest=t.slice(0);
       }
       const nums=rest.map(Number).filter(n=>!Number.isNaN(n));
-      if(!date){ // try infer at end
+      if(!date){
         const onlyNums=(line.match(/\d+/g)||[]).map(Number);
         if(onlyNums.length>=7){ const [a,b,c]=onlyNums.slice(0,3); const d=iso(c,b,a); if(d) date=d; }
       }
@@ -225,9 +261,9 @@ function parseArchiveText(txt){
   }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
 }
 
-/* ===== Robust Loader (mit Proxy-Fallbacks + Drag&Drop + Datei-Upload) ===== */
+/* Robust Loader mit Fallbacks */
 async function fetchWithProxies(url){
-  const trials = [
+  const trials=[
     url,
     'https://cors.isomorphic-git.org/'+url,
     'https://api.allorigins.win/raw?url='+encodeURIComponent(url)
@@ -235,42 +271,38 @@ async function fetchWithProxies(url){
   let lastErr=null;
   for(const u of trials){
     try{
-      const res = await fetch(u);
+      const res=await fetch(u);
       if(!res.ok) throw new Error('HTTP '+res.status);
-      const ct = res.headers.get('content-type')||'';
+      const ct=res.headers.get('content-type')||'';
       if(ct.includes('zip') || u.endsWith('.zip')){
-        const blob = await res.blob();
-        const zip = await JSZip.loadAsync(blob);
-        const entries = Object.values(zip.files);
-        let entry = entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
+        const blob=await res.blob();
+        const zip=await JSZip.loadAsync(blob);
+        const entries=Object.values(zip.files);
+        let entry=entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
         if(!entry) throw new Error('ZIP ohne TXT/CSV.');
-        const text = await entry.async('string');
+        const text=await entry.async('string');
         return text;
       }else{
-        // vielleicht liefert der Server direkt TXT/CSV
-        const text = await res.text();
-        return text;
+        return await res.text();
       }
     }catch(e){ lastErr=e; }
   }
   throw lastErr || new Error('Unbekannter Fehler beim Laden.');
 }
-
-// File input
+// File input & dragdrop
 $('#zipInput').addEventListener('change', async (evt)=>{
   const file=evt.target.files?.[0]; if(!file) return;
   try{
     let text='';
     if(file.name.toLowerCase().endsWith('.zip')){
       const zip=await JSZip.loadAsync(file); const entries=Object.values(zip.files);
-      let entry = entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
+      let entry=entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
       if(!entry) throw new Error('ZIP ohne TXT/CSV.');
-      text = await entry.async('string');
-    }else{ text = await file.text(); }
+      text=await entry.async('string');
+    }else{ text=await file.text(); }
     parseArchiveText(text);
   }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
 });
-// Drag&Drop
 document.body.addEventListener('dragover', e=>{ e.preventDefault(); });
 document.body.addEventListener('drop', async e=>{
   e.preventDefault();
@@ -280,26 +312,20 @@ document.body.addEventListener('drop', async e=>{
     let text='';
     if(file.name.toLowerCase().endsWith('.zip')){
       const zip=await JSZip.loadAsync(file); const entries=Object.values(zip.files);
-      let entry = entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
+      let entry=entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
       if(!entry) throw new Error('ZIP ohne TXT/CSV.');
-      text = await entry.async('string');
-    }else{ text = await file.text(); }
+      text=await entry.async('string');
+    }else{ text=await file.text(); }
     parseArchiveText(text);
   }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
 });
-// Latest button
 $('#loadLatestBtn').addEventListener('click', async ()=>{
-  const url = $('#archiveUrl').value.trim();
+  const url=$('#archiveUrl').value.trim();
   $('#statusText').textContent='Lade neuestes Archiv…';
-  try{
-    const text = await fetchWithProxies(url);
-    parseArchiveText(text);
-  }catch(e){
-    $('#statusText').innerHTML = "Download nicht möglich (CORS/Netzwerk). <a class='underline text-cyan-300' target='_blank' href='"+url+"'>Hier manuell laden</a> und dann Datei per Upload/Drag&Drop einfügen.";
-  }
+  try{ const text=await fetchWithProxies(url); parseArchiveText(text); }
+  catch(e){ $('#statusText').innerHTML="Download nicht möglich (CORS/Netzwerk). <a class='underline text-cyan-300' target='_blank' href='"+url+"'>Manuell laden</a>."; }
 });
 $('#clearArchiveBtn').addEventListener('click', ()=>{ localStorage.removeItem(ARCH_KEY); $('#statusText').textContent='Cache gelöscht.'; });
-// Auto-load
 (()=>{ const saved=localStorage.getItem(ARCH_KEY); if(saved){ try{ parseArchiveText(saved); $('#statusText').textContent='Archiv aus Speicher geladen ✔'; }catch{} } })();
 
 /* ===== Charts ===== */
@@ -459,6 +485,24 @@ function runsBest(){
   main = uniqueSorted(main).slice(0,5);
   return {main, euro:euroAuto()};
 }
+
+/* ===== Typing Engine ===== */
+async function typeLine(el, text){
+  // Fügt caret hinzu und tippt Zeichen für Zeichen
+  const caret = document.createElement('span'); caret.className='caret';
+  const frag = document.createDocumentFragment();
+  el.appendChild(frag);
+  for(const ch of text){
+    el.append(ch);
+    await sleep(12);
+  }
+  el.appendChild(caret);
+  // kurze Pause, dann caret entfernen
+  await sleep(250);
+  caret.remove();
+}
+
+/* ===== Analyse einer Variante & Karten ===== */
 function exactOccurrences(tip){
   const idx=[]; for(let i=0;i<draws.length;i++){ const d=draws[i];
     if(tip.main.length===5 && d.main.length===5 && tip.main.every((n,j)=>n===d.main[j])) idx.push(i);
@@ -517,7 +561,7 @@ function generateOne(){
     const want = $$('#groupControls select').map(s=>+s.value||0);
     const sumWant = sum(want);
     const err=$('#groupError'); err.classList.add('hidden'); err.textContent='';
-    if(sumWant<5){ err.classList.remove('hidden'); err.textContent='Bitte mindestens 5 Zahlen über Gruppen wählen (Summe ≤ 5, Rest wird aufgefüllt).'; throw new Error('Gruppen nicht vollständig.'); }
+    if(sumWant<5){ err.classList.remove('hidden'); err.textContent='Bitte mindestens 5 Zahlen über Gruppen wählen (Summe ≤ 5).'; throw new Error('Gruppen nicht vollständig.'); }
     let weightMain=null;
     const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
     const maxM=Math.max(...fm.slice(1)); weightMain=n=>Math.ceil(3*fm[n]/maxM);
@@ -561,7 +605,7 @@ function generateOne(){
     const topTrip=[...tripleMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,20).map(e=>e[0].split('-').map(Number));
     if(Math.random()<0.5 && topTrip.length){ main = [...topTrip[Math.floor(Math.random()*topTrip.length)]]; }
     else if(topPairs.length){ main = [...topPairs[Math.floor(Math.random()*topPairs.length)]]; }
-    const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
+    const r2=draws.slice(-100); const fm=Array(51).fill(1); r2.forEach(d=>d.main.forEach(n=>fm[n]++));
     const maxM=Math.max(...fm.slice(1)); const w=n=>Math.ceil(2*fm[n]/maxM);
     while(main.length<5){ const add = pickFromRange(1,50,main,1,w); if(add.length) main.push(add[0]); else break; }
     main.sort((a,b)=>a-b);
@@ -572,12 +616,21 @@ function generateOne(){
   main = pickFromRange(1,50,[],5).sort((a,b)=>a-b); return {main, euro:euroAuto()};
 }
 
-/* ===== Generate Button ===== */
+/* ===== Typing Output + Karten rendern ===== */
+async function printTip(outEl, index, tip){
+  await typeLine(outEl, "#"+index+": ");
+  for(const n of tip.main){ await typeLine(outEl, n+" "); }
+  await typeLine(outEl, "| E: ");
+  for(const e of tip.euro){ await typeLine(outEl, e+" "); }
+  outEl.append("\n");
+  outEl.scrollTop = outEl.scrollHeight;
+}
+
 $('#generateBtn').addEventListener('click', async ()=>{
   if(!draws.length){ alert('Bitte zuerst ein Archiv laden.'); return; }
   if($('#modus').value==='groups' && $('#groupControls').children.length===0){ buildGroupUI(); }
   const total = +$('#kombis').value || 1;
-  const out = $('#liveOutput'); out.textContent='';
+  const out = $('#liveOutput'); out.textContent=''; // reset
   const cards = $('#cards'); cards.innerHTML='';
   generated=[];
   const seen=new Set();
@@ -588,13 +641,8 @@ $('#generateBtn').addEventListener('click', async ()=>{
       let guard=0; while(seen.has(key) && guard<10){ tip = generateOne(); key=tip.main.join('-'); guard++; }
       seen.add(key);
       generated.push(tip);
-      out.textContent += '#'+i+': '; await sleep(15);
-      for(const n of tip.main){ out.textContent += n+' '; await sleep(15); }
-      out.textContent += '| E:'; await sleep(15);
-      for(const e of tip.euro){ out.textContent += ' '+e; await sleep(15); }
-      out.textContent += '\n';
+      await printTip(out, i, tip);
       cards.appendChild(tipCard(i, tip));
-      out.scrollTop = out.scrollHeight;
     }catch(e){
       const err=$('#groupError'); err.classList.remove('hidden'); err.textContent=e.message; break;
     }
