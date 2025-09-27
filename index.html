@@ -3,9 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eurojackpot Tool by EnoWeb • v6.5.1</title>
+<title>Eurojackpot Tool by EnoWeb • v6.5.2</title>
 
-<!-- Libs (ohne SRI, um geblockte Skripte zu vermeiden) -->
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -36,7 +35,6 @@
 <body class="p-5">
   <h1 class="title text-3xl md:text-4xl mb-4">Eurojackpot Tool by EnoWeb</h1>
 
-  <!-- NAV -->
   <div class="flex justify-center flex-wrap gap-3 mb-6">
     <button type="button" onclick="tab('archiv', this)" class="nav-btn active" id="btn-archiv"><div>📂</div><span>Archiv</span></button>
     <button type="button" onclick="tab('map', this)" class="nav-btn" id="btn-map"><div>🗺️</div><span>Map</span></button>
@@ -77,6 +75,7 @@
       <div><div class="text-sm text-gray-300">Bis</div><div id="kpiTo" class="font-bold">–</div></div>
       <div><div class="text-sm text-gray-300">Aktualität</div><div id="kpiFresh" class="font-bold">–</div></div>
     </div>
+    <p id="freshHint" class="text-xs opacity-80 mt-2"></p>
   </div>
 
   <!-- MAP -->
@@ -168,13 +167,78 @@
   </div>
 
 <script>
-/* ===== Helpers ===== */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const sleep = ms => new Promise(r=>setTimeout(r,ms));
 const sum = a => a.reduce((s,v)=>s+v,0);
 
-/* ===== JSZip Fallback Loader ===== */
+/* === "Neueste Referenz" für Aktualität ===================================== */
+const LATEST_REF_KEY = 'ej_latest_ref_date_v1'; // ISO yyyy-mm-dd
+let latestRefDate = localStorage.getItem(LATEST_REF_KEY) || null;
+
+/* === UI Grundfunktionen ==================================================== */
+function tab(name, btn){
+  ['archiv','map','gen','ana','fav'].forEach(n=>$('#v-'+n).classList.add('hidden'));
+  $('#v-'+name).classList.remove('hidden');
+  $$('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(name==='fav') renderFavs();
+}
+
+function renderMap(){
+  const m=$('#mapMain'); m.innerHTML='';
+  for(let i=1;i<=50;i++){ const d=document.createElement('div'); d.className='chip'; d.textContent=i; d.dataset.n=i; m.appendChild(d); }
+  const e=$('#mapEuro'); e.innerHTML='';
+  for(let i=1;i<=12;i++){ const d=document.createElement('div'); d.className='chip euro'; d.textContent=i; d.dataset.n=i; e.appendChild(d); }
+  $('#progress').textContent='Bereit';
+}
+renderMap();
+function clearMap(){ $$('#mapMain .chip, #mapEuro .chip').forEach(c=>c.classList.remove('sel')); }
+async function animateSelection(main,euro){
+  tab('map',$('#btn-map')); clearMap(); $('#progress').textContent='Tippt…';
+  for(const n of main){ const el=$(`#mapMain .chip[data-n="${n}"]`); if(el){ el.classList.add('sel'); await sleep(120);} }
+  for(const n of euro){ const el=$(`#mapEuro .chip[data-n="${n}"]`); if(el){ el.classList.add('sel'); await sleep(120);} }
+  $('#progress').textContent='Fertig';
+}
+
+/* === State ================================================================= */
+let draws=[]; let freqMain=Array(51).fill(0), freqEuro=Array(13).fill(0); let lastSeen=Array(51).fill(null), lastSeenE=Array(13).fill(null);
+let generated=[];
+let favorites = JSON.parse(localStorage.getItem("ej_favs_v1")||"[]");
+const ARCH_KEY='ej_archive_v1';
+
+/* === KPIs & Aktualität ===================================================== */
+function computeFreshnessLabel(endIso){
+  // 1) Vergleich zu "latestRefDate", falls vorhanden
+  if(latestRefDate){
+    const end = new Date(endIso); const ref = new Date(latestRefDate);
+    if(end < ref){ // älter als zuletzt bekannte "neueste"
+      const daysBehind = Math.round((ref - end)/86400000);
+      return `veraltet (−${daysBehind} Tage gegenüber neuestem: ${latestRefDate})`;
+    }
+  }
+  // 2) Fallback: Vergleich zu heute
+  const last=new Date(endIso);
+  const days=Math.max(0, Math.round((Date.now()-last.getTime())/86400000));
+  if(days<=14) return 'aktuell';
+  if(days<=60) return `ok (${days} Tage alt)`;
+  return `veraltet (${days} Tage alt)`;
+}
+
+function setKPIs(){
+  if(!draws.length){
+    $('#kpiCount').textContent='–'; $('#kpiFrom').textContent='–'; $('#kpiTo').textContent='–'; $('#kpiFresh').textContent='–';
+    $('#freshHint').textContent=''; return;
+  }
+  $('#kpiCount').textContent=draws.length;
+  $('#kpiFrom').textContent=draws[0].date;
+  $('#kpiTo').textContent=draws.at(-1).date;
+  const label = computeFreshnessLabel(draws.at(-1).date);
+  $('#kpiFresh').textContent = label;
+  $('#freshHint').textContent = latestRefDate ? `Neuestes Referenz-Ende: ${latestRefDate}` : '';
+}
+
+/* === Archiv Laden/Parsen =================================================== */
 async function ensureJSZip(){
   if (window.JSZip) return true;
   const cdns = [
@@ -196,58 +260,6 @@ async function ensureJSZip(){
   return false;
 }
 
-/* ===== Error banner ===== */
-function toast(msg, kind='err'){
-  const b=document.createElement('div');
-  b.style.cssText='position:fixed;bottom:8px;left:8px;right:8px;background:'+(kind==='ok'?'#153a29':'#3a1520')+';border:1px solid '+(kind==='ok'?'#39ff88':'#ff6b94')+';color:#fff;padding:8px 10px;border-radius:10px;z-index:9999;font-family:ui-monospace;';
-  b.textContent=msg; document.body.appendChild(b); setTimeout(()=>b.remove(), 6000);
-}
-
-/* ===== Tabs ===== */
-function tab(name, btn){
-  ['archiv','map','gen','ana','fav'].forEach(n=>$('#v-'+n).classList.add('hidden'));
-  $('#v-'+name).classList.remove('hidden');
-  $$('.nav-btn').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  if(name==='fav') renderFavs();
-}
-
-/* ===== Map ===== */
-function renderMap(){
-  const m=$('#mapMain'); m.innerHTML='';
-  for(let i=1;i<=50;i++){ const d=document.createElement('div'); d.className='chip'; d.textContent=i; d.dataset.n=i; m.appendChild(d); }
-  const e=$('#mapEuro'); e.innerHTML='';
-  for(let i=1;i<=12;i++){ const d=document.createElement('div'); d.className='chip euro'; d.textContent=i; d.dataset.n=i; e.appendChild(d); }
-  $('#progress').textContent='Bereit';
-}
-renderMap();
-function clearMap(){ $$('#mapMain .chip, #mapEuro .chip').forEach(c=>c.classList.remove('sel')); }
-async function animateSelection(main,euro){
-  tab('map',$('#btn-map')); clearMap(); $('#progress').textContent='Tippt…';
-  for(const n of main){ const el=$(`#mapMain .chip[data-n="${n}"]`); if(el){ el.classList.add('sel'); await sleep(120);} }
-  for(const n of euro){ const el=$(`#mapEuro .chip[data-n="${n}"]`); if(el){ el.classList.add('sel'); await sleep(120);} }
-  $('#progress').textContent='Fertig';
-}
-
-/* ===== State ===== */
-let draws=[]; let freqMain=Array(51).fill(0), freqEuro=Array(13).fill(0); let lastSeen=Array(51).fill(null), lastSeenE=Array(13).fill(null);
-let generated=[];
-let favorites = JSON.parse(localStorage.getItem("ej_favs_v1")||"[]");
-const ARCH_KEY='ej_archive_v1';
-
-/* ===== KPIs ===== */
-function setKPIs(){
-  if(!draws.length){ $('#kpiCount').textContent='–'; $('#kpiFrom').textContent='–'; $('#kpiTo').textContent='–'; $('#kpiFresh').textContent='–'; return; }
-  $('#kpiCount').textContent=draws.length;
-  $('#kpiFrom').textContent=draws[0].date;
-  $('#kpiTo').textContent=draws.at(-1).date;
-  const last=new Date(draws.at(-1).date);
-  const days=Math.max(0, Math.round((Date.now()-last.getTime())/86400000));
-  let label=''; if(days<=14) label=`aktuell`; else if(days<=60) label=`ok (${days} Tage alt)`; else label=`veraltet (${days} Tage alt)`;
-  $('#kpiFresh').textContent=label;
-}
-
-/* ===== Archiv: Download/Parse ===== */
 async function fetchWithProxies(url){
   const trials=[
     url,
@@ -277,7 +289,8 @@ async function fetchWithProxies(url){
   }
   throw last||new Error('Download fehlgeschlagen');
 }
-function parseArchiveText(txt){
+
+function parseArchiveText(txt, source='manual'){
   try{
     txt=txt.replace(/^\uFEFF/,'');
     const lines = txt.replace(/\r\n?/g,'\n').split('\n').map(l=>l.trim()).filter(Boolean);
@@ -302,17 +315,23 @@ function parseArchiveText(txt){
     draws.sort((a,b)=>a.date.localeCompare(b.date));
     draws.forEach((d,idx)=>{ d.main.forEach(n=>{freqMain[n]++; lastSeen[n]=idx;}); d.euro.forEach(n=>{freqEuro[n]++; lastSeenE[n]=idx;}); });
     localStorage.setItem(ARCH_KEY, txt);
+    // Wenn Quelle "latest" ist, Referenz-Enddatum speichern
+    if(source==='latest'){
+      latestRefDate = draws.at(-1).date;
+      localStorage.setItem(LATEST_REF_KEY, latestRefDate);
+    }
     $('#statusText').textContent='Archiv geladen ✔';
     setKPIs(); renderCharts(); renderAnalyseKPIs();
   }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
 }
+
+/* === Buttons =============================================================== */
 document.getElementById('loadLatestBtn').addEventListener('click', async ()=>{
   const url=$('#archiveUrl').value.trim();
   $('#statusText').textContent='Lade neuestes Archiv…';
-  try{ const text=await fetchWithProxies(url); parseArchiveText(text); }
+  try{ const text=await fetchWithProxies(url); parseArchiveText(text, 'latest'); }
   catch(e){
-    $('#statusText').innerHTML="Download nicht möglich. <a class='underline' target='_blank' href='"+url+"'>Manuell öffnen</a>.<br><span class='text-xs opacity-80'>Tipp: Nutze „⬇️ ZIP speichern“ und lade danach die entpackte TXT hier hoch.</span>";
-    toast('Download nicht möglich – bitte ZIP speichern & TXT hochladen', 'err');
+    $('#statusText').innerHTML="Download nicht möglich. <a class='underline' target='_blank' href='"+url+"'>Manuell öffnen</a>.";
   }
 });
 document.getElementById('forceDlBtn').addEventListener('click', async ()=>{
@@ -324,30 +343,30 @@ document.getElementById('forceDlBtn').addEventListener('click', async ()=>{
       const res=await fetch(u); if(!res.ok) throw new Error('HTTP '+res.status);
       const blob=await res.blob();
       const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='archiv_eurojackpot.zip'; a.click(); URL.revokeObjectURL(a.href);
-      toast('ZIP gespeichert ✔','ok');
       return;
     }catch(e){ last=e; }
   }
-  toast('Direkt-Download nicht möglich: '+(last?.message||'Unbekannt'),'err');
+  alert('Direkt-Download nicht möglich: '+(last?.message||'Unbekannt'));
 });
 (function(){ const u=$('#archiveUrl').value.trim(); $('#directDl').href=u; })();
 
-/* File input + DnD */
 document.getElementById('zipInput').addEventListener('change', async (e)=>{
   const file=e.target.files?.[0]; if(!file) return; $('#fileName').textContent=file.name;
   try{
     let text='';
     if(file.name.toLowerCase().endsWith('.zip')){
-      const ok = await ensureJSZip();
-      if(!ok){ toast('JSZip nicht verfügbar – bitte ZIP entpacken und TXT/CSV hochladen.','err'); return; }
+      if(!(await ensureJSZip())){ alert('JSZip nicht verfügbar – bitte ZIP entpacken und TXT/CSV hochladen.'); return; }
       const zip=await JSZip.loadAsync(file); const entries=Object.values(zip.files);
       let entry=entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
       if(!entry) throw new Error('ZIP ohne TXT/CSV.');
       text=await entry.async('string');
     }else{ text=await file.text(); }
-    parseArchiveText(text);
+    // Manuelle Datei = Quelle "manual", keine Aktualisierung der "latestRefDate"
+    parseArchiveText(text, 'manual');
   }catch(err){ $('#statusText').textContent='Fehler: '+err.message; }
 });
+
+/* Drag & Drop */
 document.body.addEventListener('dragover', e=>{ e.preventDefault(); });
 document.body.addEventListener('drop', async e=>{
   e.preventDefault();
@@ -357,24 +376,23 @@ document.body.addEventListener('drop', async e=>{
   try{
     let text='';
     if(file.name.toLowerCase().endsWith('.zip')){
-      const ok = await ensureJSZip();
-      if(!ok){ toast('JSZip nicht verfügbar – bitte ZIP entpacken und TXT/CSV hochladen.','err'); return; }
+      if(!(await ensureJSZip())){ alert('JSZip nicht verfügbar – bitte ZIP entpacken und TXT/CSV hochladen.'); return; }
       const zip=await JSZip.loadAsync(file); const entries=Object.values(zip.files);
       let entry=entries.find(f=>/\.(txt|csv)$/i.test(f.name) && /eurojackpot/i.test(f.name)) || entries.find(f=>/\.(txt|csv)$/i.test(f.name));
       if(!entry) throw new Error('ZIP ohne TXT/CSV.');
       text=await entry.async('string');
     }else{ text=await file.text(); }
-    parseArchiveText(text);
+    parseArchiveText(text, 'manual');
   }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
 });
 
-/* ===== Charts + Analyse KPIs ===== */
+/* === Analyse (Charts + KPIs) ============================================== */
 let chartMain, chartEuro;
 function renderCharts(){
   if(!draws.length) return;
   if(chartMain) chartMain.destroy(); if(chartEuro) chartEuro.destroy();
-  chartMain=new Chart($('#chartMain'),{type:'bar',data:{labels:[...Array(50).keys()].slice(1),datasets:[{data:[...freqMain].slice(1), borderWidth:0}]},options:{plugins:{legend:{display:false}, tooltip:{callbacks:{label:(ctx)=>`#${ctx.label}: ${ctx.parsed.y}`}}},scales:{x:{ticks:{color:'#9ad'}},y:{ticks:{color:'#9ad'}}}}});
-  chartEuro=new Chart($('#chartEuro'),{type:'bar',data:{labels:[...Array(12).keys()].slice(1),datasets:[{data:[...freqEuro].slice(1), borderWidth:0}]},options:{plugins:{legend:{display:false}, tooltip:{callbacks:{label:(ctx)=>`E${ctx.label}: ${ctx.parsed.y}`}}},scales:{x:{ticks:{color:'#f9c'}},y:{ticks:{color:'#f9c'}}}}});
+  chartMain=new Chart($('#chartMain'),{type:'bar',data:{labels:[...Array(50).keys()].slice(1),datasets:[{data:[...freqMain].slice(1), borderWidth:0}]},options:{plugins:{legend:{display:false}}}});
+  chartEuro=new Chart($('#chartEuro'),{type:'bar',data:{labels:[...Array(12).keys()].slice(1),datasets:[{data:[...freqEuro].slice(1), borderWidth:0}]},options:{plugins:{legend:{display:false}}}});
 }
 function renderAnalyseKPIs(){
   if(!draws.length) return;
@@ -394,7 +412,7 @@ function renderAnalyseKPIs(){
   $('#kpiPairs').textContent = pairs;
 }
 
-/* ===== Gruppen UI ===== */
+/* === Gruppen & Generator =================================================== */
 const GROUPS=[{label:'1–10',from:1,to:10},{label:'11–20',from:11,to:20},{label:'21–30',from:21,to:30},{label:'31–40',from:31,to:40},{label:'41–50',from:41,to:50}];
 const EGROUPS=[{label:'1–6',from:1,to:6},{label:'7–12',from:7,to:12}];
 function buildGroupUI(){
@@ -447,7 +465,6 @@ $('#useEuro').addEventListener('change', e=>{
   updateGroupCounters();
 });
 
-/* ===== Generator Utilities ===== */
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
 function pickFromRange(from,to,avoid,count,weightFn){
   const bag=[]; for(let n=from;n<=to;n++){ if(!avoid.includes(n)){ const w=Math.max(1, weightFn?weightFn(n):1); for(let k=0;k<w;k++) bag.push(n);} }
@@ -467,6 +484,7 @@ function euroAuto(){
   const e = pickFromRange(1,12,[],2,w).sort((a,b)=>a-b);
   return e;
 }
+
 const normalizeVec = v => { const m=Math.max(...v); return v.map(x=> m? x/m : 0); };
 function buildMatrices(){
   const C = Array.from({length:51}, ()=>Array(51).fill(0));
@@ -634,7 +652,6 @@ function tipCard(idx, tip){
   return card;
 }
 
-/* Generator pro Modus */
 function generateOne(){
   const mode = $('#modus').value;
   let main=[];
@@ -696,14 +713,12 @@ function generateOne(){
   main = pickFromRange(1,50,[],5).sort((a,b)=>a-b); return {main, euro:euroAuto()};
 }
 
-/* Output + Map Animation + Cards */
 async function printTipAndCard(outEl, index, tip){
   await printTip(outEl, index, tip);
-  const cards = $('#cards');
-  cards.appendChild(tipCard(index, tip));
+  $('#cards').appendChild(tipCard(index, tip));
 }
 
-/* Buttons */
+/* Buttons Generator/Analyse */
 $('#generateBtn').addEventListener('click', async ()=>{
   if(!draws.length){ alert('Bitte zuerst ein Archiv laden.'); return; }
   if($('#modus').value==='groups' && $('#groupControls').children.length===0){ buildGroupUI(); }
@@ -726,8 +741,6 @@ $('#generateBtn').addEventListener('click', async ()=>{
   }
 });
 $('#clearGeneratedBtn').addEventListener('click', ()=>{ generated=[]; $('#cards').innerHTML=''; $('#liveOutput').textContent=''; });
-
-/* Analyse All */
 $('#analyseAllBtn').addEventListener('click', ()=>{
   if(!generated.length){ alert('Bitte zuerst Varianten generieren.'); return; }
   const dist=Array(8).fill(0);
@@ -739,7 +752,6 @@ $('#analyseAllBtn').addEventListener('click', ()=>{
 
 /* Favoriten */
 function saveFavs(){ localStorage.setItem('ej_favs_v1', JSON.stringify(favorites)); renderFavs(); }
-function addFav(tip){ favorites.push(tip); saveFavs(); }
 function renderFavs(){
   const q=($('#favSearch')?.value||'').toLowerCase();
   const box=$('#favoritesBox'); if(!box) return; box.innerHTML='';
@@ -776,8 +788,13 @@ $('#favImport')?.addEventListener('click', ()=>{
 $('#favClear')?.addEventListener('click', ()=>{ if(confirm('Alle Favoriten löschen?')){ favorites=[]; saveFavs(); } });
 renderFavs();
 
-/* Load archive from storage on start */
-(()=>{ const saved=localStorage.getItem(ARCH_KEY); if(saved){ try{ parseArchiveText(saved); $('#statusText').textContent='Archiv aus Speicher geladen ✔'; }catch{} } })();
+/* Restore */
+(()=>{
+  const saved=localStorage.getItem(ARCH_KEY);
+  if(saved){ try{ parseArchiveText(saved, 'manual'); $('#statusText').textContent='Archiv aus Speicher geladen ✔'; }catch{} }
+  latestRefDate = localStorage.getItem(LATEST_REF_KEY) || latestRefDate;
+  setKPIs();
+})();
 </script>
 </body>
 </html>
