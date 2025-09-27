@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eurojackpot • Cyberpunk Tool v6.1</title>
+<title>Eurojackpot Tool by EnoWeb • v6.2</title>
 
 <!-- Libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -14,39 +14,56 @@
 <style>
   :root{ --cy-c:#00fff0; --cy-m:#ff00ea; --ink:#eaf7ff; --bg:#060712; --ok:#39ff88; --warn:#ffd86b; --bad:#ff6b94; }
   html,body{height:100%;}
-  body{background:
+  body{
+    background:
        radial-gradient(1000px 800px at -10% -10%, rgba(0,255,240,.12), transparent 60%),
        radial-gradient(800px 700px at 110% -10%, rgba(255,0,234,.10), transparent 60%),
        var(--bg);
-       color:var(--ink);
-       font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
-  .title{background:linear-gradient(90deg,var(--cy-c),var(--cy-m)); -webkit-background-clip:text; color:transparent; font-weight:900; letter-spacing:.3px;}
-  .glass{background:rgba(15,18,40,.78); backdrop-filter: blur(14px); border:1px solid rgba(0,255,255,.25); border-radius:14px; padding:14px; box-shadow: 0 12px 40px rgba(0,0,0,.45);}
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  }
+
+  /* ===== Logo ===== */
+  .logo-wrap{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:18px;}
+  .logo-ico{width:58px; height:58px; filter: drop-shadow(0 0 8px rgba(0,255,240,.55));}
+  .scanline{position:relative}
+  .scanline::after{content:""; position:absolute; inset:-6px; background:repeating-linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.06) 1px, transparent 2px, transparent 3px); mix-blend-mode:overlay; pointer-events:none; border-radius:14px;}
+  .title{background:linear-gradient(90deg,var(--cy-c),var(--cy-m)); -webkit-background-clip:text; color:transparent; font-weight:900; letter-spacing:.3px; text-shadow: 0 0 18px rgba(0,255,240,.25);}
+  .subtitle{opacity:.0; height:0; overflow:hidden;} /* entfernt */
+
+  /* ===== Glass & Buttons ===== */
+  .glass{background:rgba(15,18,40,.78); backdrop-filter: blur(14px); border:1px solid rgba(0,255,255,.20); border-radius:14px; padding:14px; box-shadow: 0 12px 40px rgba(0,0,0,.45);}
   .btn-glow{transition:transform .18s ease, box-shadow .18s ease; position:relative; overflow:hidden;}
   .btn-glow:hover{transform: translateY(-2px); box-shadow:0 0 18px var(--cy-c), 0 0 26px var(--cy-m);}
   .btn-glow:active{transform: translateY(0);}
-  /* Better nav buttons */
   .nav-btn{display:flex; flex-direction:column; align-items:center; justify-content:center;
-           gap:6px; min-width:86px; height:72px; padding:8px 10px; border-radius:16px;
+           gap:6px; min-width:90px; height:78px; padding:8px 10px; border-radius:16px;
            background:linear-gradient(180deg,rgba(18,24,50,.9),rgba(14,18,36,.9));
            border:1px solid rgba(255,255,255,.08);
            box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 8px 22px rgba(0,0,0,.4);}
   .nav-btn span{font-size:.78rem; letter-spacing:.2px; white-space:nowrap;}
   .nav-btn .ico{font-size:20px; line-height:1;}
   .nav-btn.active{outline:2px solid rgba(255,255,255,.15); box-shadow:0 0 20px rgba(0,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.1);}
-  .chip{display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:30px; border-radius:10px; margin:4px; font-weight:800; font-size:.85rem; color:#bdfcff; background:linear-gradient(180deg,#0e1530,#15204a); border:1px solid rgba(0,255,255,.25); transition:transform .2s, box-shadow .2s, background .2s;}
+
+  /* ===== Chips & Map ===== */
+  .chip{display:inline-flex; align-items:center; justify-content:center; min-width:32px; height:32px; border-radius:10px; margin:4px; font-weight:800; font-size:.9rem; color:#bdfcff; background:linear-gradient(180deg,#0e1530,#15204a); border:1px solid rgba(0,255,255,.25); transition:transform .2s, box-shadow .2s, background .2s;}
   .chip.euro{color:#ffe6ff; background:linear-gradient(180deg,#1c1433,#1c2b53); border-color:rgba(255,0,234,.3);}
   .chip:hover{transform:scale(1.12); box-shadow:0 0 10px var(--cy-m);}
   .chip.sel{background:linear-gradient(180deg,rgba(0,255,240,.25),rgba(0,255,240,.05)); box-shadow:0 0 16px rgba(0,255,240,.35), inset 0 0 0 1px rgba(0,255,255,.45); }
   .chip.flash{animation:flash .45s ease;}
   @keyframes flash{0%{transform:scale(1); box-shadow:0 0 0 rgba(0,255,240,0);} 40%{transform:scale(1.2); box-shadow:0 0 22px rgba(0,255,240,.9);} 100%{transform:scale(1.0);}}
+  .spark{position:absolute; width:6px; height:6px; border-radius:50%; background:radial-gradient(circle, white, rgba(0,255,240,.8) 40%, transparent 70%); pointer-events:none; animation:spark 700ms ease-out forwards;}
+  @keyframes spark{from{opacity:1; transform:translate(0,0) scale(1);} to{opacity:0; transform:translate(var(--tx,40px), var(--ty,-30px)) scale(0.1);}}
+
   .badge{background:rgba(255,255,255,.06); border:1px solid rgba(140,170,255,.22); border-radius:999px; padding:.15rem .5rem; font-size:.72rem;}
   .error{background:#411015; border:1px solid var(--bad); color:#ffd8e6; border-radius:10px; padding:.6rem .75rem;}
   .mono{font-family:ui-monospace, Menlo, Consolas, 'Cascadia Code', monospace;}
+
   /* Typing area */
   #liveOutput{position:relative;}
   #liveOutput .caret{display:inline-block; width:10px; margin-left:1px; background:linear-gradient(180deg,var(--cy-c),var(--cy-m)); animation:blink 1s step-end infinite; height:1.1em; vertical-align:bottom;}
   @keyframes blink{50%{opacity:0;}}
+
   /* Favorites toolbar */
   .fav-toolbar{display:flex; gap:8px; flex-wrap:wrap;}
   .fav-btn{display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.08);
@@ -54,17 +71,42 @@
   .fav-btn span{font-size:.85rem;}
   .fav-card{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:14px; border:1px solid rgba(255,255,255,.08); background:rgba(16,20,40,.7);}
   .icon{width:18px; height:18px; display:inline-block;}
+
   @media (max-width:420px){
-    .nav-btn{min-width:74px; height:68px;}
+    .nav-btn{min-width:78px; height:74px;}
     .nav-btn span{font-size:.72rem;}
   }
 </style>
 </head>
 <body class="p-5">
-  <div class="text-center mb-5 animate__animated animate__fadeInDown">
-    <h1 class="text-3xl md:text-4xl title">Eurojackpot • Cyberpunk Tool v6.1</h1>
-    <p class="text-pink-300">FINAL – Archiv · Map · Generator · Analyse · Favoriten</p>
+
+  <!-- Header with animated SVG Logo -->
+  <div class="logo-wrap animate__animated animate__fadeInDown scanline">
+    <svg class="logo-ico" viewBox="0 0 64 64">
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1">
+          <stop offset="0" stop-color="#00fff0"/>
+          <stop offset="1" stop-color="#ff00ea"/>
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <circle cx="32" cy="32" r="28" stroke="url(#g1)" stroke-width="4" fill="none" filter="url(#glow)"/>
+      <path d="M20 36l8-16 8 16m-3-6h-10" stroke="url(#g1)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <animate attributeName="stroke-dasharray" dur="2s" values="0,200;120,200;120,200" repeatCount="indefinite"/>
+      </path>
+      <circle cx="46" cy="22" r="3" fill="url(#g1)">
+        <animate attributeName="r" dur="1.6s" values="2;4;2" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+    <h1 class="text-3xl md:text-4xl title">Eurojackpot Tool by EnoWeb</h1>
   </div>
+  <p class="subtitle">placeholder removed</p>
 
   <!-- NAV -->
   <div class="flex justify-center flex-wrap gap-3 mb-6">
@@ -85,9 +127,10 @@
       <div class="flex flex-col md:flex-row gap-2">
         <input id="archiveUrl" class="bg-gray-900 p-2 rounded flex-1" value="https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip">
         <button id="loadLatestBtn" class="btn-glow px-3 py-2 bg-blue-600 rounded">📥 Neueste laden</button>
+        <a id="directDl" class="btn-glow px-3 py-2 bg-blue-900 rounded" target="_blank" href="https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip">🔗 Direktlink</a>
         <button id="clearArchiveBtn" class="btn-glow px-3 py-2 bg-gray-600 rounded">🧹 Cache löschen</button>
       </div>
-      <p class="text-xs text-gray-300 mt-2">Bei CORS-Block werden mehrere Fallbacks versucht. Notfalls manuell laden & hier ablegen.</p>
+      <p class="text-xs text-gray-300 mt-2">Bei CORS-Block werden mehrere Fallbacks versucht. Notfalls Direktlink öffnen, Datei speichern & hier ablegen.</p>
     </div>
 
     <div class="glass mb-3">
@@ -108,13 +151,26 @@
 
   <!-- MAP -->
   <div id="v-map" class="glass hidden animate__animated animate__fadeIn">
-    <h2 class="text-xl font-bold mb-2">🗺 Map</h2>
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-bold mb-2">🗺 Map</h2>
+      <div class="flex items-center gap-2">
+        <button id="replayBtn" class="btn-glow px-3 py-2 bg-indigo-700 rounded">▶️ Replay</button>
+        <label class="flex items-center gap-2 text-sm">
+          🎞 Speed
+          <input id="speedRange" type="range" min="60" max="320" value="180">
+        </label>
+        <label class="flex items-center gap-2 text-sm">
+          ✨ Fancy
+          <input id="fancyToggle" type="checkbox" checked>
+        </label>
+      </div>
+    </div>
     <div class="mb-1 flex items-center justify-between">
       <div class="badge">Hauptzahlen 1–50</div><div id="progress" class="badge">Bereit</div>
     </div>
-    <div id="mapMain" class="flex flex-wrap"></div>
+    <div id="mapMain" class="flex flex-wrap relative"></div>
     <div class="mt-3 badge">Eurozahlen 1–12</div>
-    <div id="mapEuro" class="flex flex-wrap"></div>
+    <div id="mapEuro" class="flex flex-wrap relative"></div>
   </div>
 
   <!-- GENERIEREN -->
@@ -174,6 +230,7 @@
       <input id="favSearch" placeholder="Suche…" class="bg-gray-900 p-2 rounded flex-1 min-w-[180px]">
       <button id="favExport" class="fav-btn"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Export</span></button>
       <button id="favImport" class="fav-btn"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 21V9m0 0l-4 4m4-4l4 4M5 3h14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Import</span></button>
+      <button id="favCSV" class="fav-btn"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 4h12l4 4v12H4z" stroke="white" stroke-width="2"/><text x="8" y="17" fill="white" font-size="8">CSV</text></svg><span>CSV</span></button>
       <button id="favClear" class="fav-btn" style="border-color: rgba(255,0,0,.25)"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M6 7h12m-9 0l.5 12m6-12L15 19M9 7l.5 12M10 4h4l1 3H9l1-3z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Leeren</span></button>
     </div>
     <div id="favoritesBox" class="space-y-2"></div>
@@ -192,6 +249,7 @@ let draws=[];
 let freqMain=Array(51).fill(0), freqEuro=Array(13).fill(0);
 let lastSeen=Array(51).fill(null), lastSeenE=Array(13).fill(null);
 let generated=[];
+let lastTip=null;
 let favorites = JSON.parse(localStorage.getItem("ej_favs_v1")||"[]");
 
 /* ===== Tabs ===== */
@@ -200,6 +258,7 @@ function tab(name, btn){
   $('#v-'+name).classList.remove('hidden');
   $$('.nav-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
+  if(name==='fav') renderFavs();
 }
 
 /* ===== Map ===== */
@@ -216,23 +275,38 @@ function clearMapSelection(){
   $$('#mapMain .chip, #mapEuro .chip').forEach(c=>c.classList.remove('sel','flash'));
 }
 
+function sparkAt(el){
+  if(!$('#fancyToggle').checked) return;
+  const r=el.getBoundingClientRect();
+  const s=document.createElement('div'); s.className='spark';
+  s.style.left=(r.left + r.width/2 + window.scrollX)+'px';
+  s.style.top=(r.top + r.height/2 + window.scrollY)+'px';
+  s.style.setProperty('--tx', (Math.random()*80-40)+'px');
+  s.style.setProperty('--ty', (Math.random()*-60-10)+'px');
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(), 800);
+}
+
+let animSpeed=180;
+$('#speedRange').addEventListener('input', e=> animSpeed=+e.target.value);
+
 async function animateSelection(mainNums, euroNums){
   tab('map', $('#btn-map')); // switch to map
   clearMapSelection();
   $('#progress').textContent='Tippt…';
-  // animate main numbers
   for(const n of mainNums){
     const el = $(`#mapMain .chip[data-n="${n}"]`);
-    if(el){ el.classList.add('sel','flash'); await sleep(180); }
+    if(el){ el.classList.add('sel','flash'); sparkAt(el); await sleep(animSpeed); }
   }
-  await sleep(120);
-  // animate euro numbers
+  await sleep(100);
   for(const n of euroNums){
     const el = $(`#mapEuro .chip[data-n="${n}"]`);
-    if(el){ el.classList.add('sel','flash'); await sleep(180); }
+    if(el){ el.classList.add('sel','flash'); sparkAt(el); await sleep(animSpeed); }
   }
   $('#progress').textContent='Fertig';
 }
+
+$('#replayBtn').addEventListener('click', ()=>{ if(lastTip){ animateSelection(lastTip.main, lastTip.euro); } });
 
 /* ===== Archiv Parsing (mit Fallbacks) ===== */
 const ARCH_KEY='ej_archive_v1';
@@ -373,7 +447,8 @@ function buildEuroUI(){
 function updateGroupCounters(){
   let sumG=0; $$('#groupControls select').forEach(s=>{ const v=+s.value||0; sumG+=v; s.parentElement.lastChild.textContent=v; });
   let sumE=0; if($('#useEuro').checked){ $$('#euroControls select').forEach(s=>{ const v=+s.value||0; sumE+=v; s.parentElement.lastChild.textContent=v; }); }
-  const err=$('#groupError'); err.classList.add('hidden'); err.textContent='';
+  const err=$('#groupError');
+  err.classList.add('hidden'); err.textContent='';
   if(sumG>5){ err.classList.remove('hidden'); err.textContent='Gruppen-Summe darf max. 5 sein.'; }
   if($('#useEuro').checked && !(sumE===0 || sumE===2)){ err.classList.remove('hidden'); err.textContent='Euro-Summe muss 0 oder 2 sein.'; }
 }
@@ -503,7 +578,7 @@ async function typeLine(el, text){
   const caret = document.createElement('span'); caret.className='caret';
   for(const ch of text){ el.append(ch); await sleep(10); }
   el.appendChild(caret);
-  await sleep(180);
+  await sleep(160);
   caret.remove();
 }
 
@@ -646,8 +721,9 @@ $('#generateBtn').addEventListener('click', async ()=>{
       let guard=0; while(seen.has(key) && guard<10){ tip = generateOne(); key=tip.main.join('-'); guard++; }
       seen.add(key);
       generated.push(tip);
-      await animateSelection(tip.main, tip.euro);  // <<< Map-Animation
-      await printTip(out, i, tip);                 // <<< Text-Tippen
+      lastTip = tip;
+      await animateSelection(tip.main, tip.euro);
+      await printTip(out, i, tip);
       cards.appendChild(tipCard(i, tip));
     }catch(e){
       const err=$('#groupError'); err.classList.remove('hidden'); err.textContent=e.message; break;
@@ -676,6 +752,7 @@ function renderFavs(){
     div.innerHTML=`<div>${f.main.join(' ')} | <span class="text-pink-300">E:${f.euro.join(' ')}</span></div>
       <div class="flex gap-2">
         <button class="fav-btn" title="Kopieren" onclick='navigator.clipboard.writeText("${f.main.join('-')} | E:${f.euro.join('-')}")'><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M9 9h8a2 2 0 012 2v7a2 2 0 01-2 2H9a2 2 0 01-2-2v-7a2 2 0 012-2z"/><path d="M7 7h8a2 2 0 012 2v1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Copy</span></button>
+        <button class="fav-btn" title="Auf Map zeigen" onclick='animateSelection(${JSON.stringify(f.main)}, ${JSON.stringify(f.euro)})'><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m7-7H5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg><span>Show</span></button>
         <button class="fav-btn" title="Entfernen" onclick="favorites.splice(${i},1); saveFavs();"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M6 7h12m-9 0l.5 12m6-12L15 19M9 7l.5 12M10 4h4l1 3H9l1-3z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Entfernen</span></button>
       </div>`;
     box.appendChild(div);
@@ -685,6 +762,12 @@ $('#favSearch')?.addEventListener('input', renderFavs);
 $('#favExport')?.addEventListener('click', ()=>{
   const blob=new Blob([JSON.stringify(favorites,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='favoriten.json'; a.click(); URL.revokeObjectURL(url);
+});
+$('#favCSV')?.addEventListener('click', ()=>{
+  const rows = [["n1","n2","n3","n4","n5","e1","e2"], ...favorites.map(f=>[...f.main, ...f.euro])];
+  const csv = rows.map(r=>r.join(",")).join("\n");
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='favoriten.csv'; a.click(); URL.revokeObjectURL(url);
 });
 $('#favImport')?.addEventListener('click', ()=>{
   const inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
