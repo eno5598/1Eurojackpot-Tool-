@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eurojackpot Tool by EnoWeb • v6.3</title>
+<title>Eurojackpot Tool by EnoWeb • v6.4</title>
 
 <!-- Libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -22,18 +22,14 @@
     color:var(--ink);
     font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
   }
-
-  /* ===== Logo (EnoWeb) ===== */
+  /* Logo */
   .logo-wrap{display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:18px;}
   .logo-badge{width:64px; height:64px; border-radius:16px; position:relative; overflow:hidden; background:radial-gradient(circle at 30% 30%, rgba(0,255,240,.25), transparent 40%), radial-gradient(circle at 70% 70%, rgba(255,0,234,.25), transparent 40%), #0b0f23; box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), 0 10px 30px rgba(0,0,0,.5);}
   .logo-badge::before{content:""; position:absolute; inset:-40%; background:conic-gradient(from 0deg, #00fff0, #ff00ea, #00fff0); animation:spin 6s linear infinite; filter:blur(16px); opacity:.8;}
   .logo-badge::after{content:"EW"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:900; letter-spacing:1px; color:#e9fbff; text-shadow:0 0 12px rgba(0,255,240,.6), 0 0 22px rgba(255,0,234,.4); mix-blend-mode:screen;}
   @keyframes spin{to{transform:rotate(360deg);}}
-
   .title{background:linear-gradient(90deg,var(--cy-c),var(--cy-m)); -webkit-background-clip:text; color:transparent; font-weight:900; letter-spacing:.3px; text-shadow: 0 0 18px rgba(0,255,240,.25);}
-  .subtitle{display:none;} /* entfernt */
-
-  /* ===== Glass & Buttons ===== */
+  /* Glass & Buttons */
   .glass{background:rgba(15,18,40,.78); backdrop-filter: blur(14px); border:1px solid rgba(0,255,255,.20); border-radius:14px; padding:14px; box-shadow: 0 12px 40px rgba(0,0,0,.45);}
   .btn-glow{transition:transform .18s ease, box-shadow .18s ease; position:relative; overflow:hidden;}
   .btn-glow:hover{transform: translateY(-2px); box-shadow:0 0 18px var(--cy-c), 0 0 26px var(--cy-m);}
@@ -46,8 +42,7 @@
   .nav-btn span{font-size:.78rem; letter-spacing:.2px; white-space:nowrap;}
   .nav-btn .ico{font-size:20px; line-height:1;}
   .nav-btn.active{outline:2px solid rgba(255,255,255,.15); box-shadow:0 0 20px rgba(0,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.1);}
-
-  /* ===== Chips & Map ===== */
+  /* Chips & Map */
   .chip{display:inline-flex; align-items:center; justify-content:center; min-width:32px; height:32px; border-radius:10px; margin:4px; font-weight:800; font-size:.9rem; color:#bdfcff; background:linear-gradient(180deg,#0e1530,#15204a); border:1px solid rgba(0,255,255,.25); transition:transform .2s, box-shadow .2s, background .2s;}
   .chip.euro{color:#ffe6ff; background:linear-gradient(180deg,#1c1433,#1c2b53); border-color:rgba(255,0,234,.3);}
   .chip:hover{transform:scale(1.12); box-shadow:0 0 10px var(--cy-m);}
@@ -56,25 +51,27 @@
   @keyframes flash{0%{transform:scale(1); box-shadow:0 0 0 rgba(0,255,240,0);} 40%{transform:scale(1.2); box-shadow:0 0 22px rgba(0,255,240,.9);} 100%{transform:scale(1.0);}}
   .spark{position:absolute; width:6px; height:6px; border-radius:50%; background:radial-gradient(circle, white, rgba(0,255,240,.8) 40%, transparent 70%); pointer-events:none; animation:spark 700ms ease-out forwards;}
   @keyframes spark{from{opacity:1; transform:translate(0,0) scale(1);} to{opacity:0; transform:translate(var(--tx,40px), var(--ty,-30px)) scale(0.1);}}
-
   .badge{background:rgba(255,255,255,.06); border:1px solid rgba(140,170,255,.22); border-radius:999px; padding:.15rem .5rem; font-size:.72rem;}
   .error{background:#411015; border:1px solid var(--bad); color:#ffd8e6; border-radius:10px; padding:.6rem .75rem;}
   .mono{font-family:ui-monospace, Menlo, Consolas, 'Cascadia Code', monospace;}
-
-  /* Typing area */
-  #liveOutput{position:relative;}
   #liveOutput .caret{display:inline-block; width:10px; margin-left:1px; background:linear-gradient(180deg,var(--cy-c),var(--cy-m)); animation:blink 1s step-end infinite; height:1.1em; vertical-align:bottom;}
   @keyframes blink{50%{opacity:0;}}
-
   /* Favorites */
   .fav-toolbar{display:flex; gap:8px; flex-wrap:wrap;}
   .fav-btn{display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.08);
            background:linear-gradient(180deg,rgba(18,24,50,.9),rgba(14,18,36,.9));}
-  .fav-btn span{font-size:.85rem;}
   .fav-card{display:flex; flex-direction:column; gap:10px; padding:12px; border-radius:14px; border:1px solid rgba(255,255,255,.08); background:rgba(16,20,40,.7);}
   .fav-grid{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:6px; align-items:center;}
-  .fav-actions{display:flex; gap:8px; justify-content:flex-end;}
-
+  .fav-actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;}
+  /* Custom file input (fix iOS dark overlay) */
+  .file-wrap{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .file-input{display:none}
+  .file-label{cursor:pointer; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg,rgba(18,24,50,.9),rgba(14,18,36,.9)); display:inline-flex; gap:8px; align-items:center;}
+  .file-name{font-size:.9rem; opacity:.9}
+  /* Counters */
+  .counter{padding:.2rem .55rem; border-radius:999px; font-weight:700;}
+  .counter.red{background:#3a1520; border:1px solid #ff6b94;}
+  .counter.green{background:#153a29; border:1px solid #39ff88;}
   @media (max-width:420px){
     .nav-btn{min-width:78px; height:74px;}
     .nav-btn span{font-size:.72rem;}
@@ -117,8 +114,9 @@
 
     <div class="glass mb-3">
       <div class="font-semibold mb-2">Manuell laden</div>
-      <div class="flex flex-wrap gap-2">
-        <input type="file" id="zipInput" accept=".zip,.txt,.csv" class="bg-gray-900 p-2 rounded">
+      <div class="file-wrap">
+        <label class="file-label"><span>📄 Datei auswählen</span><input type="file" id="zipInput" class="file-input" accept=".zip,.txt,.csv"></label>
+        <span id="fileName" class="file-name">Keine Datei ausgewählt</span>
         <div class="badge">Tipp: ZIP/TXT/CSV einfach per Drag & Drop auf die Seite ziehen.</div>
       </div>
     </div>
@@ -135,7 +133,6 @@
   <div id="v-map" class="glass hidden animate__animated animate__fadeIn">
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-bold mb-2">🗺 Map</h2>
-      <!-- Fancy only: keine Regler, kein Replay -->
       <div class="badge">Live‑Animation: Fancy</div>
     </div>
     <div class="mb-1 flex items-center justify-between">
@@ -168,11 +165,16 @@
       <div class="flex items-end gap-2">
         <button id="generateBtn" class="btn-glow flex-1 px-3 py-2 bg-green-600 rounded">⚡ Generieren</button>
         <button id="analyseAllBtn" class="btn-glow px-3 py-2 bg-yellow-700 rounded">📊 Alle analysieren</button>
+        <button id="clearGeneratedBtn" class="btn-glow px-3 py-2 bg-gray-700 rounded">🗑️ Alle löschen</button>
       </div>
     </div>
 
     <div id="groupUI" class="mt-4 hidden">
-      <div class="mb-1 text-sm text-gray-300">Gruppen: Summe ≤ 5 (Rest wird automatisch aufgefüllt)</div>
+      <div class="mb-1 text-sm text-gray-300 flex items-center gap-3">
+        <span>Gruppen: exakt 5 erforderlich</span>
+        <span id="mainCounter" class="counter red">0/5</span>
+        <span id="euroCounter" class="counter red hidden">0/2</span>
+      </div>
       <div id="groupControls" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
       <div class="mt-1 flex items-center justify-between">
         <div class="badge">Eurozahlen (optional, 0 oder 2)</div>
@@ -194,15 +196,12 @@
       <h2 class="text-xl font-bold">📊 Analyse</h2>
       <div class="text-xs text-gray-300">Klarere Visuals + KPIs</div>
     </div>
-
-    <!-- KPI Cards -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
       <div class="glass"><div class="text-xs text-gray-300">Meistgezogen (Top 5)</div><div id="kpiTop" class="font-bold"></div></div>
       <div class="glass"><div class="text-xs text-gray-300">Selten (Bottom 5)</div><div id="kpiLow" class="font-bold"></div></div>
       <div class="glass"><div class="text-xs text-gray-300">Hot (letzte 20)</div><div id="kpiHot" class="font-bold"></div></div>
       <div class="glass"><div class="text-xs text-gray-300">Top‑Paare</div><div id="kpiPairs" class="font-bold"></div></div>
     </div>
-
     <canvas id="chartMain" class="w-full h-60 mb-4"></canvas>
     <canvas id="chartEuro" class="w-full h-56"></canvas>
     <div id="analysisBox" class="mt-3 text-sm"></div>
@@ -213,10 +212,10 @@
     <h2 class="text-xl font-bold mb-2">⭐ Favoriten</h2>
     <div class="fav-toolbar mb-3">
       <input id="favSearch" placeholder="Suche…" class="bg-gray-900 p-2 rounded flex-1 min-w-[180px]">
-      <button id="favExport" class="fav-btn"><span>Export</span></button>
-      <button id="favImport" class="fav-btn"><span>Import</span></button>
-      <button id="favCSV" class="fav-btn"><span>CSV</span></button>
-      <button id="favClear" class="fav-btn" style="border-color: rgba(255,0,0,.25)"><span>Leeren</span></button>
+      <button id="favExport" class="fav-btn">Export</button>
+      <button id="favImport" class="fav-btn">Import</button>
+      <button id="favCSV" class="fav-btn">CSV</button>
+      <button id="favClear" class="fav-btn" style="border-color: rgba(255,0,0,.25)">Leeren</button>
     </div>
     <div id="favoritesBox" class="space-y-2"></div>
   </div>
@@ -255,10 +254,7 @@ function renderMap(){
 }
 renderMap();
 
-function clearMapSelection(){
-  $$('#mapMain .chip, #mapEuro .chip').forEach(c=>c.classList.remove('sel','flash'));
-}
-
+function clearMapSelection(){ $$('#mapMain .chip, #mapEuro .chip').forEach(c=>c.classList.remove('sel','flash')); }
 function sparkAt(el){
   const r=el.getBoundingClientRect();
   const s=document.createElement('div'); s.className='spark';
@@ -266,28 +262,19 @@ function sparkAt(el){
   s.style.top=(r.top + r.height/2 + window.scrollY)+'px';
   s.style.setProperty('--tx', (Math.random()*80-40)+'px');
   s.style.setProperty('--ty', (Math.random()*-60-10)+'px');
-  document.body.appendChild(s);
-  setTimeout(()=>s.remove(), 800);
+  document.body.appendChild(s); setTimeout(()=>s.remove(), 800);
 }
-
-const animSpeed=180; // fixed
+const animSpeed=180;
 async function animateSelection(mainNums, euroNums){
   tab('map', $('#btn-map'));
-  clearMapSelection();
-  $('#progress').textContent='Tippt…';
-  for(const n of mainNums){
-    const el = $(`#mapMain .chip[data-n="${n}"]`);
-    if(el){ el.classList.add('sel','flash'); sparkAt(el); await sleep(animSpeed); }
-  }
+  clearMapSelection(); $('#progress').textContent='Tippt…';
+  for(const n of mainNums){ const el = $(`#mapMain .chip[data-n="${n}"]`); if(el){ el.classList.add('sel','flash'); sparkAt(el); await sleep(animSpeed);} }
   await sleep(100);
-  for(const n of euroNums){
-    const el = $(`#mapEuro .chip[data-n="${n}"]`);
-    if(el){ el.classList.add('sel','flash'); sparkAt(el); await sleep(animSpeed); }
-  }
+  for(const n of euroNums){ const el = $(`#mapEuro .chip[data-n="${n}"]`); if(el){ el.classList.add('sel','flash'); sparkAt(el); await sleep(animSpeed);} }
   $('#progress').textContent='Fertig';
 }
 
-/* ===== Archiv Parsing (mit Fallbacks) ===== */
+/* ===== Archiv Parsing ===== */
 const ARCH_KEY='ej_archive_v1';
 function setKPIs(){
   if(!draws.length){ $('#kpiCount').textContent='–'; $('#kpiFrom').textContent='–'; $('#kpiTo').textContent='–'; $('#kpiFresh').textContent='–'; return; }
@@ -295,8 +282,9 @@ function setKPIs(){
   $('#kpiFrom').textContent=draws[0].date;
   $('#kpiTo').textContent=draws.at(-1).date;
   const last=new Date(draws.at(-1).date);
-  const days=Math.round((Date.now()-last.getTime())/86400000);
-  $('#kpiFresh').textContent = days<=14? 'aktuell' : (days<=60? 'ok' : 'veraltet');
+  const days=Math.max(0, Math.round((Date.now()-last.getTime())/86400000));
+  let label=''; if(days<=14) label=`aktuell`; else if(days<=60) label=`ok (${days} Tage alt)`; else label=`veraltet (${days} Tage alt)`;
+  $('#kpiFresh').textContent=label;
 }
 function parseArchiveText(txt){
   try{
@@ -329,9 +317,7 @@ function parseArchiveText(txt){
     draws.forEach((d,idx)=>{ d.main.forEach(n=>{freqMain[n]++; lastSeen[n]=idx;}); d.euro.forEach(n=>{freqEuro[n]++; lastSeenE[n]=idx;}); });
     localStorage.setItem(ARCH_KEY, txt);
     $('#statusText').textContent='Archiv geladen ✔';
-    setKPIs();
-    renderCharts();
-    renderAnalyseKPIs();
+    setKPIs(); renderCharts(); renderAnalyseKPIs();
   }catch(e){ $('#statusText').textContent='Fehler: '+e.message; }
 }
 async function fetchWithProxies(url){
@@ -355,8 +341,11 @@ async function fetchWithProxies(url){
   }
   throw lastErr || new Error('Unbekannter Fehler beim Laden.');
 }
-$('#zipInput').addEventListener('change', async (evt)=>{
+/* File input (custom) */
+const fileInput = document.getElementById('zipInput');
+fileInput?.addEventListener('change', async (evt)=>{
   const file=evt.target.files?.[0]; if(!file) return;
+  document.getElementById('fileName').textContent = file.name;
   try{
     let text='';
     if(file.name.toLowerCase().endsWith('.zip')){
@@ -372,6 +361,7 @@ document.body.addEventListener('dragover', e=>{ e.preventDefault(); });
 document.body.addEventListener('drop', async e=>{
   e.preventDefault();
   const file=e.dataTransfer?.files?.[0]; if(!file) return;
+  $('#fileName').textContent = file.name;
   $('#statusText').textContent='Lade Datei…';
   try{
     let text='';
@@ -410,7 +400,6 @@ function renderAnalyseKPIs(){
   const counts=Array(51).fill(0); recent.forEach(d=>d.main.forEach(n=>counts[n]++));
   const hot = counts.map((v,i)=>[i,v]).slice(1).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0]).join(' ');
   $('#kpiHot').textContent = hot;
-  // Top pairs (last 200)
   const last=draws.slice(-200);
   const map=new Map();
   function inc(k){ map.set(k,(map.get(k)||0)+1); }
@@ -441,11 +430,24 @@ function buildEuroUI(){
   });
   $$('#euroControls select').forEach(sel=> sel.addEventListener('change', updateGroupCounters));
 }
+function setCounter(el, val, total){
+  el.textContent = `${val}/${total}`;
+  el.classList.toggle('green', val===total);
+  el.classList.toggle('red', val!==total);
+}
 function updateGroupCounters(){
   let sumG=0; $$('#groupControls select').forEach(s=>{ const v=+s.value||0; sumG+=v; s.parentElement.lastChild.textContent=v; });
-  let sumE=0; if($('#useEuro').checked){ $$('#euroControls select').forEach(s=>{ const v=+s.value||0; sumE+=v; s.parentElement.lastChild.textContent=v; }); }
+  setCounter($('#mainCounter'), sumG, 5);
+  let sumE=0;
+  if($('#useEuro').checked){
+    $$('#euroControls select').forEach(s=>{ const v=+s.value||0; sumE+=v; s.parentElement.lastChild.textContent=v; });
+    $('#euroCounter').classList.remove('hidden');
+    setCounter($('#euroCounter'), sumE, 2);
+  }else{
+    $('#euroCounter').classList.add('hidden');
+  }
   const err=$('#groupError'); err.classList.add('hidden'); err.textContent='';
-  if(sumG>5){ err.classList.remove('hidden'); err.textContent='Gruppen-Summe darf max. 5 sein.'; }
+  if(sumG!==5){ err.classList.remove('hidden'); err.textContent='Bitte genau 5 aus den Gruppen wählen.'; }
   if($('#useEuro').checked && !(sumE===0 || sumE===2)){ err.classList.remove('hidden'); err.textContent='Euro-Summe muss 0 oder 2 sein.'; }
 }
 $('#modus').addEventListener('change', ()=>{
@@ -453,7 +455,11 @@ $('#modus').addEventListener('change', ()=>{
   $('#groupUI').classList.toggle('hidden', !on);
   if(on){ buildGroupUI(); }
 });
-$('#useEuro').addEventListener('change', e=>{ $('#euroControls').classList.toggle('hidden', !e.target.checked); if(e.target.checked){ buildEuroUI(); } updateGroupCounters(); });
+$('#useEuro').addEventListener('change', e=>{
+  $('#euroControls').classList.toggle('hidden', !e.target.checked);
+  if(e.target.checked){ buildEuroUI(); setCounter($('#euroCounter'), 0, 2); }
+  updateGroupCounters();
+});
 
 /* ===== Generator Utilities ===== */
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
@@ -546,7 +552,7 @@ function runsBest(){
         seq=[m[i]];
       }
     }
-    if(seq.length>=2){ for(let L=2; L<=Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
+    if(seq.length>=2){ for(let L=2; L<=*Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
   }
   const lastIdx = draws.length-1;
   const scoreEntries=[];
@@ -569,16 +575,15 @@ function runsBest(){
   return {main, euro:euroAuto()};
 }
 
-/* ===== Typing Engine (text) ===== */
+/* Typing Engine */
 async function typeLine(el, text){
   const caret = document.createElement('span'); caret.className='caret';
   for(const ch of text){ el.append(ch); await sleep(10); }
-  el.appendChild(caret);
-  await sleep(140);
-  caret.remove();
+  el.appendChild(caret); await sleep(120); caret.remove();
 }
 
-/* ===== Analyse & Karten ===== */
+/* Analyse & Karten */
+function inFav(tip){ return favorites.some(f=> f.main.join('-')===tip.main.join('-') && f.euro.join('-')===tip.euro.join('-')); }
 function exactOccurrences(tip){
   const idx=[]; for(let i=0;i<draws.length;i++){ const d=draws[i];
     if(tip.main.length===5 && d.main.length===5 && tip.main.every((n,j)=>n===d.main[j])) idx.push(i);
@@ -600,7 +605,8 @@ function analyseVariant(tip){
 }
 function tipCard(idx, tip){
   const a = analyseVariant(tip);
-  const card=document.createElement('div'); card.className='glass mb-3';
+  const isFav = inFav(tip);
+  const card=document.createElement('div'); card.className='glass mb-3'; card.dataset.key = tip.main.join('-')+'|'+tip.euro.join('-');
   card.innerHTML = `
     <div class="flex items-center justify-between">
       <div>
@@ -618,15 +624,29 @@ function tipCard(idx, tip){
       <div class="badge">Overlap ≥3: <b>${a.ov3p}</b></div>
       <div class="badge">FreqSum: <b>${a.freqSum}</b></div>
     </div>
-    <div class="mt-2 flex gap-2">
-      <button class="btn-glow px-3 py-2 bg-pink-700 rounded" onclick='addFav(${JSON.stringify(tip)})'>⭐ Favorit</button>
-      <button class="btn-glow px-3 py-2 bg-gray-700 rounded" onclick='navigator.clipboard.writeText("${tip.main.join('-')} | E:${tip.euro.join('-')}")'>📋 Kopieren</button>
-    </div>
-  `;
+    <div class="mt-2 flex gap-2 flex-wrap">
+      <button class="btn-glow px-3 py-2 rounded ${isFav?'bg-green-700':'bg-pink-700'} fav-toggle">${isFav?'✅ In Favoriten':'⭐ Favorit'}</button>
+      <button class="btn-glow px-3 py-2 bg-gray-700 rounded copy-btn">📋 Kopieren</button>
+      <button class="btn-glow px-3 py-2 bg-red-700 rounded del-btn">🗑️ Entfernen</button>
+    </div>`;
+  // Listeners:
+  card.querySelector('.copy-btn').onclick = ()=> navigator.clipboard.writeText(`${tip.main.join('-')} | E:${tip.euro.join('-')}`);
+  card.querySelector('.del-btn').onclick = ()=>{ card.remove(); generated = generated.filter(g=> g!==tip); };
+  card.querySelector('.fav-toggle').onclick = (ev)=>{
+    if(inFav(tip)){
+      favorites = favorites.filter(f=> !(f.main.join('-')===tip.main.join('-') && f.euro.join('-')===tip.euro.join('-')));
+    }else{
+      favorites.push(tip);
+    }
+    localStorage.setItem('ej_favs_v1', JSON.stringify(favorites));
+    ev.target.textContent = inFav(tip) ? '✅ In Favoriten' : '⭐ Favorit';
+    ev.target.classList.toggle('bg-green-700', inFav(tip));
+    ev.target.classList.toggle('bg-pink-700', !inFav(tip));
+  };
   return card;
 }
 
-/* ===== Generator pro Modus ===== */
+/* Generator pro Modus */
 function generateOne(){
   const mode = $('#modus').value;
   let main=[];
@@ -637,23 +657,19 @@ function generateOne(){
     const want = $$('#groupControls select').map(s=>+s.value||0);
     const sumWant = sum(want);
     const err=$('#groupError'); err.classList.add('hidden'); err.textContent='';
-    if(sumWant<5){ err.classList.remove('hidden'); err.textContent='Bitte mindestens 5 Zahlen über Gruppen wählen (Summe ≤ 5).'; throw new Error('Gruppen nicht vollständig.'); }
+    if(sumWant!==5){ err.classList.remove('hidden'); err.textContent='Bitte genau 5 aus den Gruppen wählen.'; throw new Error('Gruppen nicht vollständig.'); }
     let weightMain=null;
     const r=draws.slice(-100); const fm=Array(51).fill(1); r.forEach(d=>d.main.forEach(n=>fm[n]++));
     const maxM=Math.max(...fm.slice(1)); weightMain=n=>Math.ceil(3*fm[n]/maxM);
     GROUPS.forEach((g,i)=>{ const need=want[i]; if(need>0){ main.push(...pickFromRange(g.from,g.to,main,need,weightMain)); } });
-    while(main.length<5){
-      const g = GROUPS[Math.floor(Math.random()*GROUPS.length)];
-      const add = pickFromRange(g.from,g.to,main,1,weightMain);
-      if(add.length) main.push(add[0]); else break;
-    }
     main = uniqueSorted(main).slice(0,5);
     let euro=[];
     if($('#useEuro').checked){
       const eWant = $$('#euroControls select').map(s=>+s.value||0);
       const eSum = sum(eWant);
-      if(!(eSum===0 || eSum===2)) throw new Error('Euro-Summe muss 0 oder 2 sein.');
+      if(!(eSum===0 || eSum===2)){ throw new Error('Euro-Summe muss 0 oder 2 sein.'); }
       if(eSum===2){ EGROUPS.forEach((g,i)=>{ const need=eWant[i]; if(need>0){ euro.push(...pickFromRange(g.from,g.to,euro,need)); } }); euro.sort((a,b)=>a-b); }
+      if(eSum===0){ euro=euroAuto(); }
     }else{ euro=euroAuto(); }
     return {main, euro};
   }
@@ -692,16 +708,14 @@ function generateOne(){
   main = pickFromRange(1,50,[],5).sort((a,b)=>a-b); return {main, euro:euroAuto()};
 }
 
-/* ===== Typing Output + Map Animation + Cards ===== */
+/* Output + Map Animation + Cards */
 async function printTip(outEl, index, tip){
   await typeLine(outEl, "#"+index+": ");
   for(const n of tip.main){ await typeLine(outEl, n+" "); }
   await typeLine(outEl, "| E: ");
   for(const e of tip.euro){ await typeLine(outEl, e+" "); }
-  outEl.append("\n");
-  outEl.scrollTop = outEl.scrollHeight;
+  outEl.append("\n"); outEl.scrollTop = outEl.scrollHeight;
 }
-
 $('#generateBtn').addEventListener('click', async ()=>{
   if(!draws.length){ alert('Bitte zuerst ein Archiv laden.'); return; }
   if($('#modus').value==='groups' && $('#groupControls').children.length===0){ buildGroupUI(); }
@@ -713,10 +727,9 @@ $('#generateBtn').addEventListener('click', async ()=>{
   for(let i=1;i<=total;i++){
     try{
       let tip = generateOne();
-      let key = tip.main.join('-');
-      let guard=0; while(seen.has(key) && guard<10){ tip = generateOne(); key=tip.main.join('-'); guard++; }
-      seen.add(key);
-      generated.push(tip);
+      let key = tip.main.join('-')+'|'+tip.euro.join('-');
+      let guard=0; while(seen.has(key) && guard<10){ tip = generateOne(); key=tip.main.join('-')+'|'+tip.euro.join('-'); guard++; }
+      seen.add(key); generated.push(tip);
       await animateSelection(tip.main, tip.euro);
       await printTip(out, i, tip);
       cards.appendChild(tipCard(i, tip));
@@ -725,8 +738,9 @@ $('#generateBtn').addEventListener('click', async ()=>{
     }
   }
 });
+$('#clearGeneratedBtn').addEventListener('click', ()=>{ generated=[]; $('#cards').innerHTML=''; $('#liveOutput').textContent=''; });
 
-/* ===== Analyse All ===== */
+/* Analyse All */
 $('#analyseAllBtn').addEventListener('click', ()=>{
   if(!generated.length){ alert('Bitte zuerst Varianten generieren.'); return; }
   const dist=Array(8).fill(0);
@@ -736,7 +750,7 @@ $('#analyseAllBtn').addEventListener('click', ()=>{
   $('#v-ana').scrollIntoView({behavior:'smooth'});
 });
 
-/* ===== Favoriten ===== */
+/* Favoriten */
 function saveFavs(){ localStorage.setItem('ej_favs_v1', JSON.stringify(favorites)); renderFavs(); }
 function addFav(tip){ favorites.push(tip); saveFavs(); }
 function renderFavs(){
@@ -750,9 +764,9 @@ function renderFavs(){
     f.euro.forEach(n=>{ const s=document.createElement('span'); s.className='chip euro'; s.textContent=n; grid.appendChild(s); });
     const actions=document.createElement('div'); actions.className='fav-actions';
     actions.innerHTML=`
-      <button class="fav-btn" onclick='navigator.clipboard.writeText("${f.main.join('-')} | E:${f.euro.join('-')}")'><span>Copy</span></button>
-      <button class="fav-btn" onclick='animateSelection(${JSON.stringify(f.main)}, ${JSON.stringify(f.euro)})'><span>Show</span></button>
-      <button class="fav-btn" onclick="favorites.splice(${i},1); saveFavs();" style="border-color: rgba(255,0,0,.25)"><span>Entfernen</span></button>`;
+      <button class="fav-btn" onclick='navigator.clipboard.writeText("${f.main.join('-')} | E:${f.euro.join('-')}")'>Copy</button>
+      <button class="fav-btn" onclick='animateSelection(${JSON.stringify(f.main)}, ${JSON.stringify(f.euro)})'>Show</button>
+      <button class="fav-btn" onclick="favorites.splice(${i},1); saveFavs();" style="border-color: rgba(255,0,0,.25)">Entfernen</button>`;
     div.appendChild(grid); div.appendChild(actions); box.appendChild(div);
   });
 }
