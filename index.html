@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eurojackpot Tool by EnoWeb • v6.4</title>
+<title>Eurojackpot Tool by EnoWeb • v6.4.2</title>
 
-<!-- Libs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- Externe Libs (für GitHub Pages geeignet) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-9b3pQH3+IPwV5mMBs7z4P1Ze2pV0XkR9UBEj1N0lI6b0f5CqQe1mKq3x/4Y0M8Z2a8YB9H6qQ8HfJQ7Hh7ZbWQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -63,7 +63,7 @@
   .fav-card{display:flex; flex-direction:column; gap:10px; padding:12px; border-radius:14px; border:1px solid rgba(255,255,255,.08); background:rgba(16,20,40,.7);}
   .fav-grid{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:6px; align-items:center;}
   .fav-actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;}
-  /* Custom file input (fix iOS dark overlay) */
+  /* Custom file input */
   .file-wrap{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
   .file-input{display:none}
   .file-label{cursor:pointer; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg,rgba(18,24,50,.9),rgba(14,18,36,.9)); display:inline-flex; gap:8px; align-items:center;}
@@ -89,11 +89,11 @@
 
   <!-- NAV -->
   <div class="flex justify-center flex-wrap gap-3 mb-6">
-    <button onclick="tab('archiv', this)" class="btn-glow nav-btn active" id="btn-archiv"><div class="ico">📂</div><span>Archiv</span></button>
-    <button onclick="tab('map', this)" class="btn-glow nav-btn" id="btn-map"><div class="ico">🗺️</div><span>Map</span></button>
-    <button onclick="tab('gen', this)" class="btn-glow nav-btn" id="btn-gen"><div class="ico">⚡</div><span>Generieren</span></button>
-    <button onclick="tab('ana', this)" class="btn-glow nav-btn" id="btn-ana"><div class="ico">📊</div><span>Analyse</span></button>
-    <button onclick="tab('fav', this)" class="btn-glow nav-btn" id="btn-fav"><div class="ico">⭐</div><span>Favoriten</span></button>
+    <button type="button" onclick="tab('archiv', this)" class="btn-glow nav-btn active" id="btn-archiv"><div class="ico">📂</div><span>Archiv</span></button>
+    <button type="button" onclick="tab('map', this)" class="btn-glow nav-btn" id="btn-map"><div class="ico">🗺️</div><span>Map</span></button>
+    <button type="button" onclick="tab('gen', this)" class="btn-glow nav-btn" id="btn-gen"><div class="ico">⚡</div><span>Generieren</span></button>
+    <button type="button" onclick="tab('ana', this)" class="btn-glow nav-btn" id="btn-ana"><div class="ico">📊</div><span>Analyse</span></button>
+    <button type="button" onclick="tab('fav', this)" class="btn-glow nav-btn" id="btn-fav"><div class="ico">⭐</div><span>Favoriten</span></button>
   </div>
 
   <!-- ARCHIV -->
@@ -105,9 +105,9 @@
       <div class="font-semibold mb-2">Automatisches Laden (mit Proxy-Fallbacks)</div>
       <div class="flex flex-col md:flex-row gap-2">
         <input id="archiveUrl" class="bg-gray-900 p-2 rounded flex-1" value="https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip">
-        <button id="loadLatestBtn" class="btn-glow px-3 py-2 bg-blue-600 rounded">📥 Neueste laden</button>
+        <button type="button" id="loadLatestBtn" class="btn-glow px-3 py-2 bg-blue-600 rounded">📥 Neueste laden</button>
         <a id="directDl" class="btn-glow px-3 py-2 bg-blue-900 rounded" target="_blank" href="https://www.lotto-bayern.de/static/gamebroker_2/de/download_files/archiv_eurojackpot.zip">🔗 Direktlink</a>
-        <button id="clearArchiveBtn" class="btn-glow px-3 py-2 bg-gray-600 rounded">🧹 Cache löschen</button>
+        <button type="button" id="clearArchiveBtn" class="btn-glow px-3 py-2 bg-gray-600 rounded">🧹 Cache löschen</button>
       </div>
       <p class="text-xs text-gray-300 mt-2">Bei CORS-Block werden mehrere Fallbacks versucht. Notfalls Direktlink öffnen, Datei speichern & hier ablegen.</p>
     </div>
@@ -163,9 +163,9 @@
         <input type="number" id="kombis" value="5" min="1" max="25" class="bg-gray-900 p-2 rounded w-full">
       </div>
       <div class="flex items-end gap-2">
-        <button id="generateBtn" class="btn-glow flex-1 px-3 py-2 bg-green-600 rounded">⚡ Generieren</button>
-        <button id="analyseAllBtn" class="btn-glow px-3 py-2 bg-yellow-700 rounded">📊 Alle analysieren</button>
-        <button id="clearGeneratedBtn" class="btn-glow px-3 py-2 bg-gray-700 rounded">🗑️ Alle löschen</button>
+        <button type="button" id="generateBtn" class="btn-glow flex-1 px-3 py-2 bg-green-600 rounded">⚡ Generieren</button>
+        <button type="button" id="analyseAllBtn" class="btn-glow px-3 py-2 bg-yellow-700 rounded">📊 Alle analysieren</button>
+        <button type="button" id="clearGeneratedBtn" class="btn-glow px-3 py-2 bg-gray-700 rounded">🗑️ Alle löschen</button>
       </div>
     </div>
 
@@ -212,10 +212,10 @@
     <h2 class="text-xl font-bold mb-2">⭐ Favoriten</h2>
     <div class="fav-toolbar mb-3">
       <input id="favSearch" placeholder="Suche…" class="bg-gray-900 p-2 rounded flex-1 min-w-[180px]">
-      <button id="favExport" class="fav-btn">Export</button>
-      <button id="favImport" class="fav-btn">Import</button>
-      <button id="favCSV" class="fav-btn">CSV</button>
-      <button id="favClear" class="fav-btn" style="border-color: rgba(255,0,0,.25)">Leeren</button>
+      <button type="button" id="favExport" class="fav-btn">Export</button>
+      <button type="button" id="favImport" class="fav-btn">Import</button>
+      <button type="button" id="favCSV" class="fav-btn">CSV</button>
+      <button type="button" id="favClear" class="fav-btn" style="border-color: rgba(255,0,0,.25)">Leeren</button>
     </div>
     <div id="favoritesBox" class="space-y-2"></div>
   </div>
@@ -227,6 +227,15 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 const sleep = ms => new Promise(r=>setTimeout(r,ms));
 const uniqueSorted = a => Array.from(new Set(a)).sort((x,y)=>x-y);
 const sum = a => a.reduce((s,v)=>s+v,0);
+
+/* ===== Simple error banner if JS breaks ===== */
+window.addEventListener('error', (e)=>{
+  const b=document.createElement('div');
+  b.style.cssText='position:fixed;bottom:8px;left:8px;right:8px;background:#3a1520;border:1px solid #ff6b94;color:#ffd8e6;padding:8px 10px;border-radius:10px;z-index:9999;font-family:ui-monospace;';
+  b.textContent='JS-Fehler: '+(e.message||'unbekannt');
+  document.body.appendChild(b);
+  setTimeout(()=>b.remove(), 6000);
+});
 
 /* ===== State ===== */
 let draws=[];
@@ -341,7 +350,7 @@ async function fetchWithProxies(url){
   }
   throw lastErr || new Error('Unbekannter Fehler beim Laden.');
 }
-/* File input (custom) */
+/* File input */
 const fileInput = document.getElementById('zipInput');
 fileInput?.addEventListener('change', async (evt)=>{
   const file=evt.target.files?.[0]; if(!file) return;
@@ -552,7 +561,7 @@ function runsBest(){
         seq=[m[i]];
       }
     }
-    if(seq.length>=2){ for(let L=2; L<=*Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
+    if(seq.length>=2){ for(let L=2; L<=Math.min(4,seq.length); L++){ for(let s=0;s+L<=seq.length;s++){ inc(seq.slice(s,s+L).join('-')); } } }
   }
   const lastIdx = draws.length-1;
   const scoreEntries=[];
